@@ -1,0 +1,16 @@
+﻿<Properties StartupConfiguration="{36DE82AA-BDC1-4476-8F24-DF13B5CC4E1A}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Chancy-Bot/Settings/Settings.cs">
+    <Files>
+      <File FileName="Chancy-Bot/Program.cs" Line="35" Column="38" />
+      <File FileName="Chancy-Bot/Settings/Settings.cs" Line="16" Column="12" />
+      <File FileName="Chancy-Bot/Settings.xml" Line="3" Column="2" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.Chancy-Bot PreferredExecutionTarget="MonoDevelop.Default" />
+  <MultiItemStartupConfigurations />
+</Properties>

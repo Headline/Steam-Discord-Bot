@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<Config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  
+  <!-- Steam Account Credentials-->
+  <SteamUsername></SteamUsername>
+  <SteamPassword></SteamPassword>
+
+  <!-- Discord Bot Token-->
+  <DiscordBotToken></DiscordBotToken>
+
+  <!-- AppIDs to notify updates for-->
+  <AppIDList>
+    <unsignedInt>440</unsignedInt>
+    <unsignedInt>240</unsignedInt>
+    <unsignedInt>730</unsignedInt>
+    <unsignedInt>320</unsignedInt>
+    <unsignedInt>300</unsignedInt>
+    <unsignedInt>570</unsignedInt>
+    <unsignedInt>4000</unsignedInt>
+  </AppIDList>
+</Config>
