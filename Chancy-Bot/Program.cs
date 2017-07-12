@@ -45,6 +45,8 @@ namespace ChancyBot
 			{
 				Console.WriteLine("Failed to load config from file. Loading default config.");
 				Config.Default();
+                Console.WriteLine("Please configure Settings.xml! Exiting program...");
+                Environment.Exit(0);
 			}
 
             Config.Instance.Save();
@@ -74,6 +76,8 @@ namespace ChancyBot
 			new Thread(new ThreadStart(() =>
             {
                 var manager = new JobManager(25); // seconds to run each job
+
+                manager.AddJob(new SteamCheckJob(connection)); // job to check steam connection
 
                 // Create update jobs for each desired appid
                 foreach (uint app in Config.Instance.AppIDList)

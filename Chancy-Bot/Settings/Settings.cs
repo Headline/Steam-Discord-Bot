@@ -38,7 +38,7 @@ namespace ChancyBot
             Config.Instance.SteamPassword = "password";
             Config.Instance.DiscordBotToken = "token";
 
-            Config.Instance.AppIDList.Add(730);
+            Config.Instance.AppIDList.Add(730); // default add csgo
 		}
 
 		// Loads the configuration from file.
