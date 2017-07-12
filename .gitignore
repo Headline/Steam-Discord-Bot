@@ -5,4 +5,4 @@
 *.userprefs
 *.config
 *.csproj
-*.suo
+/.vs/Chancy-Bot/v15/
