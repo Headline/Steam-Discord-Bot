@@ -1,5 +1,15 @@
 ﻿<Properties StartupConfiguration="{36DE82AA-BDC1-4476-8F24-DF13B5CC4E1A}|Default">
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Chancy-Bot/JobManager/Jobs/UpdateJob.cs">
+    <Files>
+      <File FileName="Chancy-Bot/JobManager/Jobs/GithubJob.cs" Line="26" Column="4" />
+      <File FileName="Chancy-Bot/Program.cs" Line="79" Column="17" />
+      <File FileName="Chancy-Bot/Settings/Settings.cs" Line="15" Column="32" />
+      <File FileName="Chancy-Bot/Settings.xml" Line="1" Column="1" />
+      <File FileName="Chancy-Bot/JobManager/JobManager.cs" Line="1" Column="1" />
+      <File FileName="Chancy-Bot/Commands/AppInfo.cs" Line="37" Column="89" />
+      <File FileName="Chancy-Bot/JobManager/Jobs/UpdateJob.cs" Line="66" Column="39" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />

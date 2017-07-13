@@ -79,8 +79,14 @@ namespace ChancyBot
 
                 manager.AddJob(new SteamCheckJob(connection)); // job to check steam connection
 
-                // Create update jobs for each desired appid
-                foreach (uint app in Config.Instance.AppIDList)
+                // add github repositories
+                foreach (string appandrepo in Config.Instance.RepoList)
+                {
+                    manager.AddJob(new GithubJob(appandrepo));
+                }
+
+                // add appids 
+				foreach (uint app in Config.Instance.AppIDList)
                 {
                     manager.AddJob(new UpdateJob(app));
                 }

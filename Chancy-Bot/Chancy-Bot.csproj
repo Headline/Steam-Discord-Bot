@@ -103,6 +103,7 @@
     <Compile Include="Settings\Settings.cs" />
     <Compile Include="Settings\XmlSerializable.cs" />
     <Compile Include="JobManager\Jobs\SteamCheckJob.cs" />
+    <Compile Include="JobManager\Jobs\GithubJob.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

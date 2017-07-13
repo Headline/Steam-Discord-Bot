@@ -11,7 +11,8 @@ namespace ChancyBot
 		public string SteamUsername;
 		public string SteamPassword;
         public string DiscordBotToken;
-        public List<uint> AppIDList;
+		public List<uint> AppIDList;
+		public List<string> RepoList;
 
 		// ---------------------------------------------------------------------------------------
 
@@ -27,6 +28,7 @@ namespace ChancyBot
 		public Config()
 		{
             this.AppIDList = new List<uint>();
+            this.RepoList = new List<string>();
 		}
 
 		// Used to load the default configuration if Load() fails.
@@ -39,6 +41,7 @@ namespace ChancyBot
             Config.Instance.DiscordBotToken = "token";
 
             Config.Instance.AppIDList.Add(730); // default add csgo
+            Config.Instance.RepoList.Add("alliedmodders/sourcemod");
 		}
 
 		// Loads the configuration from file.
