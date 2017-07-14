@@ -32,7 +32,15 @@ namespace ChancyBot
         {
             Instance = new Program();
 
-            Instance.MainAsync().GetAwaiter().GetResult();
+            try
+            {
+                Instance.MainAsync().GetAwaiter().GetResult();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Internal error. Ensure settings.xml is configured correctly");
+                Console.ReadKey();
+            }
         }
 
         private async Task MainAsync()
@@ -47,7 +55,8 @@ namespace ChancyBot
 				Config.Default();
                 Console.WriteLine("Please configure Settings.xml! Exiting program...");
                 Environment.Exit(0);
-			}
+                Console.ReadKey();
+            }
 
             Config.Instance.Save();
 
@@ -78,12 +87,6 @@ namespace ChancyBot
                 var manager = new JobManager(25); // seconds to run each job
 
                 manager.AddJob(new SteamCheckJob(connection)); // job to check steam connection
-
-                // add github repositories
-                foreach (string appandrepo in Config.Instance.RepoList)
-                {
-                    manager.AddJob(new GithubJob(appandrepo));
-                }
 
                 // add appids 
 				foreach (uint app in Config.Instance.AppIDList)

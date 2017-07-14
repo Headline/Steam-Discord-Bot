@@ -103,18 +103,12 @@
     <Compile Include="Settings\Settings.cs" />
     <Compile Include="Settings\XmlSerializable.cs" />
     <Compile Include="JobManager\Jobs\SteamCheckJob.cs" />
-    <Compile Include="JobManager\Jobs\GithubJob.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="Settings.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="JobManager\" />
-    <Folder Include="JobManager\Jobs\" />
-    <Folder Include="Steam\" />
-    <Folder Include="Settings\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
