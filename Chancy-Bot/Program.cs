@@ -88,8 +88,14 @@ namespace ChancyBot
 
                 manager.AddJob(new SteamCheckJob(connection)); // job to check steam connection
 
+                manager.AddJob(new GithubUpdateJob("https://github.com/alliedmodders/sourcemod/commits/master.atom", "sourcemod"));
+                manager.AddJob(new GithubUpdateJob("https://github.com/alliedmodders/ambuild/commits/master.atom", "sourcemod"));
+                manager.AddJob(new GithubUpdateJob("https://github.com/alliedmodders/metamod-source/commits/master.atom", "sourcemod"));
+                manager.AddJob(new GithubUpdateJob("https://github.com/alliedmodders/hl2sdk/commits/sdk2013.atom", "sourcemod"));
+
+
                 // add appids 
-				foreach (uint app in Config.Instance.AppIDList)
+                foreach (uint app in Config.Instance.AppIDList)
                 {
                     manager.AddJob(new UpdateJob(app));
                 }

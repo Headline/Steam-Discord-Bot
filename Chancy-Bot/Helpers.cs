@@ -14,7 +14,7 @@ namespace ChancyBot
 
 			foreach (SocketTextChannel channel in guild.TextChannels)
 			{
-				if (channel.Name.Equals("general") || channel.Name.Equals("#general"))
+				if (channel.Name.Contains("announc") || channel.Name.Equals("general") || channel.Name.Equals("#general"))
 				{
 					return channel;
 				}
@@ -38,7 +38,25 @@ namespace ChancyBot
 			}
 		}
 
-		public static string GetAppName(uint appid)
+        public static void SendMessageAllToTarget(string target, string input)
+        {
+            foreach (SocketGuild guild in Program.Instance.client.Guilds) // loop through each discord guild
+            {
+                if (guild.Name.ToLower().Contains(target.ToLower())) // find target 
+                {
+                    SocketTextChannel channel = Helpers.FindGeneralChannel(guild); // find desired channel
+
+                    if (channel != null) // target exists
+                    {
+                        Program.Instance.Log(new LogMessage(LogSeverity.Info, "SendMsg", "Sending msg to: " + channel.Name));
+                        channel.SendMessageAsync(input);
+                    }
+                }
+            }
+        }
+
+
+        public static string GetAppName(uint appid)
 		{
 			var json = new WebClient().DownloadString("http://store.steampowered.com/api/appdetails?appids=" + appid);
 			JObject o = JObject.Parse(json);
