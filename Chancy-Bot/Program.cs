@@ -36,7 +36,7 @@ namespace ChancyBot
             {
                 Instance.MainAsync().GetAwaiter().GetResult();
             }
-            catch (Exception e)
+            catch
             {
                 Console.WriteLine("Internal error. Ensure settings.xml is configured correctly");
                 Console.ReadKey();
@@ -93,7 +93,7 @@ namespace ChancyBot
                 manager.AddJob(new GithubUpdateJob("https://github.com/alliedmodders/metamod-source/commits/master.atom", "sourcemod"));
                 manager.AddJob(new GithubUpdateJob("https://github.com/alliedmodders/hl2sdk/commits/sdk2013.atom", "sourcemod"));
 
-
+                manager.AddJob(new AlliedModdersThreadJob("", "sourcemod"));
                 // add appids 
                 foreach (uint app in Config.Instance.AppIDList)
                 {
