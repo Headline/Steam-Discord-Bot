@@ -1,15 +1,12 @@
 ﻿<Properties StartupConfiguration="{36DE82AA-BDC1-4476-8F24-DF13B5CC4E1A}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Chancy-Bot/JobManager/Jobs/AlliedModdersThreadJob.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Settings/Settings.cs">
     <Files>
-      <File FileName="Chancy-Bot/Program.cs" Line="96" Column="77" />
-      <File FileName="Chancy-Bot/Settings/Settings.cs" Line="1" Column="1" />
-      <File FileName="Chancy-Bot/Settings.xml" Line="1" Column="1" />
-      <File FileName="Chancy-Bot/JobManager/JobManager.cs" Line="1" Column="1" />
-      <File FileName="Chancy-Bot/Commands/AppInfo.cs" Line="37" Column="89" />
-      <File FileName="Chancy-Bot/JobManager/Jobs/UpdateJob.cs" Line="66" Column="39" />
-      <File FileName="Chancy-Bot/JobManager/Jobs/GitHubUpdateJob.cs" Line="98" Column="2" />
-      <File FileName="Chancy-Bot/JobManager/Jobs/AlliedModdersThreadJob.cs" Line="90" Column="2" />
-      <File FileName="Chancy-Bot/Helpers.cs" Line="1" Column="1" />
+      <File FileName="Helpers.cs" Line="20" Column="6" />
+      <File FileName="Properties/AssemblyInfo.cs" Line="22" Column="17" />
+      <File FileName="Settings/Settings.cs" Line="14" Column="31" />
+      <File FileName="Program.cs" Line="76" Column="1" />
+      <File FileName="Settings/XmlSerializable.cs" Line="64" Column="13" />
+      <File FileName="Settings.xml" Line="22" Column="10" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
