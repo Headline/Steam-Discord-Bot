@@ -48,8 +48,8 @@ namespace ChancyBot.Jobs
 				{
                     Helpers.SendMessageAllToTarget(target, "New AlliedModders plugin: " + current.title + "\n"
 						+ current.link);
-					commit = current;
 				}
+				commit = current;
 			}
 		}
 	}
