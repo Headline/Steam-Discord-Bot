@@ -17,11 +17,13 @@ namespace ChancyBot.Jobs
 {
 	public class AlliedModdersThreadJob : Job
 	{
-        ThreadInfo commit;
+        ThreadInfoList history;
 		string url;
 		string target;
+
 		public AlliedModdersThreadJob(string url, string target)
 		{
+            this.history = new ThreadInfoList();
 			this.target = target;
 			this.url = url;
 		}
@@ -38,21 +40,34 @@ namespace ChancyBot.Jobs
 
 			ThreadInfo current = new ThreadInfo(feed);
 
-			if (commit == null) // first fetch
+			if (history.Count == 0) // first fetch
 			{
-				commit = current;
+                history.Add(current);
 			}
 			else
 			{
-				if (!commit.Equals(current))
+				if (!history.Exists(x => x.Equals(current)))
 				{
                     Helpers.SendMessageAllToTarget(target, "New AlliedModders plugin: " + current.title + "\n"
 						+ current.link);
+                    history.Add(current);
 				}
-				commit = current;
 			}
 		}
 	}
+
+    class ThreadInfoList: List<ThreadInfo>
+    {
+        public void AddIfNotExists(ThreadInfo thread)
+        {
+            bool exists = this.Exists(x => x.Equals(thread));
+
+            if (!exists)
+            {
+                this.Add(thread);
+            }
+        }
+    }
 
     class ThreadInfo
     {
@@ -74,17 +89,17 @@ namespace ChancyBot.Jobs
 
         public override bool Equals(object obj)
         {
-            if (obj == null || !(obj is ThreadInfo))
-            {
-                return false;
-            }
-            else
-            {
-                ThreadInfo commit2 = (ThreadInfo)obj;
-                return (commit2.title.Equals(this.title)
-                    && commit2.link.Equals(this.link)
-                    && commit2.description.Equals(this.description));
-            }
+            if (obj == null) return false;
+            ThreadInfo compObj = obj as ThreadInfo;
+            if (compObj == null) return false;
+            else return Equals(compObj);
+        }
+
+        public bool Equals(ThreadInfo commit2)
+        {
+            return (commit2.title.Equals(this.title)
+                && commit2.link.Equals(this.link)
+                && commit2.description.Equals(this.description));
         }
     }
 }
