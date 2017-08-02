@@ -6,6 +6,8 @@ using SteamKit2;
 using Discord;
 
 using ChancyBot.Steam;
+using System.Threading;
+
 namespace ChancyBot.Jobs
 {
 	public class SteamCheckJob : Job
@@ -23,7 +25,12 @@ namespace ChancyBot.Jobs
             {
 				Program.Instance.Log(new LogMessage(LogSeverity.Info, "SteamCheck", "Steam connection was disconnected. Rebooting..."));
 
-                connection.Connect();
+                // Connect to steam and pump callbacks 
+                connection = new SteamConnection(Config.Instance.SteamUsername, Config.Instance.SteamPassword);
+                new Thread(new ThreadStart(() =>
+                {
+                    connection.Connect();
+                })).Start();
             }
 		}
 	}

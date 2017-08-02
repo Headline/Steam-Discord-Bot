@@ -10,25 +10,16 @@ namespace ChancyBot.Jobs
 	public class UpdateJob : Job
 	{
 		private uint version;
-		private bool hasLastVersion;
 		private uint appid;
 
 		public UpdateJob(uint appid)
 		{
+            this.version = 0;
 			this.appid = appid;
-
-			this.hasLastVersion = false;
 		}
 
 		public override void OnRun()
 		{
-			uint lastVersion = 0;
-
-			if (hasLastVersion)
-			{
-				lastVersion = this.version;
-			}
-
 			using (dynamic steamApps = WebAPI.GetInterface("ISteamApps"))
 			{
 				steamApps.Timeout = (int)TimeSpan.FromSeconds(30).TotalMilliseconds;
@@ -37,7 +28,7 @@ namespace ChancyBot.Jobs
 
 				try
 				{
-					results = steamApps.UpToDateCheck(appid: appid, version: lastVersion);
+					results = steamApps.UpToDateCheck(appid: appid, version: this.version);
 				}
 				catch (WebException ex)
 				{
@@ -57,20 +48,15 @@ namespace ChancyBot.Jobs
 				if ((int)requiredVersion == -1)
 					return; // some apps are incorrectly configured and don't report a required version
 
-				if (!results["up_to_date"].AsBoolean())
+				if (this.version != requiredVersion && this.version != 0)
 				{
-					if (this.hasLastVersion)
-					{
-						// if we previously cached the version, display that it changed
-						Program.Instance.Log(new LogMessage(LogSeverity.Info, "UpdateCheck", string.Format("{0} (version: {1}) is no longer up to date. New version: {2}", Helpers.GetAppName(appid), lastVersion, requiredVersion)));
-						Helpers.SendMessageAllToGenerals(string.Format("{0} (version: {1}) is no longer up to date. New version: {2} \nLearn more: {3}", Helpers.GetAppName(appid), lastVersion, requiredVersion, ("https://steamdb.info/patchnotes/?appid=" + appid)));
-					}
+					// if we previously cached the version, display that it changed
+					Program.Instance.Log(new LogMessage(LogSeverity.Info, "UpdateCheck", string.Format("{0} (version: {1}) is no longer up to date. New version: {2}", Helpers.GetAppName(appid), this.version, requiredVersion)));
+					Helpers.SendMessageAllToGenerals(string.Format("{0} (version: {1}) is no longer up to date. New version: {2} \nLearn more: {3}", Helpers.GetAppName(appid), this.version, requiredVersion, ("https://steamdb.info/patchnotes/?appid=" + appid)));
+            	}
 
-					// update our cache of required version
-					this.version = requiredVersion;
-					this.hasLastVersion = true;
-				}
-			}
-		}
+                this.version = requiredVersion;
+            }
+        }
 	}
 }
