@@ -97,9 +97,7 @@ namespace ChancyBot.Jobs
 
         public bool Equals(ThreadInfo commit2)
         {
-            return (commit2.title.Equals(this.title)
-                && commit2.link.Equals(this.link)
-                && commit2.description.Equals(this.description));
+            return commit2.link.Equals(this.link);
         }
     }
 }
