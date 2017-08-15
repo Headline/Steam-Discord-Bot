@@ -74,7 +74,7 @@ namespace ChancyBot
 		}
 
         // Sends a message to a targeted discord guild
-        public static void SendMessageAllToTarget(string target, string input)
+        public static async void SendMessageAllToTarget(string target, string input)
         {
             foreach (SocketGuild guild in Program.Instance.client.Guilds) // loop through each discord guild
             {
@@ -84,8 +84,8 @@ namespace ChancyBot
 
                     if (channel != null) // target exists
                     {
-                        Program.Instance.Log(new LogMessage(LogSeverity.Info, "SendMsg", "Sending msg to: " + channel.Name));
-                        channel.SendMessageAsync(input);
+                        await Program.Instance.Log(new LogMessage(LogSeverity.Info, "SendMsg", "Sending msg to: " + channel.Name));
+                        await channel.SendMessageAsync(input);
                     }
                 }
             }

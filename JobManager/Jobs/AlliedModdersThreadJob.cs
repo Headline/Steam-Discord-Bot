@@ -17,13 +17,13 @@ namespace ChancyBot.Jobs
 {
 	public class AlliedModdersThreadJob : Job
 	{
-        ThreadInfoList history;
+        List<ThreadInfo> history;
 		string url;
 		string target;
 
 		public AlliedModdersThreadJob(string url, string target)
 		{
-            this.history = new ThreadInfoList();
+            this.history = new List<ThreadInfo>();
 			this.target = target;
 			this.url = url;
 		}
@@ -48,26 +48,13 @@ namespace ChancyBot.Jobs
 			{
 				if (!history.Exists(x => x.Equals(current)))
 				{
-                    Helpers.SendMessageAllToTarget(target, "New AlliedModders plugin: " + current.title + "\n"
-						+ current.link);
+                    Task.Run(() => Helpers.SendMessageAllToTarget(target, "New AlliedModders plugin: " + current.title + "\n"
+						+ current.link));
                     history.Add(current);
 				}
 			}
 		}
 	}
-
-    class ThreadInfoList: List<ThreadInfo>
-    {
-        public void AddIfNotExists(ThreadInfo thread)
-        {
-            bool exists = this.Exists(x => x.Equals(thread));
-
-            if (!exists)
-            {
-                this.Add(thread);
-            }
-        }
-    }
 
     class ThreadInfo
     {
