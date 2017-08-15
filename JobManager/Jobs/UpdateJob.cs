@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 
-using ChancyBot;
 using SteamKit2;
 using Discord;
 using System.Threading.Tasks;

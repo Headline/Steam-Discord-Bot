@@ -1,9 +1,4 @@
-﻿using System;
-using System.Net;
-
-using ChancyBot;
-using SteamKit2;
-using Discord;
+﻿using Discord;
 
 using ChancyBot.Steam;
 using System.Threading;

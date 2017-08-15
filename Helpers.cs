@@ -1,10 +1,11 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
+using System.Linq;
+using System.Collections.Generic;
+
 using Discord;
 using Discord.WebSocket;
+
 using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ChancyBot
 {
