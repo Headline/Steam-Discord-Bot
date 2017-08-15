@@ -12,6 +12,7 @@ namespace ChancyBot.Jobs
         CommitInfo commit;
         string url;
         string target;
+
         public GithubUpdateJob(string url, string target)
         {
             this.target = target;
