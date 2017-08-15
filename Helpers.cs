@@ -3,31 +3,66 @@ using System.Net;
 using Discord;
 using Discord.WebSocket;
 using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ChancyBot
 {
     public class Helpers
     {
-		public static SocketTextChannel FindGeneralChannel(SocketGuild guild)
+        public static readonly string[] sendchannels = { "announc", "general" };
+
+        public static int GuildHasChannel(IReadOnlyCollection<SocketTextChannel> channels, string channelName)
+        {
+            bool found = false;
+            int index = 0;
+            
+            while (!found && index < channels.Count)
+            {
+                if (channels.ElementAt(index).Name.Contains(channelName))
+                {
+                    found = true;
+                }
+                else
+                {
+                    index++;
+                }
+            }
+
+            return (found)?index:-1;
+        }
+
+        // Using the static channels array, it finds the first matching channel to send the message to.
+        // The order of channels in sendchannels array matters.
+		public static SocketTextChannel FindSendChannel(SocketGuild guild)
 		{
-			Program.Instance.Log(new LogMessage(LogSeverity.Info, "SendMsg", "Trying to find #general in: " + guild.Name));
+			Program.Instance.Log(new LogMessage(LogSeverity.Info, "SendMsg", "Trying to find sendable channel in: " + guild.Name));
 
-			foreach (SocketTextChannel channel in guild.TextChannels)
-			{
-				if (channel.Name.Contains("announc") || channel.Name.Equals("general") || channel.Name.Equals("#general"))
-				{
-					return channel;
-				}
-			}
+            int i = 0;
+            int index = -1;
+            bool found = false;
+            while (!found && i < sendchannels.Length)
+            {
+                index = GuildHasChannel(guild.TextChannels, sendchannels[i]);
+                if (index != -1)
+                {
+                    found = true;
+                }
+                else
+                {
+                    i++;
+                }
+            }
 
-			return null;
-		}
-
-		public async static void SendMessageAllToGenerals(string input)
+            return (found && index != -1) ? guild.TextChannels.ElementAt(index) : null;
+        }
+        
+        // Sends mass message to all discord guilds the bot is connected to.
+        public async static void SendMessageAllToGenerals(string input)
 		{
 			foreach (SocketGuild guild in Program.Instance.client.Guilds) // loop through each discord guild
 			{
-				SocketTextChannel channel = Helpers.FindGeneralChannel(guild); // find #general
+				SocketTextChannel channel = Helpers.FindSendChannel(guild); // find #general
 
 				await Program.Instance.Log(new LogMessage(LogSeverity.Info, "SendMsg", "Sending msg to: " + channel.Name));
 
@@ -38,13 +73,14 @@ namespace ChancyBot
 			}
 		}
 
+        // Sends a message to a targeted discord guild
         public static void SendMessageAllToTarget(string target, string input)
         {
             foreach (SocketGuild guild in Program.Instance.client.Guilds) // loop through each discord guild
             {
                 if (guild.Name.ToLower().Contains(target.ToLower())) // find target 
                 {
-                    SocketTextChannel channel = Helpers.FindGeneralChannel(guild); // find desired channel
+                    SocketTextChannel channel = Helpers.FindSendChannel(guild); // find desired channel
 
                     if (channel != null) // target exists
                     {
