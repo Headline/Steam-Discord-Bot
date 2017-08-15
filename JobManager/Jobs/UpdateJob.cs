@@ -4,6 +4,7 @@ using System.Net;
 using ChancyBot;
 using SteamKit2;
 using Discord;
+using System.Threading.Tasks;
 
 namespace ChancyBot.Jobs
 {
@@ -18,7 +19,7 @@ namespace ChancyBot.Jobs
 			this.appid = appid;
 		}
 
-		public override void OnRun()
+		public async override void OnRun()
 		{
 			using (dynamic steamApps = WebAPI.GetInterface("ISteamApps"))
 			{
@@ -51,11 +52,14 @@ namespace ChancyBot.Jobs
 				if (this.version != requiredVersion && this.version != 0)
 				{
 					// if we previously cached the version, display that it changed
-					Program.Instance.Log(new LogMessage(LogSeverity.Info, "UpdateCheck", string.Format("{0} (version: {1}) is no longer up to date. New version: {2}", Helpers.GetAppName(appid), this.version, requiredVersion)));
-					Helpers.SendMessageAllToGenerals(string.Format("{0} (version: {1}) is no longer up to date. New version: {2} \nLearn more: {3}", Helpers.GetAppName(appid), this.version, requiredVersion, ("https://steamdb.info/patchnotes/?appid=" + appid)));
-            	}
-
-                this.version = requiredVersion;
+					await Program.Instance.Log(new LogMessage(LogSeverity.Info, "UpdateCheck", string.Format("{0} (version: {1}) is no longer up to date. New version: {2}", Helpers.GetAppName(appid), this.version, requiredVersion)));
+					await Task.Run(() => Helpers.SendMessageAllToGenerals(string.Format("{0} (version: {1}) is no longer up to date. New version: {2} \nLearn more: {3}", Helpers.GetAppName(appid), this.version, requiredVersion, ("https://steamdb.info/patchnotes/?appid=" + appid))));
+                    this.version = 0;
+                }
+                else
+                {
+                    this.version = requiredVersion;
+                }
             }
         }
 	}

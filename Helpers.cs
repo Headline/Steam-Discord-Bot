@@ -23,17 +23,17 @@ namespace ChancyBot
 			return null;
 		}
 
-		public static void SendMessageAllToGenerals(string input)
+		public async static void SendMessageAllToGenerals(string input)
 		{
 			foreach (SocketGuild guild in Program.Instance.client.Guilds) // loop through each discord guild
 			{
 				SocketTextChannel channel = Helpers.FindGeneralChannel(guild); // find #general
 
-				Program.Instance.Log(new LogMessage(LogSeverity.Info, "SendMsg", "Sending msg to: " + channel.Name));
+				await Program.Instance.Log(new LogMessage(LogSeverity.Info, "SendMsg", "Sending msg to: " + channel.Name));
 
 				if (channel != null) // #general exists
 				{
-					channel.SendMessageAsync(input);
+					await channel.SendMessageAsync(input);
 				}
 			}
 		}

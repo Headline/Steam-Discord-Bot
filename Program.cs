@@ -84,7 +84,7 @@ namespace ChancyBot
             // Handle Jobs
 			new Thread(new ThreadStart(() =>
             {
-                var manager = new JobManager(25); // seconds to run each job
+                var manager = new JobManager(120); // seconds to run each job
 
                 manager.AddJob(new SteamCheckJob(connection)); // job to check steam connection
 
