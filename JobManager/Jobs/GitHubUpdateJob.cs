@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Discord;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using System.Net;
-
+using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace ChancyBot.Jobs
@@ -28,27 +30,34 @@ namespace ChancyBot.Jobs
 
         public override void OnRun()
         {
-            string xml = new WebClient().DownloadString(this.url);
-            XDocument doc = XDocument.Parse(xml);
-            XNamespace ns = "http://www.w3.org/2005/Atom/";
-
-            var feed = doc.Descendants().ElementAt(0).Descendants().Elements();
-
-            CommitInfo current = new CommitInfo(feed);
-            
-            if (commit == null) // first fetch
+            try
             {
-                commit = current;
-            }
-            else
-            {
-                if (!commit.Equals(current))
+                string xml = new WebClient().DownloadString(this.url);
+                XDocument doc = XDocument.Parse(xml);
+                XNamespace ns = "http://www.w3.org/2005/Atom/";
+
+                var feed = doc.Descendants().ElementAt(0).Descendants().Elements();
+
+                CommitInfo current = new CommitInfo(feed);
+
+                if (commit == null) // first fetch
                 {
-                    Helpers.SendMessageAllToTarget(target, "New GitHub Update on: " + this.GetRepo() + "\n"
-                        + current.ToString() + "\n"
-                        + current.url);
                     commit = current;
                 }
+                else
+                {
+                    if (!commit.Equals(current))
+                    {
+                        Task.Run(() => Helpers.SendMessageAllToTarget(target, "New GitHub Update on: " + this.GetRepo() + "\n"
+                            + current.ToString() + "\n"
+                            + current.url));
+                        commit = current;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Program.Instance.Log(new LogMessage(LogSeverity.Error, "GithubUpdateJob", ex.Message));
             }
         }
     }

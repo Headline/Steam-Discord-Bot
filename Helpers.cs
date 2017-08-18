@@ -6,6 +6,7 @@ using Discord;
 using Discord.WebSocket;
 
 using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
 
 namespace ChancyBot
 {
@@ -37,8 +38,6 @@ namespace ChancyBot
         // The order of channels in sendchannels array matters.
 		public static SocketTextChannel FindSendChannel(SocketGuild guild)
 		{
-			Program.Instance.Log(new LogMessage(LogSeverity.Info, "SendMsg", "Trying to find sendable channel in: " + guild.Name));
-
             int i = 0;
             int index = -1;
             bool found = false;
@@ -61,7 +60,9 @@ namespace ChancyBot
         // Sends mass message to all discord guilds the bot is connected to.
         public async static void SendMessageAllToGenerals(string input)
 		{
-			foreach (SocketGuild guild in Program.Instance.client.Guilds) // loop through each discord guild
+            Program.Instance.Log(new LogMessage(LogSeverity.Info, "SendMessageAll", "Text: " + input));
+
+            foreach (SocketGuild guild in Program.Instance.client.Guilds) // loop through each discord guild
 			{
 				SocketTextChannel channel = Helpers.FindSendChannel(guild); // find #general
 
@@ -77,6 +78,8 @@ namespace ChancyBot
         // Sends a message to a targeted discord guild
         public static async void SendMessageAllToTarget(string target, string input)
         {
+            Program.Instance.Log(new LogMessage(LogSeverity.Info, "SendMessageTarget", "MSG To "+ target + ": " + input));
+
             foreach (SocketGuild guild in Program.Instance.client.Guilds) // loop through each discord guild
             {
                 if (guild.Name.ToLower().Contains(target.ToLower())) // find target 
@@ -85,7 +88,6 @@ namespace ChancyBot
 
                     if (channel != null) // target exists
                     {
-                        await Program.Instance.Log(new LogMessage(LogSeverity.Info, "SendMsg", "Sending msg to: " + channel.Name));
                         await channel.SendMessageAsync(input);
                     }
                 }

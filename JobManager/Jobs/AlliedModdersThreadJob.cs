@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using System.Net;
 
 using System.Xml.Linq;
+using System;
+using Discord;
 
 namespace ChancyBot.Jobs
 {
@@ -23,29 +25,36 @@ namespace ChancyBot.Jobs
 
 		public override void OnRun()
 		{
-			string xml = new WebClient().DownloadString(this.url);
-			XDocument doc = XDocument.Parse(xml);
-			XNamespace ns = "http://www.w3.org/2005/Atom/";
+            try
+            {
+                string xml = new WebClient().DownloadString(this.url);
+                XDocument doc = XDocument.Parse(xml);
+                XNamespace ns = "http://www.w3.org/2005/Atom/";
 
-            var mainfeed = doc.Descendants().ElementAt(0).Descendants().Elements();
+                var mainfeed = doc.Descendants().ElementAt(0).Descendants().Elements();
 
-            var feed = mainfeed.Where(x => x.Name.ToString().Contains("item")).First().Elements();
+                var feed = mainfeed.Where(x => x.Name.ToString().Contains("item")).First().Elements();
 
-			ThreadInfo current = new ThreadInfo(feed);
+                ThreadInfo current = new ThreadInfo(feed);
 
-			if (history.Count == 0) // first fetch
-			{
-                history.Add(current);
-			}
-			else
-			{
-				if (!history.Exists(x => x.Equals(current)))
-				{
-                    Task.Run(() => Helpers.SendMessageAllToTarget(target, "New AlliedModders plugin: " + current.title + "\n"
-						+ current.link));
+                if (history.Count == 0) // first fetch
+                {
                     history.Add(current);
-				}
-			}
+                }
+                else
+                {
+                    if (!history.Exists(x => x.Equals(current)))
+                    {
+                        Task.Run(() => Helpers.SendMessageAllToTarget(target, "New AlliedModders plugin: " + current.title + "\n"
+                            + current.link));
+                        history.Add(current);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Program.Instance.Log(new LogMessage(LogSeverity.Error, "GithubUpdateJob", ex.Message));
+            }
 		}
 	}
 

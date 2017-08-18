@@ -42,6 +42,7 @@ namespace ChancyBot.Jobs
         // thread method
         private void RunJubs(object source, ElapsedEventArgs e)
         {
+            Program.Instance.Log(new LogMessage(LogSeverity.Error, "RunJobs", "Running jobs..."));
             foreach (Job job in jobs)
             {
                 job.OnRun();
