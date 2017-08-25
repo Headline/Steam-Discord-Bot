@@ -23,7 +23,7 @@ namespace ChancyBot.Jobs
 			this.url = url;
 		}
 
-		public override void OnRun()
+		public async override void OnRun()
 		{
             try
             {
@@ -45,7 +45,7 @@ namespace ChancyBot.Jobs
                 {
                     if (!history.Exists(x => x.Equals(current)))
                     {
-                        Task.Run(() => Helpers.SendMessageAllToTarget(target, "New AlliedModders plugin: " + current.title + "\n"
+                        await Task.Run(() => Helpers.SendMessageAllToTarget(target, "New AlliedModders plugin: " + current.title + "\n"
                             + current.link));
                         history.Add(current);
                     }
@@ -53,7 +53,7 @@ namespace ChancyBot.Jobs
             }
             catch (Exception ex)
             {
-                Program.Instance.Log(new LogMessage(LogSeverity.Error, "GithubUpdateJob", ex.Message));
+                await Program.Instance.Log(new LogMessage(LogSeverity.Error, "GithubUpdateJob", ex.Message));
             }
 		}
 	}
@@ -87,6 +87,11 @@ namespace ChancyBot.Jobs
         public bool Equals(ThreadInfo commit2)
         {
             return commit2.link.Equals(this.link);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }

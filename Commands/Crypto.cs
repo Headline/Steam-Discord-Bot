@@ -38,8 +38,7 @@ namespace ChancyBot.Commands
                 JObject obj = JObject.Parse(json);
                 string price = (string)obj["USD"];
 
-                double dPrice;
-                double.TryParse(price, out dPrice);
+                double.TryParse(price, out double dPrice);
 
                 await Context.Channel.SendMessageAsync("Current Bitcoin Trading Value for " +  amount + "btc (USD): " + dPrice * amount);
             }
@@ -84,8 +83,7 @@ namespace ChancyBot.Commands
                 JObject obj = JObject.Parse(json);
                 string price = (string)obj["USD"];
 
-                double dPrice;
-                double.TryParse(price, out dPrice);
+                double.TryParse(price, out double dPrice);
 
                 await Context.Channel.SendMessageAsync("Current Ethereum Trading Value for " + amount + "eth (USD): " + (dPrice * amount));
             }

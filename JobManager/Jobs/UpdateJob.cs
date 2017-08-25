@@ -28,16 +28,16 @@ namespace ChancyBot.Jobs
 
 				try
 				{
-					results = steamApps.UpToDateCheck(appid: appid, version: this.version);
+					results = steamApps.UpToDateCheck(appid: appid, version: 0);
 				}
 				catch (WebException ex)
 				{
 					if (ex.Status != WebExceptionStatus.Timeout)
 					{
-						//Log.WriteWarn("UpToDateJob", "Unable to make UpToDateCheck request: {0}", ex.Message);
-					}
+                        await Program.Instance.Log(new LogMessage(LogSeverity.Warning, "UpdateCheck", string.Format("Unable to make UpToDateCheck request: {0}", ex.Message)));
+                    }
 
-					return;
+                    return;
 				}
 
 				if (!results["success"].AsBoolean())
@@ -48,17 +48,13 @@ namespace ChancyBot.Jobs
 				if ((int)requiredVersion == -1)
 					return; // some apps are incorrectly configured and don't report a required version
 
-				if (this.version != requiredVersion && this.version != 0)
-				{
-					// if we previously cached the version, display that it changed
-					await Program.Instance.Log(new LogMessage(LogSeverity.Info, "UpdateCheck", string.Format("{0} (version: {1}) is no longer up to date. New version: {2}", Helpers.GetAppName(appid), this.version, requiredVersion)));
-					await Task.Run(() => Helpers.SendMessageAllToGenerals(string.Format("{0} (version: {1}) is no longer up to date. New version: {2} \nLearn more: {3}", Helpers.GetAppName(appid), this.version, requiredVersion, ("https://steamdb.info/patchnotes/?appid=" + appid))));
-                    this.version = 0;
-                }
-                else
+                if (this.version != requiredVersion && this.version != 0)
                 {
-                    this.version = requiredVersion;
+                    await Program.Instance.Log(new LogMessage(LogSeverity.Info, "UpdateCheck", string.Format("{0} (version: {1}) is no longer up to date. New version: {2}", Helpers.GetAppName(appid), this.version, requiredVersion)));
+                    await Task.Run(() => Helpers.SendMessageAllToGenerals(string.Format("{0} (version: {1}) is no longer up to date. New version: {2} \nLearn more: {3}", Helpers.GetAppName(appid), this.version, requiredVersion, ("https://steamdb.info/patchnotes/?appid=" + appid))));
                 }
+
+                this.version = requiredVersion;
             }
         }
 	}

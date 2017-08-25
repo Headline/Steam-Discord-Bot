@@ -96,5 +96,10 @@ namespace ChancyBot.Jobs
                      && commit.author.Equals(this.author));
             }
         }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

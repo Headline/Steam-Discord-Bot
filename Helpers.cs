@@ -60,13 +60,13 @@ namespace ChancyBot
         // Sends mass message to all discord guilds the bot is connected to.
         public async static void SendMessageAllToGenerals(string input)
 		{
-            Program.Instance.Log(new LogMessage(LogSeverity.Info, "SendMessageAll", "Text: " + input));
+            await Program.Instance.Log(new LogMessage(LogSeverity.Info, "SendMessageAll", "Text: " + input));
 
             foreach (SocketGuild guild in Program.Instance.client.Guilds) // loop through each discord guild
 			{
 				SocketTextChannel channel = Helpers.FindSendChannel(guild); // find #general
 
-				await Program.Instance.Log(new LogMessage(LogSeverity.Info, "SendMsg", "Sending msg to: " + channel.Name));
+                await Program.Instance.Log(new LogMessage(LogSeverity.Info, "SendMsg", "Sending msg to: " + channel.Name));
 
 				if (channel != null) // #general exists
 				{
@@ -78,7 +78,7 @@ namespace ChancyBot
         // Sends a message to a targeted discord guild
         public static async void SendMessageAllToTarget(string target, string input)
         {
-            Program.Instance.Log(new LogMessage(LogSeverity.Info, "SendMessageTarget", "MSG To "+ target + ": " + input));
+            await Program.Instance.Log(new LogMessage(LogSeverity.Info, "SendMessageTarget", "MSG To "+ target + ": " + input));
 
             foreach (SocketGuild guild in Program.Instance.client.Guilds) // loop through each discord guild
             {
