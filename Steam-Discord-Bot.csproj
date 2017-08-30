@@ -93,6 +93,7 @@
     <Compile Include="Commands\NumPlayers.cs" />
     <Compile Include="Commands\NumServers.cs" />
     <Compile Include="Commands\Pony.cs" />
+    <Compile Include="Commands\Dice.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="JobManager\JobManager.cs" />
     <Compile Include="JobManager\Jobs\AlliedModdersThreadJob.cs" />
