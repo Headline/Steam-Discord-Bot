@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Chancy-Bot")]
+[assembly: AssemblyTitle("Steam-Discord-Bot")]
 [assembly: AssemblyDescription("A Ateam focused Discord bot.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Michael Flaherty")]
-[assembly: AssemblyProduct("Chancy-Bot")]
+[assembly: AssemblyProduct("Steam-Discord-Bot")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
