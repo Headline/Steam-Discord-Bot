@@ -16,7 +16,13 @@ namespace ChancyBot.Commands
         [Command("help"), Summary("Prints and formats all commands.")]
         public async Task Say()
         {
-            await Context.Channel.SendMessageAsync("No.");
+            string message = "";
+            foreach(string line in Program.Instance.helpLines)
+            {
+                message += line + "\n";
+            }
+
+            await Context.Channel.SendMessageAsync(message);
         }
     }
 }

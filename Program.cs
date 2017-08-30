@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 using ChancyBot.Jobs;
 using ChancyBot.Steam;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace ChancyBot
 {
@@ -18,6 +20,7 @@ namespace ChancyBot
     {
         // STEAM
         public SteamConnection connection;
+        public string[] helpLines;
 
         // DISCORD
         public DiscordSocketClient client;
@@ -113,8 +116,40 @@ namespace ChancyBot
         {
             client.MessageReceived += HandleCommand;
             await commands.AddModulesAsync(Assembly.GetEntryAssembly());
+
+            helpLines = BuildHelpLines();
         }
 
+        public string[] BuildHelpLines()
+        {
+            List<string> arrayList = new List<string>();
+
+            Assembly asm = Assembly.GetExecutingAssembly(); // Get assembly
+
+            var results = from type in asm.GetTypes()
+                          where typeof(ModuleBase).IsAssignableFrom(type)
+                          select type; // Grab all types that inherit ModuleBase
+
+            foreach (Type t in results) // For each type in results
+            {
+                /* Grab MethodInfo of the type where the method has the attribute SummaryAttribute */
+                MethodInfo info = t.GetMethods().Where(x => x.GetCustomAttributes(typeof(SummaryAttribute), false).Length > 0).First();
+
+                /* Grab summary attribute */
+                SummaryAttribute summary = info.GetCustomAttribute(typeof(SummaryAttribute)) as SummaryAttribute;
+
+                /* Grab command attribute */
+                CommandAttribute command = info.GetCustomAttribute(typeof(CommandAttribute)) as CommandAttribute;
+
+                /* Both objects are non null, valid, so lets grab the attribute text */
+                if (summary != null && command != null)
+                {
+                    arrayList.Add("!" + command.Text + " - " + summary.Text);
+                }
+            }
+
+            return arrayList.ToArray(); // return string[] array
+        }
         public async Task HandleCommand(SocketMessage messageParam)
         {
             var message = messageParam as SocketUserMessage;
@@ -123,6 +158,8 @@ namespace ChancyBot
             int argPos = 0;
 
             if (!(message.HasCharPrefix('!', ref argPos) || message.HasMentionPrefix(client.CurrentUser, ref argPos))) return;
+
+            if (message.Author.IsBot) return;
 
             var context = new CommandContext(client, message);
 
