@@ -13,7 +13,7 @@ namespace ChancyBot.Commands
 {
 	public class DiceCommand : ModuleBase
 	{
-		[Command("roll"), Summary("rolls a dice of arbitrary size.")]
+		[Command("roll"), Summary("rolls a dice of arbitrary size. (d6, d10, d20, d50, d100)"]
 		public async Task Say(string arg)
 		{
 			Random rand = new Random();
