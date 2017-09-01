@@ -28,28 +28,6 @@ namespace ChancyBot.Commands
                 await Context.Channel.SendMessageAsync("Internal Error: " + ex.Message);
             }
         }
-
-        [Command("btc"), Summary("Fetches the latest Bitcoin market value.")]
-        public async Task Say(double amount)
-        {
-            try
-            {
-                var json = new WebClient().DownloadString("https://min-api.cryptocompare.com/data/price?fsym=BTC&tsyms=USD");
-                JObject obj = JObject.Parse(json);
-                string price = (string)obj["USD"];
-
-                double.TryParse(price, out double dPrice);
-
-                await Context.Channel.SendMessageAsync("Current Bitcoin Trading Value for " +  amount + "btc (USD): " + dPrice * amount);
-            }
-            catch (Exception ex)
-            {
-                await ChancyBot.Program.Instance.Log(new Discord.LogMessage(Discord.LogSeverity.Error, "Ethereum", ex.Message));
-
-                await Context.Channel.SendMessageAsync("Internal Error: " + ex.Message);
-            }
-        }
-
     }
 
     public class EthereumCommand : ModuleBase
@@ -68,28 +46,6 @@ namespace ChancyBot.Commands
             catch (Exception ex)
             {
                 await ChancyBot.Program.Instance.Log(new Discord.LogMessage(Discord.LogSeverity.Error, "Bitcoin", ex.Message));
-
-                await Context.Channel.SendMessageAsync("Internal Error: " + ex.Message);
-            }
-        } 
-
-
-        [Command("btc"), Summary("Fetches the latest Bitcoin market value.")]
-        public async Task Say(double amount)
-        {
-            try
-            {
-                var json = new WebClient().DownloadString("https://min-api.cryptocompare.com/data/price?fsym=BTC&tsyms=USD");
-                JObject obj = JObject.Parse(json);
-                string price = (string)obj["USD"];
-
-                double.TryParse(price, out double dPrice);
-
-                await Context.Channel.SendMessageAsync("Current Ethereum Trading Value for " + amount + "eth (USD): " + (dPrice * amount));
-            }
-            catch (Exception ex)
-            {
-                await ChancyBot.Program.Instance.Log(new Discord.LogMessage(Discord.LogSeverity.Error, "Ethereum", ex.Message));
 
                 await Context.Channel.SendMessageAsync("Internal Error: " + ex.Message);
             }
