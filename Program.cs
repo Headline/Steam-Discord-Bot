@@ -21,7 +21,7 @@ namespace ChancyBot
         // STEAM
         public SteamConnection connection;
         public string[] helpLines;
-
+        public JobManager manager;
         // DISCORD
         public DiscordSocketClient client;
         private CommandService commands;
@@ -83,10 +83,10 @@ namespace ChancyBot
             })).Start();
 
             // Handle Jobs
-			new Thread(new ThreadStart(() =>
-            {
-                var manager = new JobManager(30); // seconds to run each job
+            manager = new JobManager(30); // seconds to run each job
 
+            new Thread(new ThreadStart(() =>
+            {
                 // Calls updater.py when out of date
                 manager.AddJob(new SelfUpdateListener("https://github.com/Headline22/Steam-Discord-Bot/commits/master.atom"));
 

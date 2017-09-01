@@ -32,16 +32,23 @@ namespace ChancyBot.Jobs
             timer.Start();
         }
 
+        public void KillJobs()
+        {
+            timer.Stop();
+            timer.Dispose();
+        }
+
         // constructor
         public JobManager(int seconds)
         {
             this.jobs = new List<Job>();
             timer = new Timer(seconds * 1000);
-            timer.Elapsed += RunJubs;
+            timer.Elapsed += RunJobs;
         }
 
+
         // thread method
-        private void RunJubs(object source, ElapsedEventArgs e)
+        private void RunJobs(object source, ElapsedEventArgs e)
         {
             Program.Instance.Log(new LogMessage(LogSeverity.Error, "RunJobs", "Running jobs..."));
             foreach (Job job in jobs)

@@ -61,8 +61,14 @@ namespace ChancyBot.Jobs
                                                                         pid,
                                                                         url);
 
-                        Thread.Sleep(60000); // wait one minute for build to complete.
+                        Program.Instance.Log(new LogMessage(LogSeverity.Error, "SelfUpdateListener", "Update detected. Killing jobs..."));
+                        Program.Instance.manager.KillJobs();
+                        Program.Instance.Log(new LogMessage(LogSeverity.Error, "SelfUpdateListener", "Waiting for build completion..."));
+
+                        Thread.Sleep(180 * 1000); // wait 3 minute for build to complete.
                         Process.Start("CMD.exe", command);
+                        Program.Instance.Log(new LogMessage(LogSeverity.Error, "SelfUpdateListener", "Executing updater & exiting..."));
+
                         Environment.Exit(0);
                     }
                 }
