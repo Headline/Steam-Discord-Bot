@@ -13,22 +13,12 @@ namespace ChancyBot.Commands
 {
 	public class DiceCommand : ModuleBase
 	{
-		[Command("roll"), Summary("rolls a dice of arbitrary size. (d6, d10, d20, d50, d100)")]
-		public async Task Say(string arg)
+		[Command("roll"), Summary("rolls a dice of arbitrary size. (example: \'!roll 33\' rolls a 33-sided die)")]
+		public async Task Say(string argSize)
 		{
 			Random rand = new Random();
-			int num = 0;
-			if( arg.Equals("d6") )
-				num = rand.Next(1, 6);
-			else if( arg.Equals("d10") )
-				num = rand.Next(1, 10);
-			else if( arg.Equals("d20") )
-				num = rand.Next(1, 20);
-			else if( arg.Equals("d50") )
-				num = rand.Next(1, 50);
-			else if( arg.Equals("d100") )
-				num = rand.Next(1, 100);
-			
+			uint num = 0;
+			num = (uint) rand.Next(1, (int) Convert.ToUInt32(argSize, 10));
 			await Context.Channel.SendMessageAsync("you rolled a "+num);
 		}
 	}
