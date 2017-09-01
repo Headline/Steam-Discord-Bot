@@ -87,6 +87,9 @@ namespace ChancyBot
             {
                 var manager = new JobManager(30); // seconds to run each job
 
+                // Calls updater.py when out of date
+                manager.AddJob(new SelfUpdateListener("https://github.com/Headline22/Steam-Discord-Bot/commits/master.atom"));
+
                 manager.AddJob(new SteamCheckJob(connection)); // job to check steam connection
 
                 manager.AddJob(new GithubUpdateJob("https://github.com/alliedmodders/sourcemod/commits/master.atom", "sourcemod"));

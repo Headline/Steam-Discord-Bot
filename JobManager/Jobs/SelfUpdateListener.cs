@@ -1,12 +1,13 @@
 ﻿using Discord;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
 using System.Net;
-using System.Threading.Tasks;
 using System.Xml.Linq;
+using Octokit;
+using System.IO;
+using System.Threading;
 
 namespace ChancyBot.Jobs
 {
@@ -14,11 +15,9 @@ namespace ChancyBot.Jobs
     {
         CommitInfo commit;
         string url;
-        string target;
 
-        public SelfUpdateListener(string url, string target)
+        public SelfUpdateListener(string url)
         {
-            this.target = target;
             this.url = url;
         }
 
@@ -29,7 +28,7 @@ namespace ChancyBot.Jobs
             return split[3] + "/" + split[4];
         }
 
-        public override void OnRun()
+        public override async void OnRun()
         {
             try
             {
@@ -50,7 +49,21 @@ namespace ChancyBot.Jobs
                     if (!commit.Equals(current))
                     {
                         int pid = Process.GetCurrentProcess().Id;
-                        // TODO Call Python Script With Latest Zip File
+
+                        var client = new GitHubClient(new ProductHeaderValue("my-cool-app"));
+                        var releases = await client.Repository.Release.GetAll("Headline22", "Steam-Discord-Bot");
+
+                        string url = "https://github.com/Headline22/Steam-Discord-Bot/releases/download/<name>/steam-discord-bot.zip";
+                        url = url.Replace("<name>", releases[0].Name);
+
+                        string command = string.Format("/k cd {0} & python updater.py {1} {2}",
+                                                                        Directory.GetCurrentDirectory(),
+                                                                        pid,
+                                                                        url);
+
+                        Thread.Sleep(60000); // wait one minute for build to complete.
+                        Process.Start("CMD.exe", command);
+                        Environment.Exit(0);
                     }
                 }
             }

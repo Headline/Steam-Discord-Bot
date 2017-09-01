@@ -3,6 +3,7 @@ using SteamKit2;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 using System.Timers;
 
 namespace ChancyBot.Jobs
@@ -45,7 +46,7 @@ namespace ChancyBot.Jobs
             Program.Instance.Log(new LogMessage(LogSeverity.Error, "RunJobs", "Running jobs..."));
             foreach (Job job in jobs)
             {
-                job.OnRun();
+                Task.Run(() => job.OnRun());
             }
         }
     }
