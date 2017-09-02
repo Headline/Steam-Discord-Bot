@@ -107,6 +107,7 @@
     <Compile Include="Commands\Help.cs" />
     <Compile Include="Commands\NumPlayers.cs" />
     <Compile Include="Commands\NumServers.cs" />
+    <Compile Include="Commands\Ping.cs" />
     <Compile Include="Commands\Pony.cs" />
     <Compile Include="Commands\Dice.cs" />
     <Compile Include="Helpers.cs" />
