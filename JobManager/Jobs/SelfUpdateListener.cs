@@ -50,7 +50,7 @@ namespace ChancyBot.Jobs
                     {
                         int pid = Process.GetCurrentProcess().Id;
 
-                        var client = new GitHubClient(new ProductHeaderValue("my-cool-app"));
+                        var client = new GitHubClient(new ProductHeaderValue("Steam-Discord-Bot"));
                         var releases = await client.Repository.Release.GetAll("Headline22", "Steam-Discord-Bot");
 
                         string url = "https://github.com/Headline22/Steam-Discord-Bot/releases/download/<name>/steam-discord-bot.zip";
