@@ -50,7 +50,16 @@ namespace ChancyBot.Jobs
                     {
                         int pid = Process.GetCurrentProcess().Id;
 
-                        var client = new GitHubClient(new ProductHeaderValue("my-cool-app"));
+						var client = new GitHubClient(new ProductHeaderValue("Steam-Discord-Bot"));
+
+						var commits = await client.Repository.Commit.GetAll("Headline22", "Steam-Discord-Bot");
+						
+                        if (commits[0].Commit.Message.Contains("[skip update]")) // don't force updates, continue normal operation
+                        {
+                            commit = current;
+                            return;
+                        }
+                        
                         var releases = await client.Repository.Release.GetAll("Headline22", "Steam-Discord-Bot");
 
                         string url = "https://github.com/Headline22/Steam-Discord-Bot/releases/download/<name>/steam-discord-bot.zip";

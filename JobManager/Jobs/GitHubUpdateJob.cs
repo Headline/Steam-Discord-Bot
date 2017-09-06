@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Octokit;
 
 using System.Net;
 using System.Threading.Tasks;
@@ -28,11 +29,20 @@ namespace ChancyBot.Jobs
             return split[3] + "/" + split[4];
         }
 
-        public override void OnRun()
+        public async override void OnRun()
         {
             try
             {
-                string xml = new WebClient().DownloadString(this.url);
+				var client = new GitHubClient(new ProductHeaderValue("Steam-Discord-Bot"));
+
+				var commits = await client.Repository.Commit.GetAll("Headline22", "Steam-Discord-Bot");
+
+				if (commits[0].Commit.Message.Contains("[skip notify]")) // don't notify, continue normal operation
+				{
+					return;
+				}
+
+				string xml = new WebClient().DownloadString(this.url);
                 XDocument doc = XDocument.Parse(xml);
                 XNamespace ns = "http://www.w3.org/2005/Atom/";
 
