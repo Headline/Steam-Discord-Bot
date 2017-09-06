@@ -14,8 +14,8 @@ This a Steam Discord bot which provides notifications on game updates along with
 !pony - Grabs link based off pony name.
 !roll - rolls a dice of arbitrary size. (example: '!roll 33' rolls a 33-sided die)
 !update - Updates and reloads the bot.
-!coin - Flips a coin.```
-
+!coin - Flips a coin.
+```
 In order to use this bot you will need a discord bot token. [Here](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token) is an exellent guide on how to do so.
 
 
