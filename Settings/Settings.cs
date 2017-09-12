@@ -12,6 +12,7 @@ namespace ChancyBot
 		public string SteamPassword;
         public string DiscordBotToken;
 		public List<uint> AppIDList;
+        public string GitHubAuthToken;
 
 		// ---------------------------------------------------------------------------------------
 
@@ -39,7 +40,9 @@ namespace ChancyBot
             Config.Instance.DiscordBotToken = "token";
 
             Config.Instance.AppIDList.Add(730); // default add csgo
-		}
+
+            Config.Instance.GitHubAuthToken = "";
+        }
 
 		// Loads the configuration from file.
 		public static void Load()

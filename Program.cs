@@ -13,6 +13,7 @@ using ChancyBot.Jobs;
 using ChancyBot.Steam;
 using System.Linq;
 using System.Collections.Generic;
+using Octokit;
 
 namespace ChancyBot
 {
@@ -87,18 +88,22 @@ namespace ChancyBot
 
             new Thread(new ThreadStart(() =>
             {
+                GitHubClient client = new GitHubClient(new ProductHeaderValue("Steam-Discord-Bot"));
+                if (Config.Instance.GitHubAuthToken.Length != 0)
+                    client.Credentials = new Credentials(Config.Instance.GitHubAuthToken);
+
                 // Calls updater.py when out of date
                 manager.AddJob(new SelfUpdateListener("https://github.com/Headline22/Steam-Discord-Bot/commits/master.atom"));
 
                 manager.AddJob(new SteamCheckJob(connection)); // job to check steam connection
 
-                manager.AddJob(new GithubUpdateJob("https://github.com/alliedmodders/sourcemod/commits/master.atom", "sourcemod"));
-                manager.AddJob(new GithubUpdateJob("https://github.com/alliedmodders/sourcepawn/commits/master.atom", "sourcemod"));
-                manager.AddJob(new GithubUpdateJob("https://github.com/alliedmodders/ambuild/commits/master.atom", "sourcemod"));
-                manager.AddJob(new GithubUpdateJob("https://github.com/alliedmodders/metamod-source/commits/master.atom", "sourcemod"));
-                manager.AddJob(new GithubUpdateJob("https://github.com/alliedmodders/hl2sdk/commits/sdk2013.atom", "sourcemod"));
-                manager.AddJob(new GithubUpdateJob("https://github.com/Headline22/Discord-IRC-Relay/commits/master.atom", "sourcemod"));
-                manager.AddJob(new GithubUpdateJob("https://github.com/Headline22/Steam-Discord-Bot/commits/master.atom", "sourcemod"));
+                manager.AddJob(new GithubUpdateJob(client, "https://github.com/alliedmodders/sourcemod/commits/master.atom", "sourcemod"));
+                manager.AddJob(new GithubUpdateJob(client, "https://github.com/alliedmodders/sourcepawn/commits/master.atom", "sourcemod"));
+                manager.AddJob(new GithubUpdateJob(client, "https://github.com/alliedmodders/ambuild/commits/master.atom", "sourcemod"));
+                manager.AddJob(new GithubUpdateJob(client, "https://github.com/alliedmodders/metamod-source/commits/master.atom", "sourcemod"));
+                manager.AddJob(new GithubUpdateJob(client, "https://github.com/alliedmodders/hl2sdk/commits/sdk2013.atom", "sourcemod"));
+                manager.AddJob(new GithubUpdateJob(client, "https://github.com/Headline22/Discord-IRC-Relay/commits/master.atom", "sourcemod"));
+                manager.AddJob(new GithubUpdateJob(client, "https://github.com/Headline22/Steam-Discord-Bot/commits/master.atom", "sourcemod"));
 
                 manager.AddJob(new AlliedModdersThreadJob("https://forums.alliedmods.net/external.php?newpost=true&forumids=108", "sourcemod"));
                 // add appids 

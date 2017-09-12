@@ -19,4 +19,5 @@
     <unsignedInt>4000</unsignedInt>
   </AppIDList>
 
+  <GitHubAuthToken></GitHubAuthToken>
 </Config>

@@ -12,12 +12,14 @@ namespace ChancyBot.Jobs
 {
     public class GithubUpdateJob : Job
     {
+        GitHubClient client;
         CommitInfo commit;
         string url;
         string target;
 
-        public GithubUpdateJob(string url, string target)
+        public GithubUpdateJob(GitHubClient client, string url, string target)
         {
+            this.client = client;
             this.target = target;
             this.url = url;
         }
@@ -33,8 +35,6 @@ namespace ChancyBot.Jobs
         {
             try
             {
-				var client = new GitHubClient(new ProductHeaderValue("Steam-Discord-Bot"));
-
 				var commits = await client.Repository.Commit.GetAll("Headline22", "Steam-Discord-Bot");
 
 				if (commits[0].Commit.Message.Contains("[skip notify]")) // don't notify, continue normal operation
