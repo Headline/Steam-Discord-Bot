@@ -13,11 +13,13 @@ namespace ChancyBot.Jobs
 {
     public class SelfUpdateListener : Job
     {
+        GitHubClient client;
         CommitInfo commit;
         string url;
 
-        public SelfUpdateListener(string url)
+        public SelfUpdateListener(GitHubClient client, string url)
         {
+            this.client = client;
             this.url = url;
         }
 
@@ -49,8 +51,6 @@ namespace ChancyBot.Jobs
                     if (!commit.Equals(current))
                     {
                         int pid = Process.GetCurrentProcess().Id;
-
-						var client = new GitHubClient(new ProductHeaderValue("Steam-Discord-Bot"));
 
 						var commits = await client.Repository.Commit.GetAll("Headline22", "Steam-Discord-Bot");
 						

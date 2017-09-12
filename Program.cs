@@ -93,7 +93,7 @@ namespace ChancyBot
                     client.Credentials = new Credentials(Config.Instance.GitHubAuthToken);
 
                 // Calls updater.py when out of date
-                manager.AddJob(new SelfUpdateListener("https://github.com/Headline22/Steam-Discord-Bot/commits/master.atom"));
+                manager.AddJob(new SelfUpdateListener(client, "https://github.com/Headline22/Steam-Discord-Bot/commits/master.atom"));
 
                 manager.AddJob(new SteamCheckJob(connection)); // job to check steam connection
 
