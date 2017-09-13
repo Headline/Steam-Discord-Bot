@@ -3,6 +3,7 @@
 using SteamKit2;
 using SteamKit2.Unified.Internal;
 using static SteamKit2.SteamUnifiedMessages;
+using System.Threading;
 
 namespace ChancyBot.Steam
 {
@@ -27,9 +28,9 @@ namespace ChancyBot.Steam
 		public bool isRunning;
 		public bool isLoggedOn;
 		public readonly int DISPLAY_AMOUNT = 5;
+        private Thread steamThread;
 
-
-		public SteamConnection(string user, string pass)
+        public SteamConnection(string user, string pass)
         {
             this.steamClient = new SteamClient();
 
@@ -54,12 +55,23 @@ namespace ChancyBot.Steam
 
         public void Connect()
         {
-			this.steamClient.Connect();
+            this.isRunning = true;
+            steamThread = new Thread(new ThreadStart(() =>
+            {
+                this.steamClient.Connect();
 
-			while (this.isRunning)
-			{
-				this.manager.RunWaitCallbacks(TimeSpan.FromSeconds(1));
-			}
-		}
-	}
+                while (this.isRunning)
+                {
+                    this.manager.RunWaitCallbacks(TimeSpan.FromSeconds(1));
+                }
+            }));
+
+            steamThread.Start();
+        }
+
+        public void Kill()
+        {
+            this.isRunning = false;
+        }
+    }
 }

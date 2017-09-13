@@ -21,10 +21,7 @@ namespace ChancyBot.Jobs
 				Program.Instance.Log(new LogMessage(LogSeverity.Info, "SteamCheck", "Steam connection was disconnected. Rebooting..."));
 
                 // Connect to steam and pump callbacks 
-                new Thread(new ThreadStart(() =>
-                {
-                    connection.Connect();
-                })).Start();
+                connection.Connect();
             }
 		}
 	}

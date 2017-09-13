@@ -23,6 +23,7 @@ namespace ChancyBot
         public SteamConnection connection;
         public string[] helpLines;
         public JobManager manager;
+
         // DISCORD
         public DiscordSocketClient client;
         private CommandService commands;
@@ -78,10 +79,7 @@ namespace ChancyBot
 
             // Connect to steam and pump callbacks 
             connection = new SteamConnection(Config.Instance.SteamUsername, Config.Instance.SteamPassword);
-			new Thread(new ThreadStart(() =>
-            {
-                connection.Connect();
-            })).Start();
+            connection.Connect();
 
             // Handle Jobs
             manager = new JobManager(30); // seconds to run each job
