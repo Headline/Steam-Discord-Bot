@@ -63,7 +63,8 @@ namespace ChancyBot.Jobs
                         var releases = await client.Repository.Release.GetAll("Headline22", "Steam-Discord-Bot");
 
                         string url = "https://github.com/Headline22/Steam-Discord-Bot/releases/download/<name>/steam-discord-bot.zip";
-                        url = url.Replace("<name>", releases[0].Name);
+                        string name = NextVersion(releases[0].Name);
+                        url = url.Replace("<name>", name);
 
                         string command = string.Format("/k cd {0} & python updater.py {1} {2}",
                                                                         Directory.GetCurrentDirectory(),
@@ -71,6 +72,7 @@ namespace ChancyBot.Jobs
                                                                         url);
 
                         Program.Instance.Log(new LogMessage(LogSeverity.Error, "SelfUpdateListener", "Update detected. Killing jobs..."));
+                        Program.Instance.Log(new LogMessage(LogSeverity.Error, "SelfUpdateListener", "URL: "));
                         Program.Instance.manager.KillJobs();
                         Program.Instance.Log(new LogMessage(LogSeverity.Error, "SelfUpdateListener", "Waiting for build completion..."));
 
@@ -86,6 +88,25 @@ namespace ChancyBot.Jobs
             {
                 Program.Instance.Log(new LogMessage(LogSeverity.Error, "SelfUpdateListener", ex.Message));
             }
+
+        }
+
+        public static string NextVersion(string name)
+        {
+            string[] peices;
+            peices = name.Split('.');
+
+            int.TryParse(peices[name.Length - 1], out int buildVersion);
+            buildVersion++;
+
+            string output = "";
+            for (int i = 0; i < peices.Length-1; i++) // loop to one before end
+            {
+                output += peices[i] + ".";
+            }
+            output += buildVersion;
+
+            return output;
         }
     }
 }
