@@ -72,7 +72,7 @@ namespace ChancyBot.Jobs
                                                                         url);
 
                         Program.Instance.Log(new LogMessage(LogSeverity.Error, "SelfUpdateListener", "Update detected. Killing jobs..."));
-                        Program.Instance.Log(new LogMessage(LogSeverity.Error, "SelfUpdateListener", "URL: "));
+                        Program.Instance.Log(new LogMessage(LogSeverity.Error, "SelfUpdateListener", "URL: " + url));
                         Program.Instance.manager.KillJobs();
                         Program.Instance.Log(new LogMessage(LogSeverity.Error, "SelfUpdateListener", "Waiting for build completion..."));
 
