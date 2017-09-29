@@ -70,7 +70,9 @@ namespace ChancyBot
 
 				if (channel != null) // #general exists
 				{
-					await channel.SendMessageAsync(input);
+                    var emb = new EmbedBuilder();
+                    emb.WithDescription(input);
+					await channel.SendMessageAsync("", false, emb);
 				}
 			}
 		}
@@ -88,7 +90,9 @@ namespace ChancyBot
 
                     if (channel != null) // target exists
                     {
-                        await channel.SendMessageAsync(input);
+                        var emb = new EmbedBuilder();
+                        emb.WithDescription(input);
+                        await channel.SendMessageAsync("", false, emb);
                     }
                 }
             }
