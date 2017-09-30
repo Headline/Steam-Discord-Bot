@@ -4,4 +4,4 @@ Will this alert discord without null object errors? Lets see
 Will this not alert SourceMod discord & do what I expect? Lets see
 No.
 [skip ci] 9
-Test embedded msgs 8
+Test embedded msgs 9
