@@ -53,7 +53,7 @@ namespace ChancyBot.Jobs
             }
             catch (Exception ex)
             {
-                await Program.Instance.Log(new LogMessage(LogSeverity.Error, "GithubUpdateJob", ex.Message));
+                await Program.Instance.Log(new LogMessage(LogSeverity.Error, "AMThreadJob", ex.Message));
             }
 		}
 	}

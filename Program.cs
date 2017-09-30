@@ -19,6 +19,7 @@ namespace ChancyBot
 {
     class Program
     {
+        public static readonly string VERSION = "1.1.29";
         // STEAM
         public SteamConnection connection;
         public string[] helpLines;
@@ -63,9 +64,10 @@ namespace ChancyBot
 
             Config.Instance.Save();
 
-			Console.WriteLine("Using token: " + Config.Instance.DiscordBotToken);
+            Console.WriteLine("Bot starting up. ({0} by Michael Flaherty)", Program.VERSION);
+            Console.WriteLine("Using token: " + Config.Instance.DiscordBotToken);
 
-			client = new DiscordSocketClient();
+            client = new DiscordSocketClient();
             commands = new CommandService();
 
             client.Log += Log;
