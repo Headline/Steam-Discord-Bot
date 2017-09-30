@@ -114,7 +114,6 @@
     <Compile Include="Helpers.cs" />
     <Compile Include="JobManager\JobManager.cs" />
     <Compile Include="JobManager\Jobs\AlliedModdersThreadJob.cs" />
-    <Compile Include="JobManager\Jobs\GitHubUpdateJob.cs" />
     <Compile Include="JobManager\Jobs\SelfUpdateListener.cs" />
     <Compile Include="JobManager\Jobs\SteamCheckJob.cs" />
     <Compile Include="JobManager\Jobs\UpdateJob.cs" />

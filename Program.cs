@@ -95,14 +95,6 @@ namespace ChancyBot
 
                 manager.AddJob(new SteamCheckJob(connection)); // job to check steam connection
 
-                manager.AddJob(new GithubUpdateJob(client, "https://github.com/alliedmodders/sourcemod/commits/master.atom", "sourcemod"));
-                manager.AddJob(new GithubUpdateJob(client, "https://github.com/alliedmodders/sourcepawn/commits/master.atom", "sourcemod"));
-                manager.AddJob(new GithubUpdateJob(client, "https://github.com/alliedmodders/ambuild/commits/master.atom", "sourcemod"));
-                manager.AddJob(new GithubUpdateJob(client, "https://github.com/alliedmodders/metamod-source/commits/master.atom", "sourcemod"));
-                manager.AddJob(new GithubUpdateJob(client, "https://github.com/alliedmodders/hl2sdk/commits/sdk2013.atom", "sourcemod"));
-                manager.AddJob(new GithubUpdateJob(client, "https://github.com/Headline22/Discord-IRC-Relay/commits/master.atom", "sourcemod"));
-                manager.AddJob(new GithubUpdateJob(client, "https://github.com/Headline22/Steam-Discord-Bot/commits/master.atom", "sourcemod"));
-
                 manager.AddJob(new AlliedModdersThreadJob("https://forums.alliedmods.net/external.php?newpost=true&forumids=108", "sourcemod"));
                 // add appids 
                 foreach (uint app in Config.Instance.AppIDList)

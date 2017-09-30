@@ -78,7 +78,7 @@ namespace ChancyBot
 		}
 
         // Sends a message to a targeted discord guild
-        public static async void SendMessageAllToTarget(string target, string input)
+        public static async void SendMessageAllToTarget(string target, string input, EmbedBuilder emb = null)
         {
             await Program.Instance.Log(new LogMessage(LogSeverity.Info, "SendMessageTarget", "MSG To "+ target + ": " + input));
 
@@ -90,9 +90,14 @@ namespace ChancyBot
 
                     if (channel != null) // target exists
                     {
-                        var emb = new EmbedBuilder();
-                        emb.WithDescription(input);
-                        await channel.SendMessageAsync("", false, emb);
+                        if (emb != null)
+                        {
+                            await channel.SendMessageAsync(input, false, emb);
+                        }
+                        else
+                        {
+                            await channel.SendMessageAsync(input);
+                        }
                     }
                 }
             }
