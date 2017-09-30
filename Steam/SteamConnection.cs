@@ -62,6 +62,12 @@ namespace ChancyBot.Steam
 
                 while (this.isRunning)
                 {
+                    /* Steam disconnected. We should exit loop here and
+                     * let SteamCheckJob reconnect us */
+                    if (!steamClient.IsConnected)
+                    {
+                    }
+
                     this.manager.RunWaitCallbacks(TimeSpan.FromSeconds(1));
                 }
             }));
