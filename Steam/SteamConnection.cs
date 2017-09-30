@@ -66,6 +66,7 @@ namespace ChancyBot.Steam
                      * let SteamCheckJob reconnect us */
                     if (!steamClient.IsConnected)
                     {
+                        this.Kill();
                     }
 
                     this.manager.RunWaitCallbacks(TimeSpan.FromSeconds(1));
