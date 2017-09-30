@@ -19,5 +19,6 @@
     <unsignedInt>4000</unsignedInt>
   </AppIDList>
 
+  <!-- GitHub api token for self updater -->
   <GitHubAuthToken></GitHubAuthToken>
 </Config>

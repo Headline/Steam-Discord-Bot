@@ -8,6 +8,7 @@ using System.Xml.Linq;
 using Octokit;
 using System.IO;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace ChancyBot.Jobs
 {
@@ -107,6 +108,47 @@ namespace ChancyBot.Jobs
             output += buildVersion;
 
             return output;
+        }
+    }
+
+    class CommitInfo
+    {
+        public string lastUpdated;
+        public string title;
+        public string author;
+        public string url;
+
+        public CommitInfo(IEnumerable<XElement> feed)
+        {
+            this.lastUpdated = feed.Where(x => x.Name.ToString().Contains("updated")).First().Value.Trim();
+            this.title = feed.Where(x => x.Name.ToString().Contains("title")).First().Value.Trim();
+            this.author = feed.Where(x => x.Name.ToString().Contains("author")).First().Elements().Where(x => x.Name.ToString().Contains("name")).First().Value.Trim();
+            this.url = feed.Where(x => x.Name.ToString().Contains("link")).First().Attribute("href").Value.Trim();
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0} by {1}", this.title, this.author);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || !(obj is CommitInfo))
+            {
+                return false;
+            }
+            else
+            {
+                CommitInfo commit = (CommitInfo)obj;
+                return (commit.lastUpdated.Equals(this.lastUpdated)
+                     && commit.title.Equals(this.title)
+                     && commit.author.Equals(this.author));
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }
