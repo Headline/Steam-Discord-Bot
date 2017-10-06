@@ -36,7 +36,7 @@ namespace ChancyBot
         {
             Instance = new Program();
 
-            try
+           try
             {
                 Instance.MainAsync().GetAwaiter().GetResult();
             }
@@ -157,11 +157,16 @@ namespace ChancyBot
 
             int argPos = 0;
 
-            if (!(message.HasCharPrefix('!', ref argPos) || message.HasMentionPrefix(client.CurrentUser, ref argPos))) return;
+            var context = new CommandContext(client, message);
 
             if (message.Author.IsBot) return;
 
-            var context = new CommandContext(client, message);
+            if (!(message.HasCharPrefix('!', ref argPos)
+                || message.HasMentionPrefix(client.CurrentUser, ref argPos)))
+            {
+                MarkovHelper.WriteLineToFile(context.Guild.Name + ".txt", message.Content);
+                return;
+            }
 
             var result = await commands.ExecuteAsync(context, argPos, services);
             if (!result.IsSuccess)
