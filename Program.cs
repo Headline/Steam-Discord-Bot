@@ -19,7 +19,7 @@ namespace ChancyBot
 {
     class Program
     {
-        public static readonly string VERSION = "1.1.30";
+        public static readonly string VERSION = "1.1.34";
         // STEAM
         public SteamConnection connection;
         public string[] helpLines;
