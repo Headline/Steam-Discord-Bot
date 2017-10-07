@@ -12,7 +12,9 @@ static class MarkovHelper
     public static void WriteLineToFile(string file, string line)
     {
         if (line.ToLower().Contains("http")
-          || line.ToLower().Contains(".com"))
+          || line.ToLower().Contains(".com")
+          || line.Split(' ').Length < 3
+          || line.Contains("<"))
         {
             return;
         }
