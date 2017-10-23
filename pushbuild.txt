@@ -5,3 +5,4 @@ Will this not alert SourceMod discord & do what I expect? Lets see
 No.
 [skip ci] 9
 Test embedded msgs 14
+do the thing
