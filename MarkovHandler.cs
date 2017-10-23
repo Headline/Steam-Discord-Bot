@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using log4net;
 using MarkovSharp.TokenisationStrategies;
+using System.Net;
+using Newtonsoft.Json.Linq;
 
 static class MarkovHelper
 {
@@ -27,6 +29,54 @@ static class MarkovHelper
             stream.Write(info, 0, info.Length);
         }
     }
+
+    public static string GetHastebinLink(string file)
+    {
+        string[] inputArray = File.ReadAllLines(BuildPath(file));
+
+        string input = "";
+
+        foreach (string line in inputArray)
+            input += line + "\n";
+
+        using (var client = new WebClient())
+        {
+            client.Headers[HttpRequestHeader.ContentType] = "text/plain";
+
+            var response = client.UploadString("https://hastebin.com/documents", input);
+            JObject obj = JObject.Parse(response);
+
+            if (!obj.HasValues)
+            {
+                return "";
+            }
+
+            string key = (string)obj["key"];
+            string hasteUrl = "https://hastebin.com/" + key + ".txt";
+
+            return hasteUrl;
+        }
+    }
+
+    public static int RemoveTermFromFile(string file, string line)
+    {
+        string[] lines = File.ReadAllLines(BuildPath(file));
+        List<string> array = new List<string>(lines);
+        int count = 0;
+        for (int i = array.Count()-1; i > 0; i--)
+        {
+            if (array[i].ToLower().Contains(line))
+            {
+                count++;
+                array.RemoveAt(i);
+            }
+        }
+
+        File.WriteAllLines(BuildPath(file), array.ToArray());
+        return count;
+    }
+
+
 
     public static string GetPhraseFromFile(string file, string term = null)
     {
