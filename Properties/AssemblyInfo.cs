@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Steam-Discord-Bot")]
-[assembly: AssemblyDescription("A Ateam focused Discord bot.")]
+[assembly: AssemblyDescription("A Steam focused Discord bot.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Michael Flaherty")]
 [assembly: AssemblyProduct("Steam-Discord-Bot")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("36de82aa-bdc1-4476-8f24-df13b5cc4e1a")]
+[assembly: Guid("7d47d12a-bdcc-4f72-aa65-90897f5a3dce")]
 
 // Version information for an assembly consists of the following four values:
 //

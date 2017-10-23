@@ -23,7 +23,7 @@ namespace ChancyBot.Commands
             string url = "https://github.com/Headline22/Steam-Discord-Bot/releases/download/<name>/steam-discord-bot.zip";
             url = url.Replace("<name>", releases[0].Name);
 
-            Context.Channel.SendMessageAsync("Okay. Updating...");
+            await Context.Channel.SendMessageAsync("Okay. Updating...");
 
             string command = string.Format("/k cd {0} & python updater.py {1} {2}",
                                                             Directory.GetCurrentDirectory(),
