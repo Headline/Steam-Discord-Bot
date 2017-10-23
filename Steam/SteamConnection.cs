@@ -26,7 +26,6 @@ namespace ChancyBot.Steam
 		public string pass;
 		public string filter;
 		public bool isRunning;
-		public bool isLoggedOn;
 		public readonly int DISPLAY_AMOUNT = 5;
         private Thread steamThread;
 
@@ -50,7 +49,7 @@ namespace ChancyBot.Steam
             this.user = user;
             this.pass = pass;
 
-            this.isRunning = true;
+            this.isRunning = false;
         }
 
         public void Connect()
@@ -62,13 +61,6 @@ namespace ChancyBot.Steam
 
                 while (this.isRunning)
                 {
-                    /* Steam disconnected. We should exit loop here and
-                     * let SteamCheckJob reconnect us */
-                    if (!steamClient.IsConnected)
-                    {
-                        this.Kill();
-                    }
-
                     this.manager.RunWaitCallbacks(TimeSpan.FromSeconds(1));
                 }
             }));

@@ -66,7 +66,6 @@ namespace ChancyBot.Steam
 
 
 				Program.Instance.connection.isRunning = false;
-				Program.Instance.connection.isLoggedOn = true;
 				return;
 			}
 
