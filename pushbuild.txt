@@ -6,3 +6,4 @@ No.
 [skip ci] 9
 Test embedded msgs 14
 do the thing
+do update
