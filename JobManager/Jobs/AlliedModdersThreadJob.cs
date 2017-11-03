@@ -45,8 +45,11 @@ namespace ChancyBot.Jobs
                 {
                     if (!history.Exists(x => x.Equals(current)))
                     {
-                        await Task.Run(() => Helpers.SendMessageAllToTarget(target, "New AlliedModders plugin: " + current.title + "\n"
-                            + current.link));
+                        string message = "New AlliedModders plugin: " + current.title + "\n\nView: " + current.link;
+                        var emb = new EmbedBuilder();
+                        emb.WithDescription(message);
+
+                        await Task.Run(() => Helpers.SendMessageAllToTarget(target, "", emb));
                         history.Add(current);
                     }
                 }
