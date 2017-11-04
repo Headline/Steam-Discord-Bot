@@ -14,12 +14,13 @@ using ChancyBot.Steam;
 using System.Linq;
 using System.Collections.Generic;
 using Octokit;
+using ChancyBot.Commands;
 
 namespace ChancyBot
 {
     class Program
     {
-        public static readonly string VERSION = "1.1.34";
+        public static readonly string VERSION = "1.1.35";
         // STEAM
         public SteamConnection connection;
         public string[] helpLines;
@@ -31,12 +32,12 @@ namespace ChancyBot
         private IServiceProvider services;
 
         public static Program Instance;
+        public List<MsgInfo> messageHist;
 
         public static void Main(string[] args)
         {
             Instance = new Program();
-
-           try
+            try
             {
                 Instance.MainAsync().GetAwaiter().GetResult();
             }
@@ -69,19 +70,23 @@ namespace ChancyBot
 
             client = new DiscordSocketClient();
             commands = new CommandService();
+            messageHist = new List<MsgInfo>();
 
             client.Log += Log;
             
             services = new ServiceCollection().BuildServiceProvider();
 
+            Console.WriteLine("Installing commands...");
             await InstallCommands();
 
             await client.LoginAsync(TokenType.Bot, Config.Instance.DiscordBotToken);
             await client.StartAsync();
+            Console.WriteLine("Starting async...");
 
             // Connect to steam and pump callbacks 
             connection = new SteamConnection(Config.Instance.SteamUsername, Config.Instance.SteamPassword);
             connection.Connect();
+            Console.WriteLine("Pumping steam connection...");
 
             // Handle Jobs
             manager = new JobManager(30); // seconds to run each job
@@ -150,6 +155,7 @@ namespace ChancyBot
 
             return arrayList.ToArray(); // return string[] array
         }
+
         public async Task HandleCommand(SocketMessage messageParam)
         {
             var message = messageParam as SocketUserMessage;
@@ -164,6 +170,10 @@ namespace ChancyBot
             if (!(message.HasCharPrefix('!', ref argPos)
                 || message.HasMentionPrefix(client.CurrentUser, ref argPos)))
             {
+                MsgInfo info = new MsgInfo();
+                info.message = message.Content;
+                info.user = message.Author.Id;
+                messageHist.Add(info);
                 MarkovHelper.WriteLineToFile(context.Guild.Name + ".txt", message.Content);
                 return;
             }
