@@ -6,7 +6,7 @@ This a Steam Discord bot which provides notifications on game updates along with
 ```
 !appinfo - Fetches up application info from steam.
 !chat - Uses a Markov model with to generate response text.
-!chatremove - Removes the term from knowlegebase.
+!chatremove - Removes the term from knowledgebase.
 !chatknowledge - Sends a pastebin link containing its knowledgebase.
 !coin - Flips a coin.
 !btc - Fetches the latest Bitcoin market value.
