@@ -20,7 +20,7 @@ namespace ChancyBot.Commands
 
     public class ChatRemoveCommand : ModuleBase
     {
-        [Command("chatremove"), Summary("Removes the term from knowlegebase.")]
+        [Command("chatremove"), Summary("Removes the term from knowledgebase.")]
         public async Task Say(string term)
         {
             int amount = MarkovHelper.RemoveTermFromFile(Context.Guild.Name + ".txt", term);
