@@ -20,7 +20,7 @@ namespace ChancyBot.Commands
 
     public class ChatRemoveCommand : ModuleBase
     {
-        [Command("chatremove"), Summary("Removes the term from knowlegebase.")]
+        [Command("chatremove"), Summary("Removes the term from knowledgebase.")]
         public async Task Say(string term)
         {
             int amount = MarkovHelper.RemoveTermFromFile(Context.Guild.Name + ".txt", term);
@@ -30,7 +30,7 @@ namespace ChancyBot.Commands
 
     public class ChatKnowledgeBaseCommand : ModuleBase
     {
-        [Command("chatknowledge"), Summary("Sends a pastebin link containing it's knowledgebase.")]
+        [Command("chatknowledge"), Summary("Sends a pastebin link containing its knowledgebase.")]
         public async Task Say()
         {
             string knowledgebase = MarkovHelper.GetHastebinLink(Context.Guild.Name + ".txt");
