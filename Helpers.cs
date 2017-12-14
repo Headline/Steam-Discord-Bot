@@ -64,16 +64,20 @@ namespace ChancyBot
 
             foreach (SocketGuild guild in Program.Instance.client.Guilds) // loop through each discord guild
 			{
-				SocketTextChannel channel = Helpers.FindSendChannel(guild); // find #general
+                var usr = guild.CurrentUser;
+                if (usr.GuildPermissions.Has(GuildPermission.SendMessages))
+                {
+                    SocketTextChannel channel = Helpers.FindSendChannel(guild); // find #general
 
-                await Program.Instance.Log(new LogMessage(LogSeverity.Info, "SendMsg", "Sending msg to: " + channel.Name));
+                    if (channel != null) // #general exists
+                    {
+                        await Program.Instance.Log(new LogMessage(LogSeverity.Info, "SendMsg", "Sending msg to: " + channel.Name));
 
-				if (channel != null) // #general exists
-				{
-                    var emb = new EmbedBuilder();
-                    emb.WithDescription(input);
-					await channel.SendMessageAsync("", false, emb);
-				}
+                        var emb = new EmbedBuilder();
+                        emb.WithDescription(input);
+                        await channel.SendMessageAsync("", false, emb);
+                    }
+                }
 			}
 		}
 
@@ -86,17 +90,22 @@ namespace ChancyBot
             {
                 if (guild.Name.ToLower().Contains(target.ToLower())) // find target 
                 {
-                    SocketTextChannel channel = Helpers.FindSendChannel(guild); // find desired channel
-
-                    if (channel != null) // target exists
+                    var usr = guild.CurrentUser;
+                    if (usr.GuildPermissions.Has(GuildPermission.SendMessages))
                     {
-                        if (emb != null)
+                        SocketTextChannel channel = Helpers.FindSendChannel(guild); // find desired channel
+
+                        if (channel != null) // target exists
                         {
-                            await channel.SendMessageAsync(input, false, emb);
-                        }
-                        else
-                        {
-                            await channel.SendMessageAsync(input);
+                            if (emb != null)
+                            {
+
+                                await channel.SendMessageAsync(input, false, emb);
+                            }
+                            else
+                            {
+                                await channel.SendMessageAsync(input);
+                            }
                         }
                     }
                 }
