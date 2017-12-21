@@ -7,6 +7,7 @@ using Discord.WebSocket;
 
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
+using System;
 
 namespace ChancyBot
 {
@@ -73,9 +74,16 @@ namespace ChancyBot
                     {
                         await Program.Instance.Log(new LogMessage(LogSeverity.Info, "SendMsg", "Sending msg to: " + channel.Name));
 
-                        var emb = new EmbedBuilder();
-                        emb.WithDescription(input);
-                        await channel.SendMessageAsync("", false, emb);
+                        try
+                        {
+                            var emb = new EmbedBuilder();
+                            emb.WithDescription(input);
+                            await channel.SendMessageAsync("", false, emb);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine("Could not send to {0}: {1}", channel.Name, e.Message);
+                        }
                     }
                 }
 			}
@@ -97,14 +105,21 @@ namespace ChancyBot
 
                         if (channel != null) // target exists
                         {
-                            if (emb != null)
+                            try
                             {
+                                if (emb != null)
+                                {
 
-                                await channel.SendMessageAsync(input, false, emb);
+                                    await channel.SendMessageAsync(input, false, emb);
+                                }
+                                else
+                                {
+                                    await channel.SendMessageAsync(input);
+                                }
                             }
-                            else
+                            catch(Exception e)
                             {
-                                await channel.SendMessageAsync(input);
+                                Console.WriteLine("Could not send to {0}: {1}", channel.Name, e.Message);
                             }
                         }
                     }
