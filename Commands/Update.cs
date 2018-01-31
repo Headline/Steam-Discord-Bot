@@ -17,10 +17,10 @@ namespace ChancyBot.Commands
         {
             int pid = Process.GetCurrentProcess().Id;
 
-            var client = new GitHubClient(new ProductHeaderValue("my-cool-app"));
-            var releases = await client.Repository.Release.GetAll("Headline22", "Steam-Discord-Bot");
+            var client = new GitHubClient(new ProductHeaderValue("Steam-Discord-Bot"));
+            var releases = await client.Repository.Release.GetAll("Headline", "Steam-Discord-Bot");
 
-            string url = "https://github.com/Headline22/Steam-Discord-Bot/releases/download/<name>/steam-discord-bot.zip";
+            string url = "https://github.com/Headline/Steam-Discord-Bot/releases/download/<name>/steam-discord-bot.zip";
             url = url.Replace("<name>", releases[0].Name);
 
             await Context.Channel.SendMessageAsync("Okay. Updating...");
