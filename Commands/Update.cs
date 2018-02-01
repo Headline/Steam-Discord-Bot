@@ -16,6 +16,7 @@ namespace ChancyBot.Commands
             }
             
             await Context.Channel.SendMessageAsync("Okay. Updating...");
+            Helpers.Update();
         }
     }
 }
