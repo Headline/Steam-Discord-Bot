@@ -109,6 +109,7 @@
     <Compile Include="Commands\Repeat.cs" />
     <Compile Include="Commands\Substitute.cs" />
     <Compile Include="Commands\Update.cs" />
+    <Compile Include="Commands\Version.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="JobManager\JobManager.cs" />
     <Compile Include="JobManager\Jobs\AlliedModdersThreadJob.cs" />
