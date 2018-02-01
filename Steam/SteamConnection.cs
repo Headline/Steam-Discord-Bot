@@ -54,7 +54,26 @@ namespace ChancyBot.Steam
 
         public void Connect()
         {
+            if (this.isRunning)
+            {
+                /* We need to kill the thread, and wait for it to die. */
+                this.isRunning = false;
+                Timer timer = new Timer(Timer_ConnectDelay, null, 100, Timeout.Infinite);
+                return;
+            }
+            /* Otherwise, we can just run the thread */
+            RunThread();
+        }
+
+        private void Timer_ConnectDelay(object state)
+        {
+            RunThread();
+        }
+
+        private void RunThread()
+        {
             this.isRunning = true;
+
             steamThread = new Thread(new ThreadStart(() =>
             {
                 this.steamClient.Connect();
@@ -67,7 +86,6 @@ namespace ChancyBot.Steam
 
             steamThread.Start();
         }
-
         public void Kill()
         {
             this.isRunning = false;

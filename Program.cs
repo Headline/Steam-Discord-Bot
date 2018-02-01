@@ -58,9 +58,7 @@ namespace ChancyBot
 			{
 				Console.WriteLine("Failed to load config from file. Loading default config.");
 				Config.Default();
-                Console.WriteLine("Please configure Settings.xml! Exiting program...");
                 Environment.Exit(0);
-                Console.ReadKey();
             }
 
             Config.Instance.Save();
@@ -76,12 +74,10 @@ namespace ChancyBot
             
             services = new ServiceCollection().BuildServiceProvider();
 
-            Console.WriteLine("Installing commands...");
             await InstallCommands();
 
             await client.LoginAsync(TokenType.Bot, Config.Instance.DiscordBotToken);
             await client.StartAsync();
-            Console.WriteLine("Starting async...");
 
             // Connect to steam and pump callbacks 
             connection = new SteamConnection(Config.Instance.SteamUsername, Config.Instance.SteamPassword);
@@ -90,7 +86,6 @@ namespace ChancyBot
 
             // Handle Jobs
             manager = new JobManager(30); // seconds to run each job
-
             new Thread(new ThreadStart(() =>
             {
                 GitHubClient client = new GitHubClient(new ProductHeaderValue("Steam-Discord-Bot"));
@@ -100,7 +95,8 @@ namespace ChancyBot
                 // Calls updater.py when out of date
                 manager.AddJob(new SelfUpdateListener(client));
 
-                manager.AddJob(new SteamCheckJob(connection)); // job to check steam connection
+                // job to check steam connection
+                manager.AddJob(new SteamCheckJob(connection)); 
 
                 manager.AddJob(new AlliedModdersThreadJob("https://forums.alliedmods.net/external.php?newpost=true&forumids=108", "sourcemod"));
                 // add appids 
