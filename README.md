@@ -3,6 +3,8 @@
 
 This a Steam Discord bot which provides notifications on game updates along with some useful commands that interact with the Steam API. Here are some examples of the commands thus far. If you'd like to see more commands, open an issue and recommend some!
 
+If you are somebody looking to have this bot on your discord server, message me (Headline#9572) on discord and I can throw the bot in the server for you. Otherwise, you should only *really* need this source code if you'd like to extend the bot yourself.
+
 ```
 !appinfo - Fetches up application info from steam.
 !chat - Uses a Markov model with to generate response text.
@@ -17,8 +19,10 @@ This a Steam Discord bot which provides notifications on game updates along with
 !numservers - Fetches current server count from steam.
 !ping - Test command.
 !pony - Grabs link based off pony name.
+!repeat - Repeats last message X amount of times.
 !s - Subsitutes one word for another in last message.
 !update - Updates and reloads the bot.
+!version - Get the current bot version.
 ```
 
 In order to use this bot you will need a discord bot token. [Here](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token) is an exellent guide on how to do so.
