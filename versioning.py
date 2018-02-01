@@ -24,7 +24,7 @@ path = get_clean_path(os.path.realpath(__file__).split("\\"))
 
 for dirpath, dirnames, filenames in os.walk(path):
 	for filename in filenames:
-		current = dirpath + filename
+		current = dirpath + "\\" + filename
 		if filename.endswith(".cs"):
 			print("Versioning: " + current)
 			do_version_replace(current)
