@@ -1,12 +1,10 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 
 using Discord.Commands;
 
 using SteamKit2;
 using SteamKit2.Unified.Internal;
-using static SteamKit2.SteamUnifiedMessages;
 
 namespace ChancyBot.Commands
 {

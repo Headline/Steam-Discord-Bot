@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using log4net;
+using System.Collections.Generic;
+
 using MarkovSharp.TokenisationStrategies;
-using System.Net;
 using Newtonsoft.Json.Linq;
 
 static class MarkovHelper

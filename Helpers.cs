@@ -6,8 +6,10 @@ using Discord;
 using Discord.WebSocket;
 
 using Newtonsoft.Json.Linq;
-using System.Threading.Tasks;
 using System;
+using Octokit;
+using System.Diagnostics;
+using System.IO;
 
 namespace ChancyBot
 {
@@ -127,6 +129,30 @@ namespace ChancyBot
             }
         }
 
+        public async static void Update()
+        {
+            int pid = Process.GetCurrentProcess().Id;
+
+            var client = new GitHubClient(new ProductHeaderValue("Steam-Discord-Bot"));
+            var releases = await client.Repository.Release.GetAll("Headline", "Steam-Discord-Bot");
+
+            string url = "https://github.com/Headline/Steam-Discord-Bot/releases/download/<name>/steam-discord-bot.zip";
+            url = url.Replace("<name>", releases[0].Name);
+
+            string command = string.Format("/k cd {0} & python updater.py {1} {2}",
+                                                            Directory.GetCurrentDirectory(),
+                                                            pid,
+                                                            url);
+
+            Process.Start("CMD.exe", command);
+            Environment.Exit(0);
+        }
+
+        public static string GetLatestVersion(IReadOnlyList<Release> releases)
+        {
+            var detectionString = "-v";
+            return releases[0].Name.Substring(releases[0].Name.IndexOf(detectionString) + detectionString.Length);
+        }
 
         public static string GetAppName(uint appid)
 		{

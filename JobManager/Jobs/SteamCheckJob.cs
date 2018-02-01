@@ -1,7 +1,6 @@
 ﻿using Discord;
 
 using ChancyBot.Steam;
-using System.Threading;
 
 namespace ChancyBot.Jobs
 {

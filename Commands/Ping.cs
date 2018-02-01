@@ -1,10 +1,7 @@
-using System;
-using System.Net;
 using System.Threading.Tasks;
 
 using Discord.Commands;
 
-using Newtonsoft.Json.Linq;
 
 namespace ChancyBot.Commands
 {

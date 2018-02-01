@@ -98,7 +98,7 @@ namespace ChancyBot
                     client.Credentials = new Credentials(Config.Instance.GitHubAuthToken);
 
                 // Calls updater.py when out of date
-                manager.AddJob(new SelfUpdateListener(client, "https://github.com/Headline22/Steam-Discord-Bot/commits/master.atom"));
+                manager.AddJob(new SelfUpdateListener(client));
 
                 manager.AddJob(new SteamCheckJob(connection)); // job to check steam connection
 
@@ -170,9 +170,11 @@ namespace ChancyBot
             if (!(message.HasCharPrefix('!', ref argPos)
                 || message.HasMentionPrefix(client.CurrentUser, ref argPos)))
             {
-                MsgInfo info = new MsgInfo();
-                info.message = message.Content;
-                info.user = message.Author.Id;
+                MsgInfo info = new MsgInfo()
+                {
+                    message = message.Content,
+                    user = message.Author.Id
+                };
                 messageHist.Add(info);
                 MarkovHelper.WriteLineToFile(context.Guild.Name + ".txt", message.Content);
                 return;
