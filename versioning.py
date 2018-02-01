@@ -15,7 +15,7 @@ def do_version_replace(current):
 	for i, line in enumerate(oldlist):
 		if "$$version$" in line:
 			print("Replacing...")
-			oldlist[i] = line.replace("$$version$", os.getenv('APPVEYOR_BUILD_NUMBER', "XX.XX.XX"))
+			oldlist[i] = line.replace("$$version$", os.getenv('APPVEYOR_BUILD_VERSION', "XX.XX.XX"))
 		
 	with open(current, 'w') as f:
 		f.writelines(oldlist)
