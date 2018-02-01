@@ -6,7 +6,7 @@ namespace ChancyBot.Commands
 {
     public class UpdateCommand : ModuleBase
     {
-        [Command("update"), Summary("Updates and reloads the bot.")]
+        [Command("update"), Summary("Updates and reloads the bot. [Headline only]")]
         public async Task Say()
         {
            if (Context.User.Id != 194315619217178624)

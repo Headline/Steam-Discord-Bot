@@ -107,6 +107,7 @@
     <Compile Include="Commands\Ping.cs" />
     <Compile Include="Commands\Pony.cs" />
     <Compile Include="Commands\Repeat.cs" />
+    <Compile Include="Commands\SetGame.cs" />
     <Compile Include="Commands\Substitute.cs" />
     <Compile Include="Commands\Update.cs" />
     <Compile Include="Commands\Version.cs" />
