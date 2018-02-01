@@ -11,7 +11,7 @@ namespace ChancyBot.Commands
         {
            if (Context.User.Id != 194315619217178624)
             {
-                await Context.Channel.SendMessageAsync("Contact Headline#9572 if you believe the bot should be updated.");
+                await Context.Channel.SendMessageAsync("Contact Headline#9572 if you believe I should be updated.");
                 return;
             }
             
