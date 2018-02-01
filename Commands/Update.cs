@@ -15,6 +15,12 @@ namespace ChancyBot.Commands
         [Command("update"), Summary("Updates and reloads the bot.")]
         public async Task Say()
         {
+            if (!Context.Client.CurrentUser.Email.Equals("michaelwflaherty@me.com"))
+            {
+                await Context.Channel.SendMessageAsync("Contact Headline#9572 if you believe the bot should be updated.");
+                return;
+            }
+
             int pid = Process.GetCurrentProcess().Id;
 
             var client = new GitHubClient(new ProductHeaderValue("Steam-Discord-Bot"));
