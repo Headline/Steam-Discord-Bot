@@ -9,3 +9,4 @@ do the thing
 do update
 muffinss
 slitherin
+DISTRUBTE ALL THE BINARIES!!!
