@@ -15,12 +15,12 @@ namespace ChancyBot.Commands
         [Command("update"), Summary("Updates and reloads the bot.")]
         public async Task Say()
         {
-            if (!Context.Client.CurrentUser.Email.Equals("michaelwflaherty@me.com"))
+           if (Context.User.Id != 194315619217178624)
             {
                 await Context.Channel.SendMessageAsync("Contact Headline#9572 if you believe the bot should be updated.");
                 return;
             }
-
+            
             int pid = Process.GetCurrentProcess().Id;
 
             var client = new GitHubClient(new ProductHeaderValue("Steam-Discord-Bot"));
@@ -29,7 +29,7 @@ namespace ChancyBot.Commands
             string url = "https://github.com/Headline/Steam-Discord-Bot/releases/download/<name>/steam-discord-bot.zip";
             url = url.Replace("<name>", releases[0].Name);
 
-            await Context.Channel.SendMessageAsync("Okay. Updating...");
+            await Context.Channel.SendMessageAsync("Okay. Updating..." + Context.User.Id);
 
             string command = string.Format("/k cd {0} & python updater.py {1} {2}",
                                                             Directory.GetCurrentDirectory(),
