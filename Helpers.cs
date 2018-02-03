@@ -91,6 +91,17 @@ namespace ChancyBot
 			}
 		}
 
+        public static string[] GetGuilds()
+        {
+            string[] guilds = new string[Program.Instance.client.Guilds.Count];
+            int count = 0;
+            foreach (SocketGuild guild in Program.Instance.client.Guilds) // loop through each discord guild
+            {
+                guilds[count++] = guild.Name;
+            }
+            return guilds;
+        }
+
         // Sends a message to a targeted discord guild
         public static async void SendMessageAllToTarget(string target, string input, EmbedBuilder emb = null)
         {

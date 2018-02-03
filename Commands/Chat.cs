@@ -10,7 +10,7 @@ namespace ChancyBot.Commands
         [Command("chat"), Summary("Uses a Markov model with to generate response text.")]
         public async Task Say()
         {
-            string response = MarkovHelper.GetPhraseFromFile(Context.Guild.Name + ".txt");
+            string response = Program.Instance.markov.ReadFromGuild(Context.Guild.Name);
             await Context.Channel.SendMessageAsync(response);
         }
     }
@@ -20,7 +20,7 @@ namespace ChancyBot.Commands
         [Command("chatremove"), Summary("Removes the term from knowledgebase.")]
         public async Task Say(string term)
         {
-            int amount = MarkovHelper.RemoveTermFromFile(Context.Guild.Name + ".txt", term);
+            int amount = Program.Instance.markov.RemoveFromGuild(Context.Guild.Name, term);
             await Context.Channel.SendMessageAsync(string.Format("Removed \"{0}\" from {1} lines", term, amount));
         }
     }
@@ -30,24 +30,8 @@ namespace ChancyBot.Commands
         [Command("chatknowledge"), Summary("Sends a pastebin link containing its knowledgebase.")]
         public async Task Say()
         {
-            string knowledgebase = MarkovHelper.GetHastebinLink(Context.Guild.Name + ".txt");
+            string knowledgebase = Program.Instance.markov.GetHastebinLink(Context.Guild.Name);
             await Context.Channel.SendMessageAsync("Here's my knowlege base: " + knowledgebase);
         }
     }
-    /*public class ChatAboutCommand : ModuleBase
-    {
-        [Command("chatabout"), Summary("Uses a Markov model with to generate response text including the param.")]
-        public async Task Say(string name)
-        {
-            try
-            {
-                string response = MarkovHelper.GetPhraseFromFile(Context.Guild.Name + ".txt", name);
-                await Context.Channel.SendMessageAsync(response);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message + "\n" + e.StackTrace);
-            }
-        }
-    }*/
 }

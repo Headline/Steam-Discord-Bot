@@ -35,6 +35,8 @@ namespace ChancyBot
         public GitHubClient ghClient;
         public IReadOnlyList<Release> ghReleases;
 
+        // MARKOV
+        public Markov markov;
 
         public static Program Instance;
         public List<MsgInfo> messageHist;
@@ -114,6 +116,7 @@ namespace ChancyBot
                 manager.StartJobs();
             })).Start();
 
+            markov = new Markov(Helpers.GetGuilds());
 
             await Task.Delay(-1);
         }
@@ -178,7 +181,7 @@ namespace ChancyBot
                     user = message.Author.Id
                 };
                 messageHist.Add(info);
-                MarkovHelper.WriteLineToFile(context.Guild.Name + ".txt", message.Content);
+                markov.WriteToGuild(context.Guild.Name, message.Content);
                 return;
             }
 
