@@ -31,6 +31,11 @@ namespace ChancyBot
         private CommandService commands;
         private IServiceProvider services;
 
+        // GITHUB
+        public GitHubClient ghClient;
+        public IReadOnlyList<Release> ghReleases;
+
+
         public static Program Instance;
         public List<MsgInfo> messageHist;
 
@@ -86,14 +91,15 @@ namespace ChancyBot
 
             // Handle Jobs
             manager = new JobManager(30); // seconds to run each job
-            new Thread(new ThreadStart(() =>
+            new Thread(new ThreadStart(async () =>
             {
-                GitHubClient client = new GitHubClient(new ProductHeaderValue("Steam-Discord-Bot"));
+                ghClient = new GitHubClient(new ProductHeaderValue("Steam-Discord-Bot"));
+                ghReleases = await Task.Run(() => ghClient.Repository.Release.GetAll("Headline", "Steam-Discord-Bot"));
                 if (Config.Instance.GitHubAuthToken.Length != 0)
-                    client.Credentials = new Credentials(Config.Instance.GitHubAuthToken);
+                    ghClient.Credentials = new Credentials(Config.Instance.GitHubAuthToken);
 
                 // Calls updater.py when out of date
-                manager.AddJob(new SelfUpdateListener(client));
+                manager.AddJob(new SelfUpdateListener(ghClient));
 
                 // job to check steam connection
                 manager.AddJob(new SteamCheckJob(connection)); 

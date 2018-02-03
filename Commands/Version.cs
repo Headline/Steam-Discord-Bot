@@ -11,8 +11,8 @@ namespace ChancyBot.Commands
         [Command("version"), Summary("Get the current bot version.")]
         public async Task Say()
         {
-            var client = new GitHubClient(new ProductHeaderValue("Steam-Discord-Bot"));
-            var releases = await client.Repository.Release.GetAll("Headline", "Steam-Discord-Bot");
+            var client = Program.Instance.ghClient;
+            var releases = Program.Instance.ghReleases;
 
             await Context.Channel.SendMessageAsync("Current version: " + Program.VERSION + " (latest is " + Helpers.GetLatestVersion(releases) + ")");
         }

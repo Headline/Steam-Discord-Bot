@@ -131,21 +131,26 @@ namespace ChancyBot
 
         public async static void Update()
         {
-            int pid = Process.GetCurrentProcess().Id;
+            try
+            {
 
-            var client = new GitHubClient(new ProductHeaderValue("Steam-Discord-Bot"));
-            var releases = await client.Repository.Release.GetAll("Headline", "Steam-Discord-Bot");
+                int pid = Process.GetCurrentProcess().Id;
 
-            string url = "https://github.com/Headline/Steam-Discord-Bot/releases/download/<name>/steam-discord-bot.zip";
-            url = url.Replace("<name>", releases[0].Name);
+                var client = Program.Instance.ghClient;
+                var releases = await client.Repository.Release.GetAll("Headline", "Steam-Discord-Bot");
 
-            string command = string.Format("/k cd {0} & python updater.py {1} {2}",
-                                                            Directory.GetCurrentDirectory(),
-                                                            pid,
-                                                            url);
+                string url = "https://github.com/Headline/Steam-Discord-Bot/releases/download/<name>/steam-discord-bot.zip";
+                url = url.Replace("<name>", releases[0].Name);
 
-            Process.Start("CMD.exe", command);
-            Environment.Exit(0);
+                string command = string.Format("/k cd {0} & python updater.py {1} {2}",
+                                                                Directory.GetCurrentDirectory(),
+                                                                pid,
+                                                                url);
+                
+                Process.Start("CMD.exe", command);
+                Environment.Exit(0);
+            }
+            catch (Exception ex) { } // ignore errors. if it failed: oh well.
         }
 
         public static string GetLatestVersion(IReadOnlyList<Release> releases)
