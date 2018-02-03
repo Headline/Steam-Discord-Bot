@@ -12,6 +12,7 @@ namespace ChancyBot.Commands
         {
             string response = Program.Instance.markov.ReadFromGuild(Context.Guild.Name);
             await Context.Channel.SendMessageAsync(response);
+            Program.Instance.markov.BuildNext(Context.Guild.Name);
         }
     }
 

@@ -12,11 +12,13 @@ class Markov
 {
     private Dictionary<string, StringMarkov> dict;
     private Dictionary<string, int> nextWalk; // used for `.Walk()`ing
+    private Dictionary<string, string> nextResponse;
 
     public Markov(string[] guilds)
     {
         dict = new Dictionary<string, StringMarkov>();
         nextWalk = new Dictionary<string, int>();
+        nextResponse = new Dictionary<string, string>();
 
         foreach (string guild in guilds)
         {
@@ -28,6 +30,7 @@ class Markov
             }
             catch { } // file not created yet
             dict.Add(guild, markov);
+            this.BuildNext(guild);
         }
     }
 
@@ -35,6 +38,7 @@ class Markov
     {
         dict = new Dictionary<string, StringMarkov>();
         nextWalk = new Dictionary<string, int>();
+        nextResponse = new Dictionary<string, string>();
     }
 
     public void AddGuild(string guild)
@@ -47,6 +51,7 @@ class Markov
         catch { } // file not created yet
         dict.Add(guild, markov);
         nextWalk.Add(guild, 0);
+        BuildNext(guild);
     }
 
     public void WriteToGuild(string guild, string line)
@@ -69,6 +74,11 @@ class Markov
     }
     public string ReadFromGuild(string guild)
     {
+        return nextResponse[guild];
+    }
+
+    public void BuildNext(string guild)
+    {
         var markovstr = this.dict[guild];
         var next = this.nextWalk[guild];
 
@@ -78,8 +88,7 @@ class Markov
             this.nextWalk[guild] = 0;
         }
 
-        string ret = markovstr.Walk().ElementAt(this.nextWalk[guild]++);
-        return ret;
+        nextResponse[guild] = markovstr.Walk().ElementAt(this.nextWalk[guild]++);
     }
 
 
