@@ -24,11 +24,29 @@ class Markov
             var markov = new StringMarkov(1);
             try
             {
-                markov.Learn(File.ReadAllLines(BuildPath(guild)));
+                markov.Learn(File.ReadAllLines(BuildPath(guild + ".txt")));
             }
             catch { } // file not created yet
             dict.Add(guild, markov);
         }
+    }
+
+    public Markov()
+    {
+        dict = new Dictionary<string, StringMarkov>();
+        nextWalk = new Dictionary<string, int>();
+    }
+
+    public void AddGuild(string guild)
+    {
+        var markov = new StringMarkov(1);
+        try
+        {
+            markov.Learn(File.ReadAllLines(BuildPath(guild + ".txt")));
+        }
+        catch { } // file not created yet
+        dict.Add(guild, markov);
+        nextWalk.Add(guild, 0);
     }
 
     public void WriteToGuild(string guild, string line)

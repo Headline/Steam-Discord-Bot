@@ -76,9 +76,10 @@ namespace ChancyBot
             client = new DiscordSocketClient();
             commands = new CommandService();
             messageHist = new List<MsgInfo>();
+            markov = new Markov();
 
             client.Log += Log;
-            
+            client.GuildAvailable += OnGuildAvailable;
             services = new ServiceCollection().BuildServiceProvider();
 
             await InstallCommands();
@@ -116,11 +117,14 @@ namespace ChancyBot
                 manager.StartJobs();
             })).Start();
 
-            markov = new Markov(Helpers.GetGuilds());
-
             await Task.Delay(-1);
         }
 
+        private async Task OnGuildAvailable(SocketGuild arg)
+        {
+            await Log(new Discord.LogMessage(Discord.LogSeverity.Debug, "OnGuildAvailable", "Enterring: " + arg.Name));
+            await Task.Run(() => markov.AddGuild(arg.Name));
+        }
 
         private async Task InstallCommands()
         {
