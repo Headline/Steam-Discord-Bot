@@ -10,4 +10,4 @@ do update
 muffinss
 slitherin
 DISTRUBTE ALL THE BINARIES!!!
-cinohcysp
+cinohcys
