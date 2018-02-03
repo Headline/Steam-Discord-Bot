@@ -4,9 +4,11 @@ namespace ChancyBot.Jobs
 {
     public class SelfUpdateListener : Job
     {
-        public override void OnRun()
+        public override async void OnRun()
         {
-            var latest = Helpers.GetLatestVersion(Program.Instance.ghReleases);
+            var releases = await Program.Instance.ghClient.Repository.Release.GetAll("Headline", "Steam-Discord-Bot");
+
+            var latest = Helpers.GetLatestVersion(releases);
             if (!Program.VERSION.Equals(latest))
             {
                 Helpers.Update();

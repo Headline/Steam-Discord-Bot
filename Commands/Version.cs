@@ -12,7 +12,7 @@ namespace ChancyBot.Commands
         public async Task Say()
         {
             var client = Program.Instance.ghClient;
-            var releases = Program.Instance.ghReleases;
+            var releases = await client.Repository.Release.GetAll("Headline", "Steam-Discord-Bot");
 
             await Context.Channel.SendMessageAsync("Current version: " + Program.VERSION + " (latest is " + Helpers.GetLatestVersion(releases) + ")");
         }

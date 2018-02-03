@@ -33,7 +33,6 @@ namespace ChancyBot
 
         // GITHUB
         public GitHubClient ghClient;
-        public IReadOnlyList<Release> ghReleases;
 
         // MARKOV
         public Markov markov;
@@ -97,7 +96,6 @@ namespace ChancyBot
             new Thread(new ThreadStart(async () =>
             {
                 ghClient = new GitHubClient(new ProductHeaderValue("Steam-Discord-Bot"));
-                ghReleases = await Task.Run(() => ghClient.Repository.Release.GetAll("Headline", "Steam-Discord-Bot"));
                 if (Config.Instance.GitHubAuthToken.Length != 0)
                     ghClient.Credentials = new Credentials(Config.Instance.GitHubAuthToken);
 
