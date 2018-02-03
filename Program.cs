@@ -99,7 +99,7 @@ namespace ChancyBot
                     ghClient.Credentials = new Credentials(Config.Instance.GitHubAuthToken);
 
                 // Calls updater.py when out of date
-                manager.AddJob(new SelfUpdateListener(ghClient));
+                manager.AddJob(new SelfUpdateListener());
 
                 // job to check steam connection
                 manager.AddJob(new SteamCheckJob(connection)); 
