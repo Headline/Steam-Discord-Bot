@@ -20,7 +20,7 @@ namespace ChancyBot.Commands
             var request = new CGameServers_GetServerList_Request
             {
                 filter = Program.Instance.connection.filter,
-                limit = 20000, // max allowed
+                limit = 50000, // max allowed
             };
 
             var callback2 = await Program.Instance.connection.GameServers.SendMessage(api => api.GetServerList(request));
