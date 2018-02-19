@@ -24,7 +24,6 @@ namespace ChancyBot.Steam
 
 		public string user;
 		public string pass;
-		public string filter;
 		public bool isRunning;
 		public readonly int DISPLAY_AMOUNT = 5;
         private Thread steamThread;
@@ -50,6 +49,8 @@ namespace ChancyBot.Steam
             this.pass = pass;
 
             this.isRunning = false;
+
+            this.steamClient.ConnectionTimeout = new TimeSpan(0, 0, 15); // 15 seconds
         }
 
         public void Connect()
