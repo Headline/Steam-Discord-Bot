@@ -6,10 +6,10 @@ namespace ChancyBot.Jobs
     {
         public override async void OnRun()
         {
-            var releases = await Program.Instance.ghClient.Repository.Release.GetAll("Headline", "Steam-Discord-Bot");
-
             try
             {
+                var releases = await Program.Instance.ghClient.Repository.Release.GetAll("Headline", "Steam-Discord-Bot");
+
                 var latest = Helpers.GetLatestVersion(releases);
                 if (!Program.VERSION.Equals(latest))
                 {

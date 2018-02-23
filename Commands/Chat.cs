@@ -21,6 +21,12 @@ namespace ChancyBot.Commands
         [Command("chatremove"), Summary("Removes the term from knowledgebase.")]
         public async Task Say(string term)
         {
+            if (Context.User.Id != 194315619217178624)
+            {
+                await Context.Channel.SendMessageAsync("Contact Headline#9572 if you believe terms should be removed.");
+                return;
+            }
+
             int amount = Program.Instance.markov.RemoveFromGuild(Context.Guild.Name, term);
             await Context.Channel.SendMessageAsync(string.Format("Removed \"{0}\" from {1} lines", term, amount));
         }
