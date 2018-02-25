@@ -15,6 +15,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Octokit;
 using ChancyBot.Commands;
+using Discord.Net.Providers.WS4Net;
 
 namespace ChancyBot
 {
@@ -72,7 +73,14 @@ namespace ChancyBot
             Console.WriteLine("Bot starting up. ({0} by Michael Flaherty)", Program.VERSION);
             Console.WriteLine("Using token: " + Config.Instance.DiscordBotToken);
 
-            client = new DiscordSocketClient();
+
+            var socketConfig = new DiscordSocketConfig
+            {
+                WebSocketProvider = WS4NetProvider.Instance,
+                LogLevel = LogSeverity.Verbose
+            };
+
+            client = new DiscordSocketClient(socketConfig);
             commands = new CommandService();
             messageHist = new List<MsgInfo>();
             markov = new Markov();
