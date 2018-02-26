@@ -57,7 +57,6 @@ namespace SteamDiscordBot
             }
             catch (Exception e)
             {
-                
                 Console.WriteLine("Failed to load configuration file settings.json!\nReason:" + e.Message);
                 Environment.Exit(0);
             }
@@ -121,7 +120,6 @@ namespace SteamDiscordBot
 
         private async Task OnGuildAvailable(SocketGuild arg)
         {
-            await Log(new Discord.LogMessage(Discord.LogSeverity.Debug, "OnGuildAvailable", "Enterring: " + arg.Name));
             await Task.Run(() => markov.AddGuild(arg.Name));
         }
 

@@ -43,7 +43,6 @@ namespace SteamDiscordBot.Steam
             this.manager.Subscribe<SteamClient.DisconnectedCallback>(SteamCallbacks.OnDisconnected);
             this.manager.Subscribe<SteamUser.LoggedOnCallback>(SteamCallbacks.OnLoggedOn);
             this.manager.Subscribe<SteamUser.LoggedOffCallback>(SteamCallbacks.OnLoggedOff);
-            this.manager.Subscribe<SteamFriends.ClanStateCallback>(SteamCallbacks.OnClanState);
 
             this.user = user;
             this.pass = pass;
