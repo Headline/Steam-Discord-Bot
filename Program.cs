@@ -99,14 +99,14 @@ namespace ChancyBot
             connection.Connect();
             Console.WriteLine("Pumping steam connection...");
 
+            ghClient = new GitHubClient(new ProductHeaderValue("Steam-Discord-Bot"));
+            if (Config.Instance.GitHubAuthToken.Length != 0)
+                ghClient.Credentials = new Credentials(Config.Instance.GitHubAuthToken);
+
             // Handle Jobs
             manager = new JobManager(30); // seconds to run each job
             new Thread(new ThreadStart(() =>
             {
-                ghClient = new GitHubClient(new ProductHeaderValue("Steam-Discord-Bot"));
-                if (Config.Instance.GitHubAuthToken.Length != 0)
-                    ghClient.Credentials = new Credentials(Config.Instance.GitHubAuthToken);
-
                 // Calls updater.py when out of date
                 manager.AddJob(new SelfUpdateListener());
 
