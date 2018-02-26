@@ -11,7 +11,7 @@ using Octokit;
 using System.Diagnostics;
 using System.IO;
 
-namespace ChancyBot
+namespace SteamDiscordBot
 {
     public class Helpers
     {
@@ -161,7 +161,7 @@ namespace ChancyBot
                 Process.Start("CMD.exe", command);
                 Environment.Exit(0);
             }
-            catch (Exception ex) { } // ignore errors. if it failed: oh well.
+            catch { } // ignore errors. if it failed: oh well.
         }
 
         public static string GetLatestVersion(IReadOnlyList<Release> releases)

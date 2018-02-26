@@ -3,10 +3,9 @@ using System.Net;
 using System.Threading.Tasks;
 
 using Discord.Commands;
-
 using Newtonsoft.Json.Linq;
 
-namespace ChancyBot.Commands
+namespace SteamDiscordBot.Commands
 {
     public class NumPlayersCommand : ModuleBase
     {
@@ -29,7 +28,7 @@ namespace ChancyBot.Commands
             }
             catch (Exception ex)
             {
-                await ChancyBot.Program.Instance.Log(new Discord.LogMessage(Discord.LogSeverity.Error, "NumPlayers", ex.Message));
+                await Program.Instance.Log(new Discord.LogMessage(Discord.LogSeverity.Error, "NumPlayers", ex.Message));
 
                 await Context.Channel.SendMessageAsync("Internal Error: " + ex.Message);
             }

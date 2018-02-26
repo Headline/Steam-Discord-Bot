@@ -1,10 +1,7 @@
 ﻿using System.Threading.Tasks;
-
 using Discord.Commands;
-using Octokit;
 
-
-namespace ChancyBot.Commands
+namespace SteamDiscordBot.Commands
 {
     public class VersionCommand : ModuleBase
     {

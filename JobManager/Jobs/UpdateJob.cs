@@ -5,7 +5,7 @@ using SteamKit2;
 using Discord;
 using System.Threading.Tasks;
 
-namespace ChancyBot.Jobs
+namespace SteamDiscordBot.Jobs
 {
 	public class UpdateJob : Job
 	{

@@ -5,7 +5,7 @@ using SteamKit2.Unified.Internal;
 using static SteamKit2.SteamUnifiedMessages;
 using System.Threading;
 
-namespace ChancyBot.Steam
+namespace SteamDiscordBot.Steam
 {
     public class SteamConnection
     {

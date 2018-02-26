@@ -4,8 +4,7 @@ using System.Collections.Generic;
 
 using Discord.Commands;
 
-
-namespace ChancyBot.Commands
+namespace SteamDiscordBot.Commands
 {
     public class SubstituteCommand : ModuleBase
     {
@@ -68,6 +67,14 @@ namespace ChancyBot.Commands
                 MsgInfo msg = (MsgInfo)obj;
                 return msg.user == this.user;
             }
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = -1880916106;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(message);
+            hashCode = hashCode * -1521134295 + user.GetHashCode();
+            return hashCode;
         }
     }
 }

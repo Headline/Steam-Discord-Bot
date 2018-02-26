@@ -1,12 +1,10 @@
 ﻿﻿using Discord;
-using SteamKit2;
-using System;
+
 using System.Collections.Generic;
-using System.Net;
 using System.Threading.Tasks;
 using System.Timers;
 
-namespace ChancyBot.Jobs
+namespace SteamDiscordBot.Jobs
 {
 	public abstract class Job
 	{

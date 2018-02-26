@@ -1,6 +1,6 @@
 ﻿using Octokit;
 
-namespace ChancyBot.Jobs
+namespace SteamDiscordBot.Jobs
 {
     public class SelfUpdateListener : Job
     {

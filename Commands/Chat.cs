@@ -1,9 +1,7 @@
 ﻿using System.Threading.Tasks;
-
 using Discord.Commands;
 
-
-namespace ChancyBot.Commands
+namespace SteamDiscordBot.Commands
 {
     public class ChatCommand : ModuleBase
     {

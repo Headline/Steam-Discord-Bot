@@ -8,7 +8,7 @@ using System.Xml.Linq;
 using System;
 using Discord;
 
-namespace ChancyBot.Jobs
+namespace SteamDiscordBot.Jobs
 {
 	public class AlliedModdersThreadJob : Job
 	{

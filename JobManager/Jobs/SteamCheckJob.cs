@@ -1,8 +1,8 @@
 ﻿using Discord;
 
-using ChancyBot.Steam;
+using SteamDiscordBot.Steam;
 
-namespace ChancyBot.Jobs
+namespace SteamDiscordBot.Jobs
 {
 	public class SteamCheckJob : Job
 	{

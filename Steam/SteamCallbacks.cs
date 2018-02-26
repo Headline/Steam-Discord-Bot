@@ -1,7 +1,7 @@
 ﻿﻿using SteamKit2;
 using Discord;
 
-namespace ChancyBot.Steam
+namespace SteamDiscordBot.Steam
 {
 	class SteamCallbacks
     {
