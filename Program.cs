@@ -118,9 +118,8 @@ namespace SteamDiscordBot
                 if (config.AlliedModdersThreadJob)
                     manager.AddJob(new AlliedModdersThreadJob("https://forums.alliedmods.net/external.php?newpost=true&forumids=108", "sourcemod"));
                 
-                foreach (string app in config.AppIDList)
+                foreach (uint appid in config.AppIDList)
                 {
-                    uint.TryParse(app, out uint appid);
                     manager.AddJob(new UpdateJob(appid));
                 }
 
