@@ -30,10 +30,14 @@ In order to use this bot you will need a discord bot token. [Here](https://githu
 
 ## Installation
 - Install latest version from the [releases page](https://github.com/Headline22/Steam-Discord-Bot/releases).
-- Set up Settings.xml
+- Set up settings.json
 - Install [Python 3.6](https://www.python.org/downloads/) (for updater.py)
 - Install [psutil](https://github.com/giampaolo/psutil/blob/master/INSTALL.rst) (for updater.py)
 - Run Steam-Discord-Bot executable
+
+## Configuration
+Here's a breakdown for configuration settings, along with why they're needed.
+- **SteamUsername** & **SteamPassword**: The bot needs credentials to a steam account that it can stay logged into for things like querying the master server list.
 
 ## Credits 
 Much of the code was adapted from [VoiDeD's bot](https://github.com/VoiDeD/steam-irc-bot/), so many thanks for the guidance. Also I'd like to thank the guys on #opensteamworks in gamesurge irc along with our contributors for making this bot awesome.
