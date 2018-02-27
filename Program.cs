@@ -167,7 +167,7 @@ namespace SteamDiscordBot
                 return;
             }
 
-            if (Helpers.IsCommandDisabled(message))
+            if (Helpers.IsCommandDisabled(message.Content.Split(' ')[0].Substring(1)))
             {
                 await context.Channel.SendMessageAsync("That command is disabled!");
                 return;
@@ -207,7 +207,8 @@ namespace SteamDiscordBot
                 /* Both objects are non null, valid, so lets grab the attribute text */
                 if (summary != null && command != null)
                 {
-                    arrayList.Add("!" + command.Text + " - " + summary.Text);
+                    if (!Helpers.IsCommandDisabled(command.Text))
+                        arrayList.Add("!" + command.Text + " - " + summary.Text);
                 }
             }
 

@@ -172,11 +172,10 @@ namespace SteamDiscordBot
             catch { } // ignore errors. if it failed: oh well.
         }
 
-        public static bool IsCommandDisabled(SocketUserMessage message)
+        public static bool IsCommandDisabled(string cmd)
         {
             foreach (string var in Program.config.DisabledCommands)
             {
-                string cmd = message.Content.Split(' ')[0].Substring(1);
                 if (var.Equals(cmd))
                 {
                     return true;
