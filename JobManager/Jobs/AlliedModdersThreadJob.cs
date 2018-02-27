@@ -87,14 +87,14 @@ namespace SteamDiscordBot.Jobs
             else return Equals(compObj);
         }
 
-        public bool Equals(ThreadInfo commit2)
+        public bool Equals(ThreadInfo other)
         {
-            return commit2.link.Equals(this.link);
+            return other.link.Equals(this.link);
         }
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return -1089346607 + EqualityComparer<string>.Default.GetHashCode(link);
         }
     }
 }

@@ -14,7 +14,6 @@ namespace SteamDiscordBot.Steam
 			}
 
 			Program.Instance.Log(new LogMessage(LogSeverity.Info, "SteamCB", "Steam connected!"));
-
 			Program.Instance.connection.steamUser.LogOn(new SteamUser.LogOnDetails
 			{
 				Username = Program.Instance.connection.user,
