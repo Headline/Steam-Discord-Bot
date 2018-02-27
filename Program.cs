@@ -111,7 +111,7 @@ namespace SteamDiscordBot
             manager = new JobManager(config.JobInterval); // time in seconds to run each job
             new Thread(new ThreadStart(() =>
             {
-                if (config.SelfUpdateListener && config.GitHubAuthToken.Length == 0)
+                if (config.SelfUpdateListener && config.GitHubAuthToken.Length != 0)
                     manager.AddJob(new SelfUpdateListener());
                 if (config.SteamCheckJob)
                     manager.AddJob(new SteamCheckJob(connection));
