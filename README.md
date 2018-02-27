@@ -25,9 +25,6 @@ If you are somebody looking to have this bot on your discord server, message me 
 !version - Get the current bot version.
 ```
 
-In order to use this bot you will need a discord bot token. [Here](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token) is an exellent guide on how to do so.
-
-
 ## Installation
 - Install latest version from the [releases page](https://github.com/Headline22/Steam-Discord-Bot/releases).
 - Set up settings.json
@@ -38,6 +35,18 @@ In order to use this bot you will need a discord bot token. [Here](https://githu
 ## Configuration
 Here's a breakdown for configuration settings, along with why they're needed.
 - **SteamUsername** & **SteamPassword**: The bot needs credentials to a steam account that it can stay logged into for things like querying the master server list.
+- **DiscordBotToken**: Token used for Discord's bot API, [reactiflux](https://github.com/reactiflux) made a great guide for getting one [here](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token)
+- **DiscordAdminId**: Admin ID used for commands which should not be used by the general public. It's a unique ID which identifies you among others. Find yours using this [tutorial](https://support.discordapp.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-) made by Discord themselves.
+- **DiscordAdminContact**: A contact string to be used to inform users who owns the bot. This can be a Discord username, email, or link.
+- **AppIDList**: The list of steam appids that the bot watches for updates. If an update is detected it will alert all servers with a matching `AnnouncePref`
+- **AnnouncePrefs**: A list of channels the bot will search for to send announcement into. This list can include many channels which span across multiple servers, but the bot will only send the message once to the first match found.
+- **DisabledCommands**: A list of disabled commands, should you want to do so. All you need to do is specify a command name.I you wanted to remove the help command, enter "help" as an entry in the list.
+- **GitHubAuthToken**: An authentication token for GitHub API if you'd like the bot to automatically update itself. You may leave this blank, but !update will not work and any updates will not automatically occur. 
+- **JobInterval**: How often the bot will run scheduled jobs. The time given is in seconds.
+- **AlliedModdersThreadJob**: Alerts new plugin uploads to the AlliedModders [plugin subforum](https://forums.alliedmods.net/forumdisplay.php?f=108). This is disabled by default, as I believe it is only useful for my usecase. If you'd like to get the notifications, you may set it to true. Send channel is determined by `AnnouncePrefs` 
+- **SteamCheckJob**: Job which ensures a steam connection is currently being held, and attempts a reconnect on failure.
+- **SelfUpdateListener**: Job which periodically checks current version with latest, and updates if possible. If `GitHubAuthToken` isn't filled out, this job will never run
+- **GitHubUpdateUsername**, **GitHubUpdateRepository**, and **GitHubUpdateReleaseFilename**: These exist if you'd like to fork the repository yourself, setup AppVeyor, and handle automatic updating yourself. This is useful for developers who'd like to maintain their own fork.
 
 ## Credits 
 Much of the code was adapted from [VoiDeD's bot](https://github.com/VoiDeD/steam-irc-bot/), so many thanks for the guidance. Also I'd like to thank the guys on #opensteamworks in gamesurge irc along with our contributors for making this bot awesome.
