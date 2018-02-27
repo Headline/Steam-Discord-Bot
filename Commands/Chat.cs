@@ -16,12 +16,14 @@ namespace SteamDiscordBot.Commands
 
     public class ChatRemoveCommand : ModuleBase
     {
-        [Command("chatremove"), Summary("Removes the term from knowledgebase.")]
+        [Command("chatremove"), Summary("Removes the term from knowledgebase. [Owner only]")]
         public async Task Say(string term)
         {
-            if (Context.User.Id != 194315619217178624)
+            if (Context.User.Id != Program.ownerId)
             {
-                await Context.Channel.SendMessageAsync("Contact Headline#9572 if you believe terms should be removed.");
+                await Context.Channel.SendMessageAsync("Contact "
+                                        + Program.config.DiscordAdminContact
+                                        + " if you believe terms should be removed.");
                 return;
             }
 

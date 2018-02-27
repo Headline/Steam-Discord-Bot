@@ -1,7 +1,11 @@
 {
-   "SteamUsername": [],
-   "SteamPassword": [],
-   "DiscordBotToken": [],
+   "SteamUsername": "",
+   "SteamPassword": "",
+   
+   "DiscordBotToken": "",
+   "DiscordAdminId": "",
+   "DiscordAdminContact": "",
+   
    "AppIDList": [
       "440",
       "240",
@@ -11,5 +15,24 @@
       "570",
       "4000"
    ],
-   "GitHubAuthToken": []
+   
+   "AnnouncePrefs": [
+      "announce",
+      "general"
+   ],
+   
+   "DisabledCommands": [
+   ],
+
+   "GitHubAuthToken": "",
+   
+   "JobInterval": 30,
+   
+   "AlliedModdersThreadJob": false,
+   "SteamCheckJob": true,
+   "SelfUpdateListener": true,
+   
+   "GitHubUpdateUsername": "Headline",
+   "GitHubUpdateRepository": "Steam-Discord-Bot",
+   "GitHubUpdateReleaseFilename": "steam-discord-bot.zip"
 }

@@ -47,6 +47,7 @@ namespace SteamDiscordBot
         public static dynamic config;
         public string[] helpLines;
         public List<MsgInfo> messageHist;
+        public static uint ownerId;
 
         public static void Main(string[] args)
         {
@@ -60,6 +61,14 @@ namespace SteamDiscordBot
                 Console.WriteLine("Failed to load configuration file settings.json!\nReason:" + e.Message);
                 Environment.Exit(0);
             }
+
+            if (config.DiscordBotToken.Length == 0)
+            {
+                Console.WriteLine("You must supply a DiscordBotToken!");
+                Environment.Exit(0);
+            }
+
+            uint.TryParse(config.DiscordAdminId, out Program.ownerId); // cache owner id for later
 
             Instance = new Program();
             Instance.MainAsync().GetAwaiter().GetResult();
@@ -99,12 +108,15 @@ namespace SteamDiscordBot
                 ghClient.Credentials = new Credentials(config.GitHubAuthToken);
 
             // Handle Jobs
-            manager = new JobManager(30); // time in seconds to run each job
+            manager = new JobManager(config.JobInterval); // time in seconds to run each job
             new Thread(new ThreadStart(() =>
             {
-                manager.AddJob(new SelfUpdateListener());
-                manager.AddJob(new SteamCheckJob(connection)); 
-                manager.AddJob(new AlliedModdersThreadJob("https://forums.alliedmods.net/external.php?newpost=true&forumids=108", "sourcemod"));
+                if (config.SelfUpdateListener && config.GitHubAuthToken.Length == 0)
+                    manager.AddJob(new SelfUpdateListener());
+                if (config.SteamCheckJob)
+                    manager.AddJob(new SteamCheckJob(connection));
+                if (config.AlliedModdersThreadJob)
+                    manager.AddJob(new AlliedModdersThreadJob("https://forums.alliedmods.net/external.php?newpost=true&forumids=108", "sourcemod"));
                 
                 foreach (string app in config.AppIDList)
                 {
@@ -152,6 +164,12 @@ namespace SteamDiscordBot
                 };
                 messageHist.Add(info);
                 markov.WriteToGuild(context.Guild.Name, message.Content);
+                return;
+            }
+
+            if (Helpers.IsCommandDisabled(message))
+            {
+                await context.Channel.SendMessageAsync("That command is disabled!");
                 return;
             }
 

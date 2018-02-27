@@ -5,15 +5,22 @@ namespace SteamDiscordBot.Commands
 {
     public class UpdateCommand : ModuleBase
     {
-        [Command("update"), Summary("Updates and reloads the bot. [Headline only]")]
+        [Command("update"), Summary("Updates and reloads the bot. [Owner only]")]
         public async Task Say()
         {
-           if (Context.User.Id != 194315619217178624)
+            if (Program.config.GitHubAuthToken.Length == 0)
             {
-                await Context.Channel.SendMessageAsync("Contact Headline#9572 if you believe I should be updated.");
+                await Context.Channel.SendMessageAsync("Bot updating is disabled!");
                 return;
             }
-            
+            if (Context.User.Id != Program.ownerId)
+            {
+                await Context.Channel.SendMessageAsync("Contact " 
+                                        + Program.config.DiscordAdminContact
+                                        + " if you believe I should be updated.");
+                return;
+            }
+
             await Context.Channel.SendMessageAsync("Okay. Updating...");
             Helpers.Update();
         }

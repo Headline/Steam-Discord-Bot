@@ -13,10 +13,8 @@ using System.IO;
 
 namespace SteamDiscordBot
 {
-    public class Helpers
+    public static class Helpers
     {
-        public static readonly string[] sendchannels = { "announc", "general" };
-
         public static int GuildHasChannel(IReadOnlyCollection<SocketTextChannel> channels, string channelName)
         {
             bool found = false;
@@ -37,16 +35,16 @@ namespace SteamDiscordBot
             return (found)?index:-1;
         }
 
-        // Using the static channels array, it finds the first matching channel to send the message to.
+        // Using the settings.json AnnouncePrefs, it finds the first matching channel to send the message to.
         // The order of channels in sendchannels array matters.
 		public static SocketTextChannel FindSendChannel(SocketGuild guild)
 		{
             int i = 0;
             int index = -1;
             bool found = false;
-            while (!found && i < sendchannels.Length)
+            while (!found && i < Program.config.AnnouncePrefs.Length)
             {
-                index = GuildHasChannel(guild.TextChannels, sendchannels[i]);
+                index = GuildHasChannel(guild.TextChannels, Program.config.AnnouncePrefs[i]);
                 if (index != -1)
                 {
                     found = true;
@@ -142,15 +140,25 @@ namespace SteamDiscordBot
 
         public async static void Update()
         {
+            if (Program.config.GitHubAuthToken.Length == 0)
+            {
+                return;
+            }
+
             try
             {
 
                 int pid = Process.GetCurrentProcess().Id;
 
                 var client = Program.Instance.ghClient;
-                var releases = await client.Repository.Release.GetAll("Headline", "Steam-Discord-Bot");
+                var releases = await client.Repository.Release.GetAll(Program.config.GitHubUsername, Program.config.GitHubRepository);
 
-                string url = "https://github.com/Headline/Steam-Discord-Bot/releases/download/<name>/steam-discord-bot.zip";
+                string url = "https://github.com/"
+                    + Program.config.GitHubUsername
+                    + "/"
+                    + Program.config.GitHubRepository
+                    + "/releases/download/<name>/"
+                    + Program.config.GitHubReleaseFilename;
                 url = url.Replace("<name>", releases[0].Name);
 
                 string command = string.Format("/k cd {0} & python updater.py {1} {2}",
@@ -162,6 +170,20 @@ namespace SteamDiscordBot
                 Environment.Exit(0);
             }
             catch { } // ignore errors. if it failed: oh well.
+        }
+
+        public static bool IsCommandDisabled(SocketUserMessage message)
+        {
+            foreach (string var in Program.config.DisabledCommands)
+            {
+                string cmd = message.Content.Split(' ')[0].Substring(1);
+                if (var.Equals(cmd))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public static string GetLatestVersion(IReadOnlyList<Release> releases)
