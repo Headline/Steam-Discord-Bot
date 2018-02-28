@@ -8,13 +8,13 @@ using System.Collections.Generic;
 using MarkovSharp.TokenisationStrategies;
 using Newtonsoft.Json.Linq;
 
-class Markov
+class MarkovHandler
 {
     private Dictionary<string, StringMarkov> dict;
     private Dictionary<string, int> nextWalk; // used for `.Walk()`ing
     private Dictionary<string, string> nextResponse;
 
-    public Markov(string[] guilds)
+    public MarkovHandler(string[] guilds)
     {
         dict = new Dictionary<string, StringMarkov>();
         nextWalk = new Dictionary<string, int>();
@@ -34,7 +34,7 @@ class Markov
         }
     }
 
-    public Markov()
+    public MarkovHandler()
     {
         dict = new Dictionary<string, StringMarkov>();
         nextWalk = new Dictionary<string, int>();
@@ -70,7 +70,7 @@ class Markov
                 this.dict[guild].SourceLines.RemoveAt(i);
             }
         }
-        return Markov.RemoveTermFromFile(guild + ".txt", term);
+        return MarkovHandler.RemoveTermFromFile(guild + ".txt", term);
     }
     public string ReadFromGuild(string guild)
     {

@@ -38,7 +38,7 @@ namespace SteamDiscordBot
         public GitHubClient ghClient;
 
         // MARKOV
-        public Markov markov;
+        public MarkovHandler markov;
 
         // BOT
         public static Program Instance;
@@ -88,7 +88,7 @@ namespace SteamDiscordBot
             services = new ServiceCollection().BuildServiceProvider();
 
             messageHist = new List<MsgInfo>();
-            markov = new Markov();
+            markov = new MarkovHandler();
 
             client.Log += Log;
             client.GuildAvailable += OnGuildAvailable;
