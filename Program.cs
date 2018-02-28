@@ -105,7 +105,7 @@ namespace SteamDiscordBot
             connection = new SteamConnection(config.SteamUsername, config.SteamPassword);
             connection.Connect();
 
-            ghClient = new GitHubClient(new ProductHeaderValue("Steam-Discord-Bot"));
+            ghClient = new GitHubClient(new ProductHeaderValue(Program.config.GitHubRepository));
             if (config.GitHubAuthToken.Length != 0)
                 ghClient.Credentials = new Credentials(config.GitHubAuthToken);
 
