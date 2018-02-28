@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Net;
+using System.Threading.Tasks;
 
 using SteamKit2;
 using Discord;
-using System.Threading.Tasks;
+
 
 namespace SteamDiscordBot.Jobs
 {

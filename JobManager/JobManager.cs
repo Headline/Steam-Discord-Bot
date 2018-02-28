@@ -1,8 +1,8 @@
-﻿﻿using Discord;
-
-using System.Collections.Generic;
+﻿using System.Timers;
 using System.Threading.Tasks;
-using System.Timers;
+using System.Collections.Generic;
+
+using Discord;
 
 namespace SteamDiscordBot.Jobs
 {
@@ -43,7 +43,6 @@ namespace SteamDiscordBot.Jobs
             timer = new Timer(seconds * 1000);
             timer.Elapsed += RunJobs;
         }
-
 
         // thread method
         private void RunJobs(object source, ElapsedEventArgs e)

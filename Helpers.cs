@@ -1,15 +1,17 @@
-﻿using System.Net;
+﻿using System;
+using System.IO;
+using System.Net;
 using System.Linq;
+using System.Reflection;
+using System.Diagnostics;
 using System.Collections.Generic;
 
 using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 
 using Newtonsoft.Json.Linq;
-using System;
 using Octokit;
-using System.Diagnostics;
-using System.IO;
 
 namespace SteamDiscordBot
 {
@@ -147,7 +149,11 @@ namespace SteamDiscordBot
 
             try
             {
-
+                /*
+                 * We give the python script our pid, that way
+                 * it can loop and wait for the application to completely
+                 * exit before replacing our files
+                 */
                 int pid = Process.GetCurrentProcess().Id;
 
                 var client = Program.Instance.ghClient;
@@ -198,5 +204,37 @@ namespace SteamDiscordBot
 			string name = (string)o["" + appid]["data"]["name"];
 			return name;
 		}
-	}
+
+        public static string[] BuildHelpLines()
+        {
+            List<string> arrayList = new List<string>();
+
+            Assembly asm = Assembly.GetExecutingAssembly(); // Get assembly
+
+            var results = from type in asm.GetTypes()
+                          where typeof(ModuleBase).IsAssignableFrom(type)
+                          select type; // Grab all types that inherit ModuleBase
+
+            foreach (Type t in results) // For each type in results
+            {
+                /* Grab MethodInfo of the type where the method has the attribute SummaryAttribute */
+                MethodInfo info = t.GetMethods().Where(x => x.GetCustomAttributes(typeof(SummaryAttribute), false).Length > 0).First();
+
+                /* Grab summary attribute */
+                SummaryAttribute summary = info.GetCustomAttribute(typeof(SummaryAttribute)) as SummaryAttribute;
+
+                /* Grab command attribute */
+                CommandAttribute command = info.GetCustomAttribute(typeof(CommandAttribute)) as CommandAttribute;
+
+                /* Both objects are non null, valid, so lets grab the attribute text */
+                if (summary != null && command != null)
+                {
+                    if (!Helpers.IsCommandDisabled(command.Text))
+                        arrayList.Add("!" + command.Text + " - " + summary.Text);
+                }
+            }
+
+            return arrayList.ToArray(); // return string[] array
+        }
+    }
 }

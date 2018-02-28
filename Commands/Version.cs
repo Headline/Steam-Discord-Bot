@@ -9,7 +9,7 @@ namespace SteamDiscordBot.Commands
         public async Task Say()
         {
             var client = Program.Instance.ghClient;
-            var releases = await client.Repository.Release.GetAll("Headline", "Steam-Discord-Bot");
+            var releases = await client.Repository.Release.GetAll(Program.config.GitHubUsername, Program.config.GitHubRepository);
 
             await Context.Channel.SendMessageAsync("Current version: " + Program.VERSION + " (latest is " + Helpers.GetLatestVersion(releases) + ")");
         }

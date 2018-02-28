@@ -1,25 +1,23 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 using Discord;
 using Discord.WebSocket;
 using Discord.Commands;
+using Discord.Net.Providers.WS4Net;
 
 using Microsoft.Extensions.DependencyInjection;
 
 using SteamDiscordBot.Jobs;
 using SteamDiscordBot.Steam;
-using System.Linq;
-using System.IO;
-using System.Collections.Generic;
+using SteamDiscordBot.Commands;
 
 using Octokit;
-using Discord.Net.Providers.WS4Net;
-
 using JsonConfig;
-using SteamDiscordBot.Commands;
 
 namespace SteamDiscordBot
 {
@@ -87,14 +85,18 @@ namespace SteamDiscordBot
 
             client = new DiscordSocketClient(socketConfig);
             commands = new CommandService();
+            services = new ServiceCollection().BuildServiceProvider();
+
             messageHist = new List<MsgInfo>();
             markov = new Markov();
 
             client.Log += Log;
             client.GuildAvailable += OnGuildAvailable;
-            services = new ServiceCollection().BuildServiceProvider();
 
-            await InstallCommands();
+            client.MessageReceived += HandleCommand;
+            await commands.AddModulesAsync(Assembly.GetEntryAssembly());
+
+            helpLines = Helpers.BuildHelpLines();
 
             await client.LoginAsync(TokenType.Bot, config.DiscordBotToken);
             await client.StartAsync();
@@ -134,25 +136,15 @@ namespace SteamDiscordBot
             await Task.Run(() => markov.AddGuild(arg.Name));
         }
 
-        private async Task InstallCommands()
-        {
-            client.MessageReceived += HandleCommand;
-            await commands.AddModulesAsync(Assembly.GetEntryAssembly());
-
-            helpLines = BuildHelpLines();
-        }
-
         public async Task HandleCommand(SocketMessage messageParam)
         {
             var message = messageParam as SocketUserMessage;
             if (message == null) return;
-
-            int argPos = 0;
+            if (message.Author.IsBot) return;
 
             var context = new CommandContext(client, message);
 
-            if (message.Author.IsBot) return;
-
+            int argPos = 0;
             if (!(message.HasCharPrefix('!', ref argPos)
                 || message.HasMentionPrefix(client.CurrentUser, ref argPos)))
             {
@@ -180,38 +172,6 @@ namespace SteamDiscordBot
         public Task Log(LogMessage msg)
         {
             return Task.Run(() => Console.WriteLine(msg.ToString()));
-        }
-
-        public string[] BuildHelpLines()
-        {
-            List<string> arrayList = new List<string>();
-
-            Assembly asm = Assembly.GetExecutingAssembly(); // Get assembly
-
-            var results = from type in asm.GetTypes()
-                          where typeof(ModuleBase).IsAssignableFrom(type)
-                          select type; // Grab all types that inherit ModuleBase
-
-            foreach (Type t in results) // For each type in results
-            {
-                /* Grab MethodInfo of the type where the method has the attribute SummaryAttribute */
-                MethodInfo info = t.GetMethods().Where(x => x.GetCustomAttributes(typeof(SummaryAttribute), false).Length > 0).First();
-
-                /* Grab summary attribute */
-                SummaryAttribute summary = info.GetCustomAttribute(typeof(SummaryAttribute)) as SummaryAttribute;
-
-                /* Grab command attribute */
-                CommandAttribute command = info.GetCustomAttribute(typeof(CommandAttribute)) as CommandAttribute;
-
-                /* Both objects are non null, valid, so lets grab the attribute text */
-                if (summary != null && command != null)
-                {
-                    if (!Helpers.IsCommandDisabled(command.Text))
-                        arrayList.Add("!" + command.Text + " - " + summary.Text);
-                }
-            }
-
-            return arrayList.ToArray(); // return string[] array
         }
     }
 }

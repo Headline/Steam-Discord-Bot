@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
+﻿using System;
 using System.Net;
-
+using System.Linq;
 using System.Xml.Linq;
-using System;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+
 using Discord;
 
 namespace SteamDiscordBot.Jobs
@@ -94,7 +93,7 @@ namespace SteamDiscordBot.Jobs
 
         public override int GetHashCode()
         {
-            return -1089346607 + EqualityComparer<string>.Default.GetHashCode(link);
+            return link.GetHashCode();
         }
     }
 }
