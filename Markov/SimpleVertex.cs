@@ -112,7 +112,7 @@ namespace SteamDiscordBot.Markov
             this.adjacencies = new HashSet<SimpleEdge<T>>();
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return this.data.ToString();
         }

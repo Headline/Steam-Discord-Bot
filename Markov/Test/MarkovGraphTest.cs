@@ -11,6 +11,7 @@ namespace SteamDiscordBot.Markov.Test
         public static void Main(String[] args)
         {
             IMarkovBot graph = new MarkovGraph();
+
             String[] inputs = {
                 "I'll be back.",
                 "You talking to me?",
@@ -24,9 +25,9 @@ namespace SteamDiscordBot.Markov.Test
                 "The optimist proclaims that we live in the best of all possible worlds, and the pessimist fears this is true.",
                 "Give me chastity and continence, but not yet.",
                 "Well, here's another nice mess you've gotten me into!",
-        };
+            };
 
-            foreach (String input in inputs)
+            foreach (string input in inputs)
             {
                 graph.Train(input);
             }

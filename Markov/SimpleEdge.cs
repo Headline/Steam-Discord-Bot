@@ -75,7 +75,7 @@ namespace SteamDiscordBot.Markov
             this.to = null;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return "Weight: " + weight + " | Link: " + to.ToString();
         }

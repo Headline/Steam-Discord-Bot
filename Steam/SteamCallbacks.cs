@@ -7,12 +7,6 @@ namespace SteamDiscordBot.Steam
     {
 		public static void OnConnected(SteamClient.ConnectedCallback callback)
 		{
-			if (callback.Result != EResult.OK)
-			{
-				Program.Instance.connection.isRunning = false;
-				return;
-			}
-
 			Program.Instance.Log(new LogMessage(LogSeverity.Info, "SteamCB", "Steam connected!"));
 			Program.Instance.connection.steamUser.LogOn(new SteamUser.LogOnDetails
 			{

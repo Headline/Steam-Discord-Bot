@@ -48,8 +48,6 @@ namespace SteamDiscordBot.Steam
             this.pass = pass;
 
             this.isRunning = false;
-
-            this.steamClient.ConnectionTimeout = new TimeSpan(0, 0, 15); // 15 seconds
         }
 
         public void Connect()

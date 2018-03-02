@@ -218,7 +218,7 @@ namespace SteamDiscordBot
             foreach (Type t in results) // For each type in results
             {
                 /* Grab MethodInfo of the type where the method has the attribute SummaryAttribute */
-                MethodInfo info = t.GetMethods().Where(x => x.GetCustomAttributes(typeof(SummaryAttribute), false).Length > 0).First();
+               MethodInfo info = t.GetMethods().Where(x => x.GetCustomAttributes(typeof(SummaryAttribute), false).Length > 0).First();
 
                 /* Grab summary attribute */
                 SummaryAttribute summary = info.GetCustomAttribute(typeof(SummaryAttribute)) as SummaryAttribute;

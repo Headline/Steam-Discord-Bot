@@ -5,28 +5,27 @@ using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 
-using MarkovSharp.TokenisationStrategies;
 using Newtonsoft.Json.Linq;
+using SteamDiscordBot.Markov;
 
 class MarkovHandler
 {
-    private Dictionary<string, StringMarkov> dict;
-    private Dictionary<string, int> nextWalk; // used for `.Walk()`ing
+    private Dictionary<string, IMarkovBot> dict;
     private Dictionary<string, string> nextResponse;
 
     public MarkovHandler(string[] guilds)
     {
-        dict = new Dictionary<string, StringMarkov>();
-        nextWalk = new Dictionary<string, int>();
+        dict = new Dictionary<string, IMarkovBot>();
         nextResponse = new Dictionary<string, string>();
 
         foreach (string guild in guilds)
         {
-            nextWalk.Add(guild, 0);
-            var markov = new StringMarkov(1);
+            var markov = new MarkovGraph();
             try
             {
-                markov.Learn(File.ReadAllLines(BuildPath(guild + ".txt")));
+                string[] lines = File.ReadAllLines(BuildPath(guild + ".txt"));
+                foreach (string line in lines)
+                    markov.Train(line);
             }
             catch { } // file not created yet
             dict.Add(guild, markov);
@@ -36,42 +35,47 @@ class MarkovHandler
 
     public MarkovHandler()
     {
-        dict = new Dictionary<string, StringMarkov>();
-        nextWalk = new Dictionary<string, int>();
+        dict = new Dictionary<string, IMarkovBot>();
         nextResponse = new Dictionary<string, string>();
     }
 
     public void AddGuild(string guild)
     {
-        var markov = new StringMarkov(1);
+        var markov = new MarkovGraph();
         try
         {
-            markov.Learn(File.ReadAllLines(BuildPath(guild + ".txt")));
+            string[] lines = File.ReadAllLines(BuildPath(guild + ".txt"));
+            foreach (string line in lines)
+                markov.Train(line);
         }
         catch { } // file not created yet
         dict.Add(guild, markov);
-        nextWalk.Add(guild, 0);
         BuildNext(guild);
     }
 
     public void WriteToGuild(string guild, string line)
     {
         if (WriteLineToFile(guild + ".txt", line))
-            this.dict[guild].Learn(line);
+            this.dict[guild].Train(line);
     }
 
     public int RemoveFromGuild(string guild, string term)
     {
-        for (int i = 0; i < this.dict[guild].SourceLines.Count; i++)
+        int retval = MarkovHandler.RemoveTermFromFile(guild + ".txt", term);
+        var markov = new MarkovGraph();
+        try
         {
-            var line = this.dict[guild].SourceLines.ElementAt(i);
-            if (line.Contains(term))
-            {
-                this.dict[guild].SourceLines.RemoveAt(i);
-            }
+            string[] lines = File.ReadAllLines(BuildPath(guild + ".txt"));
+            foreach (string line in lines)
+                markov.Train(line);
         }
-        return MarkovHandler.RemoveTermFromFile(guild + ".txt", term);
+        catch { } // file not created yet
+        dict.Add(guild, markov);
+        this.BuildNext(guild);
+
+        return retval;
     }
+
     public string ReadFromGuild(string guild)
     {
         return nextResponse[guild];
@@ -80,15 +84,8 @@ class MarkovHandler
     public void BuildNext(string guild)
     {
         var markovstr = this.dict[guild];
-        var next = this.nextWalk[guild];
 
-        if (next >= markovstr.Walk().Count()) /* if we used everything, rebuild */
-        {
-            markovstr.Retrain(1);
-            this.nextWalk[guild] = 0;
-        }
-
-        nextResponse[guild] = markovstr.Walk().ElementAt(this.nextWalk[guild]++);
+        nextResponse[guild] = markovstr.GetPhrase();
     }
 
 
@@ -164,7 +161,7 @@ class MarkovHandler
 
     public string GetPhraseFromFile(string file, string term = null)
     {
-        return this.dict[file].Walk().First();
+        return this.dict[file].GetPhrase();
     }
 
     public static string BuildPath(string file)

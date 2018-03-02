@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace SteamDiscordBot.Markov
 {
-    public class MarkovGraph : Graph<String>, IMarkovBot
+    public class MarkovGraph : Graph<string>, IMarkovBot
     {
 
         private Random rand;
-        private HashSet<SimpleVertex<String>> startingWords;
-        private List<String> sourceLines;
+        private HashSet<SimpleVertex<string>> startingWords;
+        private List<string> sourceLines;
 
         public List<string> SourceLines { get => sourceLines; }
 
@@ -20,20 +19,22 @@ namespace SteamDiscordBot.Markov
 	     */
         public MarkovGraph()
         {
+            this.sourceLines = new List<string>();
             this.rand = new Random();
-            this.startingWords = new HashSet<SimpleVertex<String>>();
+            this.startingWords = new HashSet<SimpleVertex<string>>();
         }
 
         /**
          * Constructor for MarkovGraph which will train a
          * collection of phrases
          */
-        public MarkovGraph(ICollection<String> phrases)
+        public MarkovGraph(ICollection<string> phrases)
         {
+            this.sourceLines = new List<string>();
             this.rand = new Random();
-            this.startingWords = new HashSet<SimpleVertex<String>>();
+            this.startingWords = new HashSet<SimpleVertex<string>>();
 
-            foreach (String phrase in phrases)
+            foreach (string phrase in phrases)
             {
                 if (phrase != null)
                 {
@@ -47,16 +48,16 @@ namespace SteamDiscordBot.Markov
 	     * vertex.
 	     * 
 	     * @param vertex Vertex to start from
-	     * @param sb String Builder to build words
+	     * @param sb string Builder to build words
 	     */
-        private void BuildStringFromVertex(SimpleVertex<String> vertex, StringBuilder sb)
+        private void BuildStringFromVertex(SimpleVertex<string> vertex, StringBuilder sb)
         {
             sb.Append(vertex.GetData());
             sb.Append(" ");
 
-            List<SimpleVertex<String>> list = new List<SimpleVertex<String>>();
+            List<SimpleVertex<string>> list = new List<SimpleVertex<string>>();
 
-            foreach (SimpleEdge<String> edge in vertex.GetAdjacencies())
+            foreach (SimpleEdge<string> edge in vertex.GetAdjacencies())
             {
                 if (edge != null)
                 {
@@ -72,14 +73,14 @@ namespace SteamDiscordBot.Markov
 
             if (list.Count > 0)
             {
-                SimpleVertex<String> lucky = list.ElementAt(rand.Next(list.Count));
+                SimpleVertex<string> lucky = list.ElementAt(rand.Next(list.Count));
                 BuildStringFromVertex(lucky, sb);
             }
         }
 
-        public bool Contains(String word)
+        public bool Contains(string word)
         {
-            foreach (SimpleVertex<String> vertex in this.adjList)
+            foreach (SimpleVertex<string> vertex in this.adjList)
             {
                 if (vertex != null)
                 {
@@ -93,15 +94,15 @@ namespace SteamDiscordBot.Markov
             return false;
         }
 
-        public String GetPhraseContains(String value)
+        public string GetPhraseContains(string value)
         {
-            if (!this.adjList.Contains(new SimpleVertex<String>(value)))
+            if (!this.adjList.Contains(new SimpleVertex<string>(value)))
             {
                 return null;
             }
 
             bool found = false;
-            String attempt = "";
+            string attempt = "";
             while (!found)
             {
                 attempt = this.GetPhrase();
@@ -114,20 +115,20 @@ namespace SteamDiscordBot.Markov
             return attempt;
         }
 
-        public void Train(String input)
+        public void Train(string input)
         {
             this.sourceLines.Add(input);
-            String[] temp = input.Split(' ');
+            string[] temp = input.Split(' ');
             this.Train(temp);
         }
 
-        public void Train(String[] input)
+        public void Train(string[] input)
         {
-            List<SimpleVertex<String>> verticies = new List<SimpleVertex<String>>();
+            List<SimpleVertex<string>> verticies = new List<SimpleVertex<string>>();
 
             for (int i = 0; i < input.Length; i++)
             {
-                SimpleVertex<String> vertex = new SimpleVertex<String>(input[i]);
+                SimpleVertex<string> vertex = new SimpleVertex<string>(input[i]);
                 verticies.Add(vertex);
                 if (i == 0)
                 {
@@ -137,19 +138,22 @@ namespace SteamDiscordBot.Markov
 
             for (int i = 0; i < verticies.Count - 1; i++)
             {
-                SimpleVertex<String> vertex = verticies.ElementAt(i);
+                SimpleVertex<string> vertex = verticies.ElementAt(i);
 
-                this.AddEdge(vertex, verticies.ElementAt(i + 1), SimpleEdge<String>.DEFAULT_WEIGHT);
+                this.AddEdge(vertex, verticies.ElementAt(i + 1), SimpleEdge<string>.DEFAULT_WEIGHT);
             }
 
             this.AddVertex(verticies.ElementAt(0));
         }
 
-        public String GetPhrase()
+        public string GetPhrase()
         {
             StringBuilder sb = new StringBuilder();
-            SimpleVertex<String> vertex = GetStartingVertex();
-            BuildStringFromVertex(vertex, sb);
+            if (this.startingWords.Count != 0)
+            {
+                SimpleVertex<string> vertex = GetStartingVertex();
+                BuildStringFromVertex(vertex, sb);
+            }
             return sb.ToString();
         }
 
@@ -158,10 +162,10 @@ namespace SteamDiscordBot.Markov
 	     * 
 	     * @return random starting vertex.
 	     */
-        private SimpleVertex<String> GetStartingVertex()
+        private SimpleVertex<string> GetStartingVertex()
         {
-            List<SimpleVertex<String>> list = new List<SimpleVertex<String>>();
-            foreach (SimpleVertex<String> vertex in this.startingWords)
+            List<SimpleVertex<string>> list = new List<SimpleVertex<string>>();
+            foreach (SimpleVertex<string> vertex in this.startingWords)
             {
                 if (vertex != null)
                 {
@@ -169,7 +173,7 @@ namespace SteamDiscordBot.Markov
                 }
             }
 
-            return list.ElementAt(rand.Next(list.Count));
+            return list.ElementAt(rand.Next(0, list.Count));
         }
     }
 }
