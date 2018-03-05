@@ -157,6 +157,7 @@ namespace SteamDiscordBot.Markov
             return sb.ToString();
         }
 
+  
         /**
 	     * Returns a random starting vertex.
 	     * 
