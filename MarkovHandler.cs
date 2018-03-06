@@ -7,67 +7,70 @@ using System.Collections.Generic;
 
 using Newtonsoft.Json.Linq;
 using SteamDiscordBot.Markov;
+using System.Threading.Tasks;
 
 class MarkovHandler
 {
-    private Dictionary<string, IMarkovBot> dict;
-    private Dictionary<string, string> nextResponse;
-
-    public MarkovHandler(string[] guilds)
-    {
-        dict = new Dictionary<string, IMarkovBot>();
-        nextResponse = new Dictionary<string, string>();
-
-        foreach (string guild in guilds)
-        {
-            var markov = new MarkovGraph();
-            try
-            {
-                string[] lines = File.ReadAllLines(BuildPath(guild + ".txt"));
-                foreach (string line in lines)
-                    markov.Train(line);
-            }
-            catch { } // file not created yet
-            dict.Add(guild, markov);
-            this.BuildNext(guild);
-        }
-    }
+    private Dictionary<ulong, IMarkovBot> dict;
+    private Dictionary<ulong, string> nextResponse;
 
     public MarkovHandler()
     {
-        dict = new Dictionary<string, IMarkovBot>();
-        nextResponse = new Dictionary<string, string>();
+        dict = new Dictionary<ulong, IMarkovBot>();
+        nextResponse = new Dictionary<ulong, string>();
     }
 
-    public void AddGuild(string guild)
+    public async Task AddGuild(ulong guild)
     {
+        var path = BuildPath(guild + ".txt");
         var markov = new MarkovGraph();
+        dict.Add(guild, markov);
+
+        if (!File.Exists(path))
+        {
+            File.CreateText(path); // guild non-existant. Make empty file and move on
+            return;
+        }
+
         try
         {
-            string[] lines = File.ReadAllLines(BuildPath(guild + ".txt"));
-            foreach (string line in lines)
-                markov.Train(line);
+            /* 
+             * Unforunately with huge files, using StreamReader alone is too slow,
+             * so we use BufferedStream to speed things up a bit. 
+             */
+            using (FileStream fileStream = File.Open(path, FileMode.Open))
+            using (BufferedStream bufferedStream = new BufferedStream(fileStream))
+            using (StreamReader reader = new StreamReader(bufferedStream))
+            {
+                string line;
+                while ((line = await reader.ReadLineAsync()) != null)
+                {
+                    markov.Train(line);
+                }
+            }
         }
-        catch { } // file not created yet
-        dict.Add(guild, markov);
+        catch {} // file not created yet
         BuildNext(guild);
     }
 
-    public void WriteToGuild(string guild, string line)
+    public void WriteToGuild(ulong guild, string line)
     {
         if (WriteLineToFile(guild + ".txt", line))
             this.dict[guild].Train(line);
     }
 
-    public int RemoveFromGuild(string guild, string term)
+    public async Task<int> RemoveFromGuild(ulong guild, string term)
     {
         int retval = MarkovHandler.RemoveTermFromFile(guild + ".txt", term);
         var markov = new MarkovGraph();
         try
         {
-            string[] lines = File.ReadAllLines(BuildPath(guild + ".txt"));
-            foreach (string line in lines)
+            StreamReader reader = File.OpenText(BuildPath(guild + ".txt"));
+            string line;
+            while ((line = await reader.ReadLineAsync()) != null)
+            {
                 markov.Train(line);
+            }
         }
         catch { } // file not created yet
         dict.Add(guild, markov);
@@ -76,12 +79,12 @@ class MarkovHandler
         return retval;
     }
 
-    public string ReadFromGuild(string guild)
+    public string ReadFromGuild(ulong guild)
     {
         return nextResponse[guild];
     }
 
-    public void BuildNext(string guild)
+    public void BuildNext(ulong guild)
     {
         var markovstr = this.dict[guild];
 
@@ -89,7 +92,7 @@ class MarkovHandler
     }
 
 
-    public string GetHastebinLink(string guild)
+    public string GetHastebinLink(ulong guild)
     {
         string[] inputArray = this.dict[guild].SourceLines.ToArray();
 
@@ -159,7 +162,7 @@ class MarkovHandler
         return count;
     }
 
-    public string GetPhraseFromFile(string file, string term = null)
+    public string GetPhraseFromFile(ulong file, string term = null)
     {
         return this.dict[file].GetPhrase();
     }

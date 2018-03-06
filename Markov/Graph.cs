@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace SteamDiscordBot.Markov
 {
-    public class Graph<T> : WeightedUndirectedGraph<SimpleVertex<String>, SimpleEdge<String>>
+    public class Graph<T> : WeightedUndirectedGraph<SimpleVertex<string>, SimpleEdge<string>>
     {
-        protected HashSet<SimpleVertex<String>> adjList;
+        protected HashSet<SimpleVertex<string>> adjList;
 
         public Graph()
         {
-            this.adjList = new HashSet<SimpleVertex<String>>();
+            this.adjList = new HashSet<SimpleVertex<string>>();
         }
 
-        protected override void AddVertex(SimpleVertex<String> vertex)
+        protected override void AddVertex(SimpleVertex<string> vertex)
         {
             if (vertex.GetAdjacencies().Count == 0)
             {
@@ -26,7 +26,7 @@ namespace SteamDiscordBot.Markov
 
             if (!retVal)
             {
-                foreach (SimpleVertex<String> x in this.adjList)
+                foreach (SimpleVertex<string> x in this.adjList)
                 {
                     if (x.Equals(vertex))
                     {
@@ -35,8 +35,8 @@ namespace SteamDiscordBot.Markov
                 }
             }
 
-            HashSet<SimpleEdge<String>> set = vertex.GetAdjacencies();
-            foreach (SimpleEdge<String> edge in set)
+            HashSet<SimpleEdge<string>> set = vertex.GetAdjacencies();
+            foreach (SimpleEdge<string> edge in set.ToList())
             {
                 if (edge != null)
                 {
@@ -45,16 +45,16 @@ namespace SteamDiscordBot.Markov
             }
         }
 
-        protected override void AddEdge(SimpleVertex<String> source, SimpleVertex<String> target, int weight)
+        protected override void AddEdge(SimpleVertex<string> source, SimpleVertex<string> target, int weight)
         {
-            SimpleEdge<String> edge = new SimpleEdge<String>(target, weight);
+            SimpleEdge<string> edge = new SimpleEdge<string>(target, weight);
 
             source.GetAdjacencies().Add(edge);
         }
 
-        protected override ISet<SimpleEdge<String>> EdgeSet(SimpleVertex<String> vertex)
+        protected override ISet<SimpleEdge<string>> EdgeSet(SimpleVertex<string> vertex)
         {
-            return new HashSet<SimpleEdge<String>>(vertex.GetAdjacencies());
+            return new HashSet<SimpleEdge<string>>(vertex.GetAdjacencies());
         }
     }
 }

@@ -133,7 +133,14 @@ namespace SteamDiscordBot
 
         private async Task OnGuildAvailable(SocketGuild arg)
         {
-            await Task.Run(() => markov.AddGuild(arg.Name));
+            /* This is annoying, but since we have the possibility of parsing
+             * huge amounts of text, we need to create a thread for each guild
+             * when they join and do all of the text processing there. 
+             */
+            new Thread(new ThreadStart(async () =>
+            {
+                await markov.AddGuild(arg.Id);
+            })).Start();
         }
 
         public async Task HandleCommand(SocketMessage messageParam)
@@ -154,7 +161,7 @@ namespace SteamDiscordBot
                     user = message.Author.Id
                 };
                 messageHist.Add(info);
-                markov.WriteToGuild(context.Guild.Name, message.Content);
+                markov.WriteToGuild(context.Guild.Id, message.Content);
                 return;
             }
 
