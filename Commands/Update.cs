@@ -13,7 +13,7 @@ namespace SteamDiscordBot.Commands
                 await Context.Channel.SendMessageAsync("Bot updating is disabled!");
                 return;
             }
-            if (Context.User.Id != Program.ownerId)
+            if (Context.User.Id != (ulong)Program.config.DiscordAdminId)
             {
                 await Context.Channel.SendMessageAsync("Contact " 
                                         + Program.config.DiscordAdminContact

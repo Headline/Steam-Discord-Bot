@@ -8,7 +8,7 @@ namespace SteamDiscordBot.Commands
         [Command("setgame"), Summary("Sets the bot's game. [Owner only]")]
         public async Task Say(string input)
         {
-            if (Context.User.Id != Program.ownerId)
+            if (Context.User.Id != (ulong)Program.config.DiscordAdminId)
             {
                 await Context.Channel.SendMessageAsync("Contact "
                                         + Program.config.DiscordAdminContact

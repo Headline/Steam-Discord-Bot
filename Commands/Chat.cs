@@ -19,7 +19,7 @@ namespace SteamDiscordBot.Commands
         [Command("chatremove"), Summary("Removes the term from knowledgebase. [Owner only]")]
         public async Task Say(string term)
         {
-            if (Context.User.Id != Program.ownerId)
+            if (Context.User.Id != (ulong)Program.config.DiscordAdminId)
             {
                 await Context.Channel.SendMessageAsync("Contact "
                                         + Program.config.DiscordAdminContact

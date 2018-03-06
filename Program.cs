@@ -45,7 +45,6 @@ namespace SteamDiscordBot
         public static dynamic config;
         public string[] helpLines;
         public List<MsgInfo> messageHist;
-        public static uint ownerId;
 
         public static void Main(string[] args)
         {
@@ -65,8 +64,6 @@ namespace SteamDiscordBot
                 Console.WriteLine("You must supply a DiscordBotToken!");
                 Environment.Exit(0);
             }
-
-            uint.TryParse(config.DiscordAdminId, out Program.ownerId); // cache owner id for later
 
             Instance = new Program();
             Instance.MainAsync().GetAwaiter().GetResult();

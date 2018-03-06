@@ -32,6 +32,12 @@ class MarkovHandler
             return;
         }
 
+        await LoadGraph(markov, path);
+        BuildNext(guild);
+    }
+
+    private static async Task LoadGraph(MarkovGraph markov, string path)
+    {
         try
         {
             /* 
@@ -49,8 +55,7 @@ class MarkovHandler
                 }
             }
         }
-        catch {} // file not created yet
-        BuildNext(guild);
+        catch { }
     }
 
     public void WriteToGuild(ulong guild, string line)
@@ -61,21 +66,12 @@ class MarkovHandler
 
     public async Task<int> RemoveFromGuild(ulong guild, string term)
     {
-        int retval = MarkovHandler.RemoveTermFromFile(guild + ".txt", term);
+        int retval = await MarkovHandler.RemoveTermFromFile(guild + ".txt", term);
         var markov = new MarkovGraph();
-        try
-        {
-            StreamReader reader = File.OpenText(BuildPath(guild + ".txt"));
-            string line;
-            while ((line = await reader.ReadLineAsync()) != null)
-            {
-                markov.Train(line);
-            }
-        }
-        catch { } // file not created yet
         dict.Add(guild, markov);
-        this.BuildNext(guild);
 
+        await LoadGraph(markov, BuildPath(guild + ".txt"));
+        this.BuildNext(guild);
         return retval;
     }
 
@@ -144,21 +140,36 @@ class MarkovHandler
         return true;
     }
 
-    public static int RemoveTermFromFile(string file, string line)
+    public static async Task<int> RemoveTermFromFile(string file, string needle)
     {
-        string[] lines = File.ReadAllLines(BuildPath(file));
-        List<string> array = new List<string>(lines);
         int count = 0;
-        for (int i = array.Count()-1; i > 0; i--)
+        List<string> array = new List<string>();
+
+        using (FileStream fileStream = File.Open(BuildPath(file), FileMode.Open))
+        using (BufferedStream bufferedStream = new BufferedStream(fileStream))
+        using (StreamReader reader = new StreamReader(bufferedStream))
         {
-            if (array[i].ToLower().Contains(line))
+            string line;
+            while ((line = await reader.ReadLineAsync()) != null)
             {
-                count++;
-                array.RemoveAt(i);
+                if (!line.Contains(needle))
+                    array.Add(line);
+                else
+                    count++;
             }
         }
 
-        File.WriteAllLines(BuildPath(file), array.ToArray());
+
+        using (FileStream fileStream = File.Open(BuildPath(file), FileMode.Create))
+        using (BufferedStream bufferedStream = new BufferedStream(fileStream))
+        using (StreamWriter reader = new StreamWriter(bufferedStream))
+        {
+            foreach(string line in array)
+            {
+                await reader.WriteLineAsync(line);
+            }
+        }
+
         return count;
     }
 
