@@ -80,7 +80,7 @@ namespace SteamDiscordBot
                         {
                             var emb = new EmbedBuilder();
                             emb.WithDescription(input);
-                            await channel.SendMessageAsync("", false, emb.Build());
+                            await channel.SendMessageAsync("", false, emb);
                         }
                         catch (Exception e)
                         {
@@ -123,7 +123,7 @@ namespace SteamDiscordBot
                                 if (emb != null)
                                 {
 
-                                    await channel.SendMessageAsync(input, false, emb.Build());
+                                    await channel.SendMessageAsync(input, false, emb);
                                 }
                                 else
                                 {
