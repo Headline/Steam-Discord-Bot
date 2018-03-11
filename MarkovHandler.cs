@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using SteamDiscordBot.Markov;
 using System.Threading.Tasks;
+using SteamDiscordBot;
 
 class MarkovHandler
 {
@@ -22,7 +23,7 @@ class MarkovHandler
 
     public async Task AddGuild(ulong guild)
     {
-        var path = BuildPath(guild + ".txt");
+        var path = Helpers.BuildPath(guild + ".txt");
         var markov = new MarkovGraph();
         dict.Add(guild, markov);
 
@@ -70,7 +71,7 @@ class MarkovHandler
         var markov = new MarkovGraph();
         dict.Add(guild, markov);
 
-        await LoadGraph(markov, BuildPath(guild + ".txt"));
+        await LoadGraph(markov, Helpers.BuildPath(guild + ".txt"));
         this.BuildNext(guild);
         return retval;
     }
@@ -125,13 +126,14 @@ class MarkovHandler
           || line[line.Length - 1] == ';'
           || line.Contains("()")
           || line.Contains("{")
-          || line.Contains("}"))
+          || line.Contains("}")
+          || line.Contains("```"))
         {
             return false;
         }
 
 
-        using (FileStream stream = new FileStream(BuildPath(file), FileMode.Append))
+        using (FileStream stream = new FileStream(Helpers.BuildPath(file), FileMode.Append))
         {
             Byte[] info = new UTF8Encoding(true).GetBytes((line + "\n"));
 
@@ -145,7 +147,7 @@ class MarkovHandler
         int count = 0;
         List<string> array = new List<string>();
 
-        using (FileStream fileStream = File.Open(BuildPath(file), FileMode.Open))
+        using (FileStream fileStream = File.Open(Helpers.BuildPath(file), FileMode.Open))
         using (BufferedStream bufferedStream = new BufferedStream(fileStream))
         using (StreamReader reader = new StreamReader(bufferedStream))
         {
@@ -160,7 +162,7 @@ class MarkovHandler
         }
 
 
-        using (FileStream fileStream = File.Open(BuildPath(file), FileMode.Create))
+        using (FileStream fileStream = File.Open(Helpers.BuildPath(file), FileMode.Create))
         using (BufferedStream bufferedStream = new BufferedStream(fileStream))
         using (StreamWriter reader = new StreamWriter(bufferedStream))
         {
@@ -176,19 +178,5 @@ class MarkovHandler
     public string GetPhraseFromFile(ulong file, string term = null)
     {
         return this.dict[file].GetPhrase();
-    }
-
-    public static string BuildPath(string file)
-    {
-        string exe = System.Reflection.Assembly.GetEntryAssembly().Location;
-        string[] pieces = exe.Split('/');
-        string combo = "";
-
-        for (int i = 0; i < pieces.Length-1; i++)
-        {
-            combo += pieces + "/";
-        }
-
-        return combo + file;
     }
 }

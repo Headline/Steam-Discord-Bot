@@ -37,8 +37,9 @@ namespace SteamDiscordBot
         // GITHUB
         public GitHubClient ghClient;
 
-        // MARKOV
+        // HANDLERS
         public MarkovHandler markov;
+        public FactHandler facts;
 
         // BOT
         public static Program Instance;
@@ -86,6 +87,7 @@ namespace SteamDiscordBot
 
             messageHist = new List<MsgInfo>();
             markov = new MarkovHandler();
+            facts = new FactHandler();
 
             client.Log += Log;
             client.GuildAvailable += OnGuildAvailable;
@@ -137,6 +139,10 @@ namespace SteamDiscordBot
             new Thread(new ThreadStart(async () =>
             {
                 await markov.AddGuild(arg.Id);
+            })).Start();
+            new Thread(new ThreadStart(async () =>
+            {
+                await facts.AddGuild(arg.Id);
             })).Start();
         }
 

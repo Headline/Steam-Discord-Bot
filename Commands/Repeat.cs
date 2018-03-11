@@ -9,8 +9,6 @@ namespace SteamDiscordBot.Commands
         [Command("repeat"), Summary("Repeats last message X amount of times.")]
         public async Task Say(int count)
         {
-            //string[] args = argstring.Split(' ');
-
             List<MsgInfo> list = Program.Instance.messageHist;
             if (list.Count == 0)
             {

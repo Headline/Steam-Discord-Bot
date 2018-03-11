@@ -236,5 +236,19 @@ namespace SteamDiscordBot
 
             return arrayList.ToArray(); // return string[] array
         }
+
+        public static string BuildPath(string file)
+        {
+            string exe = Assembly.GetEntryAssembly().Location;
+            string[] pieces = exe.Split('/');
+            string combo = "";
+
+            for (int i = 0; i < pieces.Length - 1; i++)
+            {
+                combo += pieces + "/";
+            }
+
+            return combo + file;
+        }
     }
 }

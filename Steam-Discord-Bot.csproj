@@ -112,6 +112,7 @@
     <Compile Include="Commands\Coin.cs" />
     <Compile Include="Commands\Crypto.cs" />
     <Compile Include="Commands\Dice.cs" />
+    <Compile Include="Commands\Facts.cs" />
     <Compile Include="Commands\Help.cs" />
     <Compile Include="Commands\NumPlayers.cs" />
     <Compile Include="Commands\NumServers.cs" />
@@ -122,6 +123,7 @@
     <Compile Include="Commands\Substitute.cs" />
     <Compile Include="Commands\Update.cs" />
     <Compile Include="Commands\Version.cs" />
+    <Compile Include="FactHandler.cs" />
     <Compile Include="Markov\Graph.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="JobManager\JobManager.cs" />
