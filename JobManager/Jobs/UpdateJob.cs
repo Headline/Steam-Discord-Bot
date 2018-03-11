@@ -23,7 +23,7 @@ namespace SteamDiscordBot.Jobs
 		{
 			using (dynamic steamApps = WebAPI.GetInterface("ISteamApps"))
 			{
-				steamApps.Timeout = TimeSpan.FromSeconds(30);
+				steamApps.Timeout = (int)TimeSpan.FromSeconds(30).TotalSeconds;
 
 				KeyValue results = null;
 
