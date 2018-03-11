@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Discord;
 using Discord.WebSocket;
 using Discord.Commands;
+using Discord.Net.Providers.WS4Net;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -75,6 +76,7 @@ namespace SteamDiscordBot
 
             var socketConfig = new DiscordSocketConfig
             {
+                WebSocketProvider = WS4NetProvider.Instance,
                 LogLevel = LogSeverity.Verbose
             };
 
