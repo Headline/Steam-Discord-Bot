@@ -1,7 +1,9 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 using Discord;
 using Discord.WebSocket;
@@ -9,22 +11,21 @@ using Discord.Commands;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using ChancyBot.Jobs;
-using ChancyBot.Steam;
-using System.Linq;
-using System.Collections.Generic;
-using Octokit;
-using ChancyBot.Commands;
-using Discord.Net.Providers.WS4Net;
+using SteamDiscordBot.Jobs;
+using SteamDiscordBot.Steam;
+using SteamDiscordBot.Commands;
 
-namespace ChancyBot
+using Octokit;
+using JsonConfig;
+
+namespace SteamDiscordBot
 {
     class Program
     {
         public static readonly string VERSION = "$$version$";
+
         // STEAM
         public SteamConnection connection;
-        public string[] helpLines;
         public JobManager manager;
 
         // DISCORD
@@ -36,88 +37,87 @@ namespace ChancyBot
         public GitHubClient ghClient;
 
         // MARKOV
-        public Markov markov;
+        public MarkovHandler markov;
 
+        // BOT
         public static Program Instance;
+        public static dynamic config;
+        public string[] helpLines;
         public List<MsgInfo> messageHist;
 
         public static void Main(string[] args)
         {
-            Instance = new Program();
             try
             {
-                Instance.MainAsync().GetAwaiter().GetResult();
+                var reader = new StreamReader("settings.json");
+                config = Config.ApplyJson(reader.ReadToEnd(), new ConfigObject());
             }
-            catch
+            catch (Exception e)
             {
-                Console.WriteLine("Internal error. Ensure settings.xml is configured correctly");
-                Console.ReadKey();
+                Console.WriteLine("Failed to load configuration file settings.json!\nReason:" + e.Message);
+                Environment.Exit(0);
             }
+
+            if (config.DiscordBotToken.Length == 0)
+            {
+                Console.WriteLine("You must supply a DiscordBotToken!");
+                Environment.Exit(0);
+            }
+
+            Instance = new Program();
+            Instance.MainAsync().GetAwaiter().GetResult();
         }
 
         private async Task MainAsync()
         {
-			try
-			{
-				Config.Load();
-			}
-			catch (Exception)
-			{
-				Console.WriteLine("Failed to load config from file. Loading default config.");
-				Config.Default();
-                Environment.Exit(0);
-            }
-
-            Config.Instance.Save();
-
-            Console.WriteLine("Bot starting up. ({0} by Michael Flaherty)", Program.VERSION);
-            Console.WriteLine("Using token: " + Config.Instance.DiscordBotToken);
-
+            var startupStr = string.Format("Bot starting up. ({0} by Michael Flaherty)", Program.VERSION);
+            await Log(new LogMessage(LogSeverity.Info, "Startup", startupStr));
 
             var socketConfig = new DiscordSocketConfig
             {
-                WebSocketProvider = WS4NetProvider.Instance,
                 LogLevel = LogSeverity.Verbose
             };
 
             client = new DiscordSocketClient(socketConfig);
             commands = new CommandService();
+            services = new ServiceCollection().BuildServiceProvider();
+
             messageHist = new List<MsgInfo>();
-            markov = new Markov();
+            markov = new MarkovHandler();
 
             client.Log += Log;
             client.GuildAvailable += OnGuildAvailable;
-            services = new ServiceCollection().BuildServiceProvider();
 
-            await InstallCommands();
+            client.MessageReceived += HandleCommand;
+            await commands.AddModulesAsync(Assembly.GetEntryAssembly());
 
-            await client.LoginAsync(TokenType.Bot, Config.Instance.DiscordBotToken);
+            helpLines = Helpers.BuildHelpLines();
+
+            await client.LoginAsync(TokenType.Bot, config.DiscordBotToken);
             await client.StartAsync();
 
             // Connect to steam and pump callbacks 
-            connection = new SteamConnection(Config.Instance.SteamUsername, Config.Instance.SteamPassword);
+            connection = new SteamConnection(config.SteamUsername, config.SteamPassword);
             connection.Connect();
-            Console.WriteLine("Pumping steam connection...");
 
-            ghClient = new GitHubClient(new ProductHeaderValue("Steam-Discord-Bot"));
-            if (Config.Instance.GitHubAuthToken.Length != 0)
-                ghClient.Credentials = new Credentials(Config.Instance.GitHubAuthToken);
+            ghClient = new GitHubClient(new ProductHeaderValue(Program.config.GitHubUpdateRepository));
+            if (config.GitHubAuthToken.Length != 0)
+                ghClient.Credentials = new Credentials(config.GitHubAuthToken);
 
             // Handle Jobs
-            manager = new JobManager(30); // seconds to run each job
+            manager = new JobManager(config.JobInterval); // time in seconds to run each job
             new Thread(new ThreadStart(() =>
             {
-                // Calls updater.py when out of date
-                manager.AddJob(new SelfUpdateListener());
-
-                // job to check steam connection
-                manager.AddJob(new SteamCheckJob(connection)); 
-
-                manager.AddJob(new AlliedModdersThreadJob("https://forums.alliedmods.net/external.php?newpost=true&forumids=108", "sourcemod"));
-                // add appids 
-                foreach (uint app in Config.Instance.AppIDList)
+                if (config.SelfUpdateListener && config.GitHubAuthToken.Length != 0)
+                    manager.AddJob(new SelfUpdateListener());
+                if (config.SteamCheckJob)
+                    manager.AddJob(new SteamCheckJob(connection));
+                if (config.AlliedModdersThreadJob)
+                    manager.AddJob(new AlliedModdersThreadJob("https://forums.alliedmods.net/external.php?newpost=true&forumids=108", "sourcemod"));
+                
+                foreach (uint appid in config.AppIDList)
                 {
-                    manager.AddJob(new UpdateJob(app));
+                    manager.AddJob(new UpdateJob(appid));
                 }
 
                 manager.StartJobs();
@@ -128,60 +128,25 @@ namespace ChancyBot
 
         private async Task OnGuildAvailable(SocketGuild arg)
         {
-            await Log(new Discord.LogMessage(Discord.LogSeverity.Debug, "OnGuildAvailable", "Enterring: " + arg.Name));
-            await Task.Run(() => markov.AddGuild(arg.Name));
-        }
-
-        private async Task InstallCommands()
-        {
-            client.MessageReceived += HandleCommand;
-            await commands.AddModulesAsync(Assembly.GetEntryAssembly());
-
-            helpLines = BuildHelpLines();
-        }
-
-        public string[] BuildHelpLines()
-        {
-            List<string> arrayList = new List<string>();
-
-            Assembly asm = Assembly.GetExecutingAssembly(); // Get assembly
-
-            var results = from type in asm.GetTypes()
-                          where typeof(ModuleBase).IsAssignableFrom(type)
-                          select type; // Grab all types that inherit ModuleBase
-
-            foreach (Type t in results) // For each type in results
+            /* This is annoying, but since we have the possibility of parsing
+             * huge amounts of text, we need to create a thread for each guild
+             * when they join and do all of the text processing there. 
+             */
+            new Thread(new ThreadStart(async () =>
             {
-                /* Grab MethodInfo of the type where the method has the attribute SummaryAttribute */
-                MethodInfo info = t.GetMethods().Where(x => x.GetCustomAttributes(typeof(SummaryAttribute), false).Length > 0).First();
-
-                /* Grab summary attribute */
-                SummaryAttribute summary = info.GetCustomAttribute(typeof(SummaryAttribute)) as SummaryAttribute;
-
-                /* Grab command attribute */
-                CommandAttribute command = info.GetCustomAttribute(typeof(CommandAttribute)) as CommandAttribute;
-
-                /* Both objects are non null, valid, so lets grab the attribute text */
-                if (summary != null && command != null)
-                {
-                    arrayList.Add("!" + command.Text + " - " + summary.Text);
-                }
-            }
-
-            return arrayList.ToArray(); // return string[] array
+                await markov.AddGuild(arg.Id);
+            })).Start();
         }
 
         public async Task HandleCommand(SocketMessage messageParam)
         {
             var message = messageParam as SocketUserMessage;
             if (message == null) return;
-
-            int argPos = 0;
+            if (message.Author.IsBot) return;
 
             var context = new CommandContext(client, message);
 
-            if (message.Author.IsBot) return;
-
+            int argPos = 0;
             if (!(message.HasCharPrefix('!', ref argPos)
                 || message.HasMentionPrefix(client.CurrentUser, ref argPos)))
             {
@@ -191,7 +156,13 @@ namespace ChancyBot
                     user = message.Author.Id
                 };
                 messageHist.Add(info);
-                markov.WriteToGuild(context.Guild.Name, message.Content);
+                markov.WriteToGuild(context.Guild.Id, message.Content);
+                return;
+            }
+
+            if (Helpers.IsCommandDisabled(message.Content.Split(' ')[0].Substring(1)))
+            {
+                await context.Channel.SendMessageAsync("That command is disabled!");
                 return;
             }
 

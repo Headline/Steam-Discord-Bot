@@ -5,7 +5,7 @@ using SteamKit2.Unified.Internal;
 using static SteamKit2.SteamUnifiedMessages;
 using System.Threading;
 
-namespace ChancyBot.Steam
+namespace SteamDiscordBot.Steam
 {
     public class SteamConnection
     {
@@ -43,14 +43,11 @@ namespace ChancyBot.Steam
             this.manager.Subscribe<SteamClient.DisconnectedCallback>(SteamCallbacks.OnDisconnected);
             this.manager.Subscribe<SteamUser.LoggedOnCallback>(SteamCallbacks.OnLoggedOn);
             this.manager.Subscribe<SteamUser.LoggedOffCallback>(SteamCallbacks.OnLoggedOff);
-            this.manager.Subscribe<SteamFriends.ClanStateCallback>(SteamCallbacks.OnClanState);
 
             this.user = user;
             this.pass = pass;
 
             this.isRunning = false;
-
-            this.steamClient.ConnectionTimeout = new TimeSpan(0, 0, 15); // 15 seconds
         }
 
         public void Connect()

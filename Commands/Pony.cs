@@ -4,8 +4,7 @@ using System.Threading.Tasks;
 
 using Discord.Commands;
 
-
-namespace ChancyBot.Commands
+namespace SteamDiscordBot.Commands
 {
     public class PonyCommand : ModuleBase
     {
@@ -20,8 +19,7 @@ namespace ChancyBot.Commands
             }
             catch (Exception ex)
             {
-                await ChancyBot.Program.Instance.Log(new Discord.LogMessage(Discord.LogSeverity.Error, "Pony", ex.Message));
-
+                await Program.Instance.Log(new Discord.LogMessage(Discord.LogSeverity.Error, "Pony", ex.Message));
                 await Context.Channel.SendMessageAsync("Internal Error: " + ex.Message);
             }
         }

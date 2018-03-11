@@ -5,94 +5,90 @@ using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 
-using MarkovSharp.TokenisationStrategies;
 using Newtonsoft.Json.Linq;
+using SteamDiscordBot.Markov;
+using System.Threading.Tasks;
 
-class Markov
+class MarkovHandler
 {
-    private Dictionary<string, StringMarkov> dict;
-    private Dictionary<string, int> nextWalk; // used for `.Walk()`ing
-    private Dictionary<string, string> nextResponse;
+    private Dictionary<ulong, IMarkovBot> dict;
+    private Dictionary<ulong, string> nextResponse;
 
-    public Markov(string[] guilds)
+    public MarkovHandler()
     {
-        dict = new Dictionary<string, StringMarkov>();
-        nextWalk = new Dictionary<string, int>();
-        nextResponse = new Dictionary<string, string>();
-
-        foreach (string guild in guilds)
-        {
-            nextWalk.Add(guild, 0);
-            var markov = new StringMarkov(1);
-            try
-            {
-                markov.Learn(File.ReadAllLines(BuildPath(guild + ".txt")));
-            }
-            catch { } // file not created yet
-            dict.Add(guild, markov);
-            this.BuildNext(guild);
-        }
+        dict = new Dictionary<ulong, IMarkovBot>();
+        nextResponse = new Dictionary<ulong, string>();
     }
 
-    public Markov()
+    public async Task AddGuild(ulong guild)
     {
-        dict = new Dictionary<string, StringMarkov>();
-        nextWalk = new Dictionary<string, int>();
-        nextResponse = new Dictionary<string, string>();
-    }
-
-    public void AddGuild(string guild)
-    {
-        var markov = new StringMarkov(1);
-        try
-        {
-            markov.Learn(File.ReadAllLines(BuildPath(guild + ".txt")));
-        }
-        catch { } // file not created yet
+        var path = BuildPath(guild + ".txt");
+        var markov = new MarkovGraph();
         dict.Add(guild, markov);
-        nextWalk.Add(guild, 0);
+
+        if (!File.Exists(path))
+        {
+            File.CreateText(path); // guild non-existant. Make empty file and move on
+            return;
+        }
+
+        await LoadGraph(markov, path);
         BuildNext(guild);
     }
 
-    public void WriteToGuild(string guild, string line)
+    private static async Task LoadGraph(MarkovGraph markov, string path)
     {
-        if (WriteLineToFile(guild + ".txt", line))
-            this.dict[guild].Learn(line);
-    }
-
-    public int RemoveFromGuild(string guild, string term)
-    {
-        for (int i = 0; i < this.dict[guild].SourceLines.Count; i++)
+        try
         {
-            var line = this.dict[guild].SourceLines.ElementAt(i);
-            if (line.Contains(term))
+            /* 
+             * Unforunately with huge files, using StreamReader alone is too slow,
+             * so we use BufferedStream to speed things up a bit. 
+             */
+            using (FileStream fileStream = File.Open(path, FileMode.Open))
+            using (BufferedStream bufferedStream = new BufferedStream(fileStream))
+            using (StreamReader reader = new StreamReader(bufferedStream))
             {
-                this.dict[guild].SourceLines.RemoveAt(i);
+                string line;
+                while ((line = await reader.ReadLineAsync()) != null)
+                {
+                    markov.Train(line);
+                }
             }
         }
-        return Markov.RemoveTermFromFile(guild + ".txt", term);
+        catch { }
     }
-    public string ReadFromGuild(string guild)
+
+    public void WriteToGuild(ulong guild, string line)
+    {
+        if (WriteLineToFile(guild + ".txt", line))
+            this.dict[guild].Train(line);
+    }
+
+    public async Task<int> RemoveFromGuild(ulong guild, string term)
+    {
+        int retval = await MarkovHandler.RemoveTermFromFile(guild + ".txt", term);
+        var markov = new MarkovGraph();
+        dict.Add(guild, markov);
+
+        await LoadGraph(markov, BuildPath(guild + ".txt"));
+        this.BuildNext(guild);
+        return retval;
+    }
+
+    public string ReadFromGuild(ulong guild)
     {
         return nextResponse[guild];
     }
 
-    public void BuildNext(string guild)
+    public void BuildNext(ulong guild)
     {
         var markovstr = this.dict[guild];
-        var next = this.nextWalk[guild];
 
-        if (next >= markovstr.Walk().Count()) /* if we used everything, rebuild */
-        {
-            markovstr.Retrain(1);
-            this.nextWalk[guild] = 0;
-        }
-
-        nextResponse[guild] = markovstr.Walk().ElementAt(this.nextWalk[guild]++);
+        nextResponse[guild] = markovstr.GetPhrase();
     }
 
 
-    public string GetHastebinLink(string guild)
+    public string GetHastebinLink(ulong guild)
     {
         string[] inputArray = this.dict[guild].SourceLines.ToArray();
 
@@ -144,27 +140,42 @@ class Markov
         return true;
     }
 
-    public static int RemoveTermFromFile(string file, string line)
+    public static async Task<int> RemoveTermFromFile(string file, string needle)
     {
-        string[] lines = File.ReadAllLines(BuildPath(file));
-        List<string> array = new List<string>(lines);
         int count = 0;
-        for (int i = array.Count()-1; i > 0; i--)
+        List<string> array = new List<string>();
+
+        using (FileStream fileStream = File.Open(BuildPath(file), FileMode.Open))
+        using (BufferedStream bufferedStream = new BufferedStream(fileStream))
+        using (StreamReader reader = new StreamReader(bufferedStream))
         {
-            if (array[i].ToLower().Contains(line))
+            string line;
+            while ((line = await reader.ReadLineAsync()) != null)
             {
-                count++;
-                array.RemoveAt(i);
+                if (!line.Contains(needle))
+                    array.Add(line);
+                else
+                    count++;
             }
         }
 
-        File.WriteAllLines(BuildPath(file), array.ToArray());
+
+        using (FileStream fileStream = File.Open(BuildPath(file), FileMode.Create))
+        using (BufferedStream bufferedStream = new BufferedStream(fileStream))
+        using (StreamWriter reader = new StreamWriter(bufferedStream))
+        {
+            foreach(string line in array)
+            {
+                await reader.WriteLineAsync(line);
+            }
+        }
+
         return count;
     }
 
-    public string GetPhraseFromFile(string file, string term = null)
+    public string GetPhraseFromFile(ulong file, string term = null)
     {
-        return this.dict[file].Walk().First();
+        return this.dict[file].GetPhrase();
     }
 
     public static string BuildPath(string file)

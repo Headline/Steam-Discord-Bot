@@ -1,14 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
+﻿using System;
 using System.Net;
-
+using System.Linq;
 using System.Xml.Linq;
-using System;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+
 using Discord;
 
-namespace ChancyBot.Jobs
+namespace SteamDiscordBot.Jobs
 {
 	public class AlliedModdersThreadJob : Job
 	{
@@ -87,14 +86,14 @@ namespace ChancyBot.Jobs
             else return Equals(compObj);
         }
 
-        public bool Equals(ThreadInfo commit2)
+        public bool Equals(ThreadInfo other)
         {
-            return commit2.link.Equals(this.link);
+            return other.link.Equals(this.link);
         }
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return link.GetHashCode();
         }
     }
 }

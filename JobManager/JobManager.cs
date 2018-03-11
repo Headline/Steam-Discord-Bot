@@ -1,12 +1,10 @@
-﻿﻿using Discord;
-using SteamKit2;
-using System;
-using System.Collections.Generic;
-using System.Net;
+﻿using System.Timers;
 using System.Threading.Tasks;
-using System.Timers;
+using System.Collections.Generic;
 
-namespace ChancyBot.Jobs
+using Discord;
+
+namespace SteamDiscordBot.Jobs
 {
 	public abstract class Job
 	{
@@ -45,8 +43,6 @@ namespace ChancyBot.Jobs
             timer = new Timer(seconds * 1000);
             timer.Elapsed += RunJobs;
         }
-
-
         // thread method
         private void RunJobs(object source, ElapsedEventArgs e)
         {

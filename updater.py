@@ -52,7 +52,7 @@ with zipfile.ZipFile(zip_path + "\\update.zip", "r") as zip_ref:
 # delete zip file & blank Settings file
 print("Deleting zip file...")
 os.remove(zip_path + "\\update.zip")
-os.remove(zip_path + "\\Settings.xml")
+os.remove(zip_path + "\\settings.json")
 
 # copy files from update to root
 print("Replacing outdated files...")

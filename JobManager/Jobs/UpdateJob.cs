@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Net;
+using System.Threading.Tasks;
 
 using SteamKit2;
 using Discord;
-using System.Threading.Tasks;
 
-namespace ChancyBot.Jobs
+
+namespace SteamDiscordBot.Jobs
 {
 	public class UpdateJob : Job
 	{
@@ -22,7 +23,7 @@ namespace ChancyBot.Jobs
 		{
 			using (dynamic steamApps = WebAPI.GetInterface("ISteamApps"))
 			{
-				steamApps.Timeout = (int)TimeSpan.FromSeconds(30).TotalMilliseconds;
+				steamApps.Timeout = (int)TimeSpan.FromSeconds(30).TotalSeconds;
 
 				KeyValue results = null;
 

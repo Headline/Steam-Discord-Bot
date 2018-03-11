@@ -1,22 +1,22 @@
-﻿using System.Net;
+﻿using System;
+using System.IO;
+using System.Net;
 using System.Linq;
+using System.Reflection;
+using System.Diagnostics;
 using System.Collections.Generic;
 
 using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 
 using Newtonsoft.Json.Linq;
-using System;
 using Octokit;
-using System.Diagnostics;
-using System.IO;
 
-namespace ChancyBot
+namespace SteamDiscordBot
 {
-    public class Helpers
+    public static class Helpers
     {
-        public static readonly string[] sendchannels = { "announc", "general" };
-
         public static int GuildHasChannel(IReadOnlyCollection<SocketTextChannel> channels, string channelName)
         {
             bool found = false;
@@ -37,16 +37,16 @@ namespace ChancyBot
             return (found)?index:-1;
         }
 
-        // Using the static channels array, it finds the first matching channel to send the message to.
+        // Using the settings.json AnnouncePrefs, it finds the first matching channel to send the message to.
         // The order of channels in sendchannels array matters.
 		public static SocketTextChannel FindSendChannel(SocketGuild guild)
 		{
             int i = 0;
             int index = -1;
             bool found = false;
-            while (!found && i < sendchannels.Length)
+            while (!found && i < Program.config.AnnouncePrefs.Length)
             {
-                index = GuildHasChannel(guild.TextChannels, sendchannels[i]);
+                index = GuildHasChannel(guild.TextChannels, Program.config.AnnouncePrefs[i]);
                 if (index != -1)
                 {
                     found = true;
@@ -142,15 +142,29 @@ namespace ChancyBot
 
         public async static void Update()
         {
+            if (Program.config.GitHubAuthToken.Length == 0)
+            {
+                return;
+            }
+
             try
             {
-
+                /*
+                 * We give the python script our pid, that way
+                 * it can loop and wait for the application to completely
+                 * exit before replacing our files
+                 */
                 int pid = Process.GetCurrentProcess().Id;
 
                 var client = Program.Instance.ghClient;
-                var releases = await client.Repository.Release.GetAll("Headline", "Steam-Discord-Bot");
+                var releases = await client.Repository.Release.GetAll(Program.config.GitHubUsername, Program.config.GitHubRepository);
 
-                string url = "https://github.com/Headline/Steam-Discord-Bot/releases/download/<name>/steam-discord-bot.zip";
+                string url = "https://github.com/"
+                    + Program.config.GitHubUsername
+                    + "/"
+                    + Program.config.GitHubRepository
+                    + "/releases/download/<name>/"
+                    + Program.config.GitHubReleaseFilename;
                 url = url.Replace("<name>", releases[0].Name);
 
                 string command = string.Format("/k cd {0} & python updater.py {1} {2}",
@@ -161,7 +175,20 @@ namespace ChancyBot
                 Process.Start("CMD.exe", command);
                 Environment.Exit(0);
             }
-            catch (Exception ex) { } // ignore errors. if it failed: oh well.
+            catch { } // ignore errors. if it failed: oh well.
+        }
+
+        public static bool IsCommandDisabled(string cmd)
+        {
+            foreach (string var in Program.config.DisabledCommands)
+            {
+                if (var.Equals(cmd))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public static string GetLatestVersion(IReadOnlyList<Release> releases)
@@ -177,5 +204,37 @@ namespace ChancyBot
 			string name = (string)o["" + appid]["data"]["name"];
 			return name;
 		}
-	}
+
+        public static string[] BuildHelpLines()
+        {
+            List<string> arrayList = new List<string>();
+
+            Assembly asm = Assembly.GetExecutingAssembly(); // Get assembly
+
+            var results = from type in asm.GetTypes()
+                          where typeof(ModuleBase).IsAssignableFrom(type)
+                          select type; // Grab all types that inherit ModuleBase
+
+            foreach (Type t in results) // For each type in results
+            {
+                /* Grab MethodInfo of the type where the method has the attribute SummaryAttribute */
+               MethodInfo info = t.GetMethods().Where(x => x.GetCustomAttributes(typeof(SummaryAttribute), false).Length > 0).First();
+
+                /* Grab summary attribute */
+                SummaryAttribute summary = info.GetCustomAttribute(typeof(SummaryAttribute)) as SummaryAttribute;
+
+                /* Grab command attribute */
+                CommandAttribute command = info.GetCustomAttribute(typeof(CommandAttribute)) as CommandAttribute;
+
+                /* Both objects are non null, valid, so lets grab the attribute text */
+                if (summary != null && command != null)
+                {
+                    if (!Helpers.IsCommandDisabled(command.Text))
+                        arrayList.Add("!" + command.Text + " - " + summary.Text);
+                }
+            }
+
+            return arrayList.ToArray(); // return string[] array
+        }
+    }
 }

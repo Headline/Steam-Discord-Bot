@@ -6,7 +6,7 @@ using Discord.Commands;
 using SteamKit2;
 using SteamKit2.Unified.Internal;
 
-namespace ChancyBot.Commands
+namespace SteamDiscordBot.Commands
 {
     public class NumServers : ModuleBase
     {
@@ -28,7 +28,7 @@ namespace ChancyBot.Commands
                 await Context.Channel.SendMessageAsync("No servers.");
             }
 
-            if (servers.Count > 0 && servers.Count <= Program.Instance.connection.DISPLAY_AMOUNT)
+            if (servers.Count() > 0 && servers.Count <= Program.Instance.connection.DISPLAY_AMOUNT)
             {
                 foreach (CGameServers_GetServerList_Response.Server server in servers.Take(5))
                 {
@@ -40,7 +40,7 @@ namespace ChancyBot.Commands
             {
                 var serv = servers.Take(5).Select(x => string.Format("{0} ({1})", x.addr, x.players));
 
-                await Context.Channel.SendMessageAsync(string.Format("{0}{1}", string.Join(", ", serv), servers.Count > 5 ? string.Format(", and {0}{1} more", servers.Count == 5000 ? ">" : "", servers.Count - 5) : ""));
+                await Context.Channel.SendMessageAsync(string.Format("{0}{1}", string.Join(", ", serv), servers.Count() > 5 ? string.Format(", and {0}{1} more", servers.Count() == 5000 ? ">" : "", servers.Count() - 5) : ""));
             }
         }
     }

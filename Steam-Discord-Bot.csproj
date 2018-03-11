@@ -38,9 +38,6 @@
     <Reference Include="Discord.Net.Core, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Discord.Net.Core.1.0.2\lib\net45\Discord.Net.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Discord.Net.Providers.WS4Net, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Discord.Net.Providers.WS4Net.1.0.2\lib\net45\Discord.Net.Providers.WS4Net.dll</HintPath>
-    </Reference>
     <Reference Include="Discord.Net.Rest, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Discord.Net.Rest.1.0.2\lib\net45\Discord.Net.Rest.dll</HintPath>
     </Reference>
@@ -53,11 +50,16 @@
     <Reference Include="Discord.Net.WebSocket, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Discord.Net.WebSocket.1.0.2\lib\net45\Discord.Net.WebSocket.dll</HintPath>
     </Reference>
+    <Reference Include="JsonConfig, Version=1.0.6631.20962, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>deps\JsonConfig.dll</HintPath>
+    </Reference>
+    <Reference Include="JsonFx, Version=2.0.1209.2802, Culture=neutral, PublicKeyToken=315052dd637f8a52, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>deps\JsonFx.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="MarkovSharp">
-      <HintPath>.\MarkovSharp.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Extensions.DependencyInjection, Version=1.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Extensions.DependencyInjection.1.1.1\lib\netstandard1.1\Microsoft.Extensions.DependencyInjection.dll</HintPath>
@@ -117,19 +119,23 @@
     <Compile Include="Commands\Substitute.cs" />
     <Compile Include="Commands\Update.cs" />
     <Compile Include="Commands\Version.cs" />
+    <Compile Include="Markov\Graph.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="JobManager\JobManager.cs" />
     <Compile Include="JobManager\Jobs\AlliedModdersThreadJob.cs" />
     <Compile Include="JobManager\Jobs\SelfUpdateListener.cs" />
     <Compile Include="JobManager\Jobs\SteamCheckJob.cs" />
     <Compile Include="JobManager\Jobs\UpdateJob.cs" />
+    <Compile Include="Markov\MarkovBot.cs" />
+    <Compile Include="Markov\MarkovGraph.cs" />
     <Compile Include="MarkovHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Settings\Settings.cs" />
-    <Compile Include="Settings\XmlSerializable.cs" />
+    <Compile Include="Markov\SimpleEdge.cs" />
+    <Compile Include="Markov\SimpleVertex.cs" />
     <Compile Include="Steam\SteamCallbacks.cs" />
     <Compile Include="Steam\SteamConnection.cs" />
+    <Compile Include="Markov\WeightedUndirectedGraph.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
