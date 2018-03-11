@@ -8,7 +8,7 @@ namespace SteamDiscordBot.Jobs
         {
             try
             {
-                var releases = await Program.Instance.ghClient.Repository.Release.GetAll(Program.config.GitHubUsername, Program.config.GitHubRepository);
+                var releases = await Program.Instance.ghClient.Repository.Release.GetAll(Program.config.GitHubUpdateUsername, Program.config.GitHubUpdateRepository);
 
                 var latest = Helpers.GetLatestVersion(releases);
                 if (!Program.VERSION.Equals(latest))

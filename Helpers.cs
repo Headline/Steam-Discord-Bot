@@ -157,14 +157,14 @@ namespace SteamDiscordBot
                 int pid = Process.GetCurrentProcess().Id;
 
                 var client = Program.Instance.ghClient;
-                var releases = await client.Repository.Release.GetAll(Program.config.GitHubUsername, Program.config.GitHubRepository);
+                var releases = await client.Repository.Release.GetAll(Program.config.GitHubUpdateUsername, Program.config.GitHubUpdateRepository);
 
                 string url = "https://github.com/"
-                    + Program.config.GitHubUsername
+                    + Program.config.GitHubUpdateUsername
                     + "/"
-                    + Program.config.GitHubRepository
+                    + Program.config.GitHubUpdateRepository
                     + "/releases/download/<name>/"
-                    + Program.config.GitHubReleaseFilename;
+                    + Program.config.GitHubUpdateReleaseFilename;
                 url = url.Replace("<name>", releases[0].Name);
 
                 string command = string.Format("/k cd {0} & python updater.py {1} {2}",
