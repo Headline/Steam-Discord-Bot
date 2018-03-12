@@ -76,7 +76,7 @@ namespace SteamDiscordBot.Commands
             input += args[args.Length - 1];
 
             var lower = input.ToLower();
-            int count = await Program.Instance.facts.RemoveFromGuild(Context.Channel.Id, lower);
+            int count = await Program.Instance.facts.RemoveFromGuild(Context.Guild.Id, lower);
             if (count == 0)
             {
                 await Context.Channel.SendMessageAsync("I don't know anything about " + lower);
