@@ -59,4 +59,32 @@ namespace SteamDiscordBot.Commands
             await Context.Channel.SendMessageAsync(string.Format("Displaying fact #{0}: {1}", list.IndexOf(random)+1, random));
         }
     }
+
+    public class Forget : ModuleBase
+    {
+        [Command("forget"), Summary("Forgets a fact learned.")]
+        public async Task Say(params string[] args)
+        {
+            string input = "";
+            for (int i = 0; i < args.Length - 1; i++)
+            {
+                if (i == 0 && args[i].Equals("that"))
+                    continue;
+
+                input += args[i] + " ";
+            }
+            input += args[args.Length - 1];
+
+            var lower = input.ToLower();
+            int count = await Program.Instance.facts.RemoveFromGuild(Context.Channel.Id, lower);
+            if (count == 0)
+            {
+                await Context.Channel.SendMessageAsync("I don't know anything about " + lower);
+            }
+            else
+            {
+                await Context.Channel.SendMessageAsync("I've forgotten that " + lower);
+            }
+        }
+    }
 }

@@ -34,6 +34,47 @@ namespace SteamDiscordBot
             }
         }
 
+        public async Task<int> RemoveFromGuild(ulong guild, string fact)
+        {
+            // remove from cache
+            int count = facts[guild].RemoveAll((x) => x.Equals(fact));
+            if (count == 0)
+            {
+                return 0;
+            }
+
+            // remove from file
+            count = 0;
+            List<string> array = new List<string>();
+
+            using (FileStream fileStream = File.Open(Helpers.BuildPath(guild + "_facts.txt"), FileMode.Open))
+            using (BufferedStream bufferedStream = new BufferedStream(fileStream))
+            using (StreamReader reader = new StreamReader(bufferedStream))
+            {
+                string line;
+                while ((line = await reader.ReadLineAsync()) != null)
+                {
+                    if (!line.Contains(fact))
+                        array.Add(line);
+                    else
+                        count++;
+                }
+            }
+
+
+            using (FileStream fileStream = File.Open(Helpers.BuildPath(guild + "_facts.txt"), FileMode.Create))
+            using (BufferedStream bufferedStream = new BufferedStream(fileStream))
+            using (StreamWriter reader = new StreamWriter(bufferedStream))
+            {
+                foreach (string line in array)
+                {
+                    await reader.WriteLineAsync(line);
+                }
+            }
+
+            return count;
+        }
+
         public async Task AddGuild(ulong guild)
         {
             var path = Helpers.BuildPath(guild + "_facts.txt");
