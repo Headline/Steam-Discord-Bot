@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using SteamDiscordBot.Markov;
 using System.Threading.Tasks;
 using SteamDiscordBot;
+using Discord;
 
 class MarkovHandler
 {
@@ -132,14 +133,21 @@ class MarkovHandler
             return false;
         }
 
-
-        using (FileStream stream = new FileStream(Helpers.BuildPath(file), FileMode.Append))
+        try
         {
-            Byte[] info = new UTF8Encoding(true).GetBytes((line + "\n"));
+            using (FileStream stream = new FileStream(Helpers.BuildPath(file), FileMode.Append))
+            {
+                Byte[] info = new UTF8Encoding(true).GetBytes((line + "\n"));
 
-            stream.Write(info, 0, info.Length);
+                stream.Write(info, 0, info.Length);
+            }
+            return true;
         }
-        return true;
+        catch (Exception e)
+        {
+            Program.Instance.Log(new LogMessage(LogSeverity.Info, "MarkovHandler.WriteLineToFile", e.Message));
+            return false;
+        }
     }
 
     public static async Task<int> RemoveTermFromFile(string file, string needle)

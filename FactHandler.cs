@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Discord;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,11 +19,18 @@ namespace SteamDiscordBot
 
         public void WriteToGuild(ulong guild, string fact)
         {
-            using (FileStream stream = new FileStream(Helpers.BuildPath(guild + "_facts.txt"), FileMode.Append))
+            try
             {
-                Byte[] info = new UTF8Encoding(true).GetBytes((fact + "\n"));
+                using (FileStream stream = new FileStream(Helpers.BuildPath(guild + "_facts.txt"), FileMode.Append))
+                {
+                    Byte[] info = new UTF8Encoding(true).GetBytes((fact + "\n"));
 
-                stream.Write(info, 0, info.Length);
+                    stream.Write(info, 0, info.Length);
+                }
+            }
+            catch (Exception e)
+            {
+                Program.Instance.Log(new LogMessage(LogSeverity.Info, "FactHandler.WriteToGuild", e.Message));
             }
         }
 
