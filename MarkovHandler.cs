@@ -24,6 +24,9 @@ class MarkovHandler
 
     public async Task AddGuild(ulong guild)
     {
+        if (dict.ContainsKey(guild)) // we must've disconnected briefly, but still have our data
+            return;
+
         var path = Helpers.BuildPath(guild + ".txt");
         var markov = new MarkovGraph();
         dict.Add(guild, markov);

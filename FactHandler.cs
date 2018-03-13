@@ -77,6 +77,9 @@ namespace SteamDiscordBot
 
         public async Task AddGuild(ulong guild)
         {
+            if (facts.ContainsKey(guild)) // we must've disconnected briefly, but still have our data
+                return;
+
             var path = Helpers.BuildPath(guild + "_facts.txt");
             var list = new List<string>();
             facts.Add(guild, list);
