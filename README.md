@@ -1,27 +1,32 @@
 # Steam-Discord-Bot
 [![Build status](https://ci.appveyor.com/api/projects/status/h0sltbhpyelqc066?svg=true)](https://ci.appveyor.com/project/Headline22/steam-discord-bot)
 
-This a Steam Discord bot which provides notifications on game updates along with some useful commands that interact with the Steam API. Here are some examples of the commands thus far. If you'd like to see more commands, open an issue and recommend some!
-
 If you are somebody looking to have this bot on your discord server, message me (Headline#9572) on discord and I can throw the bot in the server for you. Otherwise, you should only *really* need this source code if you'd like to extend the bot yourself.
+
+This a Steam Discord bot which provides notifications on game updates along with some useful commands that interact with the Steam API. There are many other commands which are included that are unrelated to steam, but are general purpose or meant to exist just for fun. Here are some examples of the commands thus far. If you'd like to see more commands, open an issue and recommend some! If you dislike any commands or functionality, commands can always be disabled in settings.json!
 
 ```
 !appinfo - Fetches up application info from steam.
 !chat - Uses a Markov model with to generate response text.
-!chatremove - Removes the term from knowledgebase.
+!chatremove - Removes the term from knowledgebase. [Owner only]
 !chatknowledge - Sends a pastebin link containing its knowledgebase.
 !coin - Flips a coin.
 !btc - Fetches the latest Bitcoin market value.
 !eth - Fetches the latest Ethereum market value.
 !roll - rolls a dice of arbitrary size. (example: '!roll 33' rolls a 33-sided die)
+!learn - Saves a new fact to the bot's memory.
+!facts - Outputs number of facts known.
+!facts about - Outputs a fact about the input, if learned.
+!forget - Forgets a fact learned.
 !help - Prints and formats all commands.
 !numplayers - Fetches current player count from steam.
 !numservers - Fetches current server count from steam.
 !ping - Test command.
 !pony - Grabs link based off pony name.
 !repeat - Repeats last message X amount of times.
+!setgame - Sets the bot's game. [Owner only]
 !s - Subsitutes one word for another in last message.
-!update - Updates and reloads the bot.
+!update - Updates and reloads the bot. [Owner only]
 !version - Get the current bot version.
 ```
 
