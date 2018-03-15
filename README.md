@@ -1,8 +1,6 @@
 # Steam-Discord-Bot
 [![Build status](https://ci.appveyor.com/api/projects/status/h0sltbhpyelqc066?svg=true)](https://ci.appveyor.com/project/Headline22/steam-discord-bot)
 
-If you are somebody looking to have this bot on your discord server, message me (Headline#9572) on discord and I can throw the bot in the server for you. Otherwise, you should only *really* need this source code if you'd like to extend the bot yourself.
-
 This a Steam Discord bot which provides notifications on game updates along with some useful commands that interact with the Steam API. There are many other commands which are included that are unrelated to steam, but are general purpose or meant to exist just for fun. Here are some examples of the commands thus far. If you'd like to see more commands, open an issue and recommend some! If you dislike any commands or functionality, commands can always be disabled in settings.json!
 
 ```
@@ -29,6 +27,9 @@ This a Steam Discord bot which provides notifications on game updates along with
 !update - Updates and reloads the bot. [Owner only]
 !version - Get the current bot version.
 ```
+
+## Don't feel like hosting this?
+If you are somebody looking to have this bot on your discord server, message me (Headline#9572) on discord and I can throw the bot in the server for you. Otherwise, you should only *really* need this source code if you'd like to extend the bot yourself.
 
 ## Installation
 - Install latest version from the [releases page](https://github.com/Headline22/Steam-Discord-Bot/releases).
