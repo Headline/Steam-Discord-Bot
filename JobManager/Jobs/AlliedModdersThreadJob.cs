@@ -44,7 +44,7 @@ namespace SteamDiscordBot.Jobs
                 {
                     if (!history.Exists(x => x.Equals(current)))
                     {
-                        string message = "New AlliedModders plugin: " + current.title + "\n\nView: " + current.link;
+                        string message = "New SourceMod plugin: " + current.title + "\n\nView: " + current.link;
                         var emb = new EmbedBuilder();
                         emb.WithDescription(message);
 
