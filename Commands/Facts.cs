@@ -21,16 +21,17 @@ namespace SteamDiscordBot.Commands
             }
             input += args[args.Length - 1];
 
-            if (input.Contains(Context.User.Username) || input.Contains(Context.User.Mention))
+            var lowerInput = input.ToLower();
+            if (lowerInput.Contains(Context.User.Username.ToLower()) || lowerInput.Contains(Context.User.Mention))
             {
                 await Context.Channel.SendMessageAsync("You cannot teach me facts about yourself! :^)");
                 return;
             }
 
             var list = Program.Instance.facts.GetList(Context.Guild.Id);
-            list.Add(input.ToLower());
+            list.Add(lowerInput);
             Program.Instance.facts.WriteToGuild(Context.Guild.Id, input.ToLower());
-            await Context.Channel.SendMessageAsync(string.Format("I've learned fact #{0}: {1}", list.Count, input));
+            await Context.Channel.SendMessageAsync(string.Format("I've learned fact #{0}: {1}", list.Count, lowerInput));
         }
     }
 
