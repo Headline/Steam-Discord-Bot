@@ -8,7 +8,7 @@ namespace SteamDiscordBot.Commands
     {
         public static readonly string url = "http://lmgtfy.com/?q=";
 
-        [Command("coin"), Summary("Flips a coin.")]
+        [Command("lmgtfy"), Summary("Responds with a lmgtfy link")]
         public async Task Say(params string[] args)
         {
             string input = "";
