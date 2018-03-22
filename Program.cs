@@ -45,7 +45,7 @@ namespace SteamDiscordBot
         public static Program Instance;
         public static dynamic config;
         public string[] helpLines;
-        public List<MsgInfo> messageHist;
+        public Dictionary<ulong , List<MsgInfo>> messageHist;
 
         public static void Main(string[] args)
         {
@@ -85,7 +85,7 @@ namespace SteamDiscordBot
             commands = new CommandService();
             services = new ServiceCollection().BuildServiceProvider();
 
-            messageHist = new List<MsgInfo>();
+            messageHist = new Dictionary<ulong, List<MsgInfo>>();
             markov = new MarkovHandler();
             facts = new FactHandler();
 
@@ -136,6 +136,9 @@ namespace SteamDiscordBot
              * huge amounts of text, we need to create a thread for each guild
              * when they join and do all of the text processing there. 
              */
+            if (!messageHist.ContainsKey(arg.Id))
+                messageHist.Add(arg.Id, new List<MsgInfo>());
+
             new Thread(new ThreadStart(async () =>
             {
                 await markov.AddGuild(arg.Id);
@@ -163,7 +166,7 @@ namespace SteamDiscordBot
                     message = message.Content,
                     user = message.Author.Id
                 };
-                messageHist.Add(info);
+                messageHist[context.Guild.Id].Add(info);
                 markov.WriteToGuild(context.Guild.Id, message.Content);
                 return;
             }

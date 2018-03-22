@@ -9,7 +9,7 @@ namespace SteamDiscordBot.Commands
         [Command("repeat"), Summary("Repeats last message X amount of times.")]
         public async Task Say(int count)
         {
-            List<MsgInfo> list = Program.Instance.messageHist;
+            List<MsgInfo> list = Program.Instance.messageHist[Context.Guild.Id];
             if (list.Count == 0)
             {
                 await Context.Channel.SendMessageAsync("Error! No message to repeat yet...");

@@ -11,7 +11,7 @@ namespace SteamDiscordBot.Commands
         [Command("s"), Summary("Subsitutes one word for another in last message.")]
         public async Task Say(string arg1, string arg2)
         {
-            List<MsgInfo> list = Program.Instance.messageHist;
+            List<MsgInfo> list = Program.Instance.messageHist[Context.Guild.Id];
             if (list.Count == 0)
             {
                 await Context.Channel.SendMessageAsync("Error! No message to replace yet...");
