@@ -22,7 +22,7 @@ namespace SteamDiscordBot.Commands
             input += args[args.Length - 1];
 
             var lowerInput = input.ToLower();
-            if (lowerInput.Contains(Context.User.Username.ToLower()) || lowerInput.Contains(Context.User.Mention))
+            if (lowerInput.Contains(Context.User.Username.ToLower()) || lowerInput.Contains(""+Context.User.Id))
             {
                 await Context.Channel.SendMessageAsync("You cannot teach me facts about yourself! :^)");
                 return;
