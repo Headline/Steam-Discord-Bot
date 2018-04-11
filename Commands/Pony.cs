@@ -13,6 +13,10 @@ namespace SteamDiscordBot.Commands
         {
             try
             {
+                System.Net.ServicePointManager.ServerCertificateValidationCallback += (se, cert, chain, sslerror) => {
+                    return true;
+                };
+
                 string pony = new WebClient().DownloadString("https://areweponyyet.com/?chatty=1&pony=" + input);
 
                 await Context.Channel.SendMessageAsync( "URL Fetched: " + "https://areweponyyet.com/" + pony);
