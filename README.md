@@ -47,6 +47,7 @@ Here's a breakdown for configuration settings, along with why they're needed.
 - **AppIDList**: The list of steam appids that the bot watches for updates. If an update is detected it will alert all servers with a matching `AnnouncePref`
 - **AnnouncePrefs**: A list of channels the bot will search for to send announcement into. This list can include many channels which span across multiple servers, but the bot will only send the message once to the first match found.
 - **DisabledCommands**: A list of disabled commands, should you want to do so. All you need to do is specify a command name.I you wanted to remove the help command, enter "help" as an entry in the list.
+- **GuildTriggers**: Allows you to map a guild id to a command trigger. An example item would be "<guildid>:-" to map the guild id to the character `-`
 - **GitHubAuthToken**: An authentication token for GitHub API if you'd like the bot to automatically update itself. You may leave this blank, but !update will not work and any updates will not automatically occur. 
 - **JobInterval**: How often the bot will run scheduled jobs. The time given is in seconds.
 - **AlliedModdersThreadJob**: Alerts new plugin uploads to the AlliedModders [plugin subforum](https://forums.alliedmods.net/forumdisplay.php?f=108). This is disabled by default, as I believe it is only useful for my usecase. If you'd like to get the notifications, you may set it to true. Send channel is determined by `AnnouncePrefs` 

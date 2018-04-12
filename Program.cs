@@ -45,7 +45,8 @@ namespace SteamDiscordBot
         public static Program Instance;
         public static dynamic config;
         public string[] helpLines;
-        public Dictionary<ulong , List<MsgInfo>> messageHist;
+        public Dictionary<ulong, List<MsgInfo>> messageHist;
+        public Dictionary<ulong, string> triggerMap;
 
         public static void Main(string[] args)
         {
@@ -86,6 +87,7 @@ namespace SteamDiscordBot
             services = new ServiceCollection().BuildServiceProvider();
 
             messageHist = new Dictionary<ulong, List<MsgInfo>>();
+            triggerMap = new Dictionary<ulong, string>();
             markov = new MarkovHandler();
             facts = new FactHandler();
 
@@ -139,6 +141,22 @@ namespace SteamDiscordBot
             if (!messageHist.ContainsKey(arg.Id))
                 messageHist.Add(arg.Id, new List<MsgInfo>());
 
+            bool found = false;
+            if (config.GuildTriggers != null) //bcompat for older config files
+            {
+                foreach (string str in config.GuildTriggers) // we'll loop and find id matches to overwrite the triggerMap entry
+                {
+                    string[] args = str.Split(':');
+                    if (args[0].Equals("" + arg.Id))
+                    {
+                        found = true;
+                        triggerMap.Add(arg.Id, args[1]);
+                    }
+                }
+            }
+            if (!found)
+                triggerMap.Add(arg.Id, "!"); // default command trigger
+
             new Thread(new ThreadStart(async () =>
             {
                 await markov.AddGuild(arg.Id);
@@ -158,7 +176,7 @@ namespace SteamDiscordBot
             var context = new CommandContext(client, message);
 
             int argPos = 0;
-            if (!(message.HasCharPrefix('!', ref argPos)
+            if (!(message.HasStringPrefix(triggerMap[context.Guild.Id], ref argPos)
                 || message.HasMentionPrefix(client.CurrentUser, ref argPos)))
             {
                 MsgInfo info = new MsgInfo()
