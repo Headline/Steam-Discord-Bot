@@ -26,6 +26,10 @@ namespace SteamDiscordBot.Commands
 
                 await Context.Channel.SendMessageAsync(name + " player count: " + count);
             }
+            catch (NullReferenceException ex)
+            {
+                await Context.Channel.SendMessageAsync("Invalid appid!");
+            }
             catch (Exception ex)
             {
                 await Program.Instance.Log(new Discord.LogMessage(Discord.LogSeverity.Error, "NumPlayers", ex.Message));
