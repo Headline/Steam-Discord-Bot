@@ -102,23 +102,7 @@ class MarkovHandler
         foreach (string line in inputArray)
             input += line + "\n";
 
-        using (var client = new WebClient())
-        {
-            client.Headers[HttpRequestHeader.ContentType] = "text/plain";
-
-            var response = client.UploadString("https://hastebin.com/documents", input);
-            JObject obj = JObject.Parse(response);
-
-            if (!obj.HasValues)
-            {
-                return "";
-            }
-
-            string key = (string)obj["key"];
-            string hasteUrl = "https://hastebin.com/" + key + ".txt";
-
-            return hasteUrl;
-        }
+        return Helpers.UploadHastebin(input);
     }
 
     private static bool WriteLineToFile(string file, string line)

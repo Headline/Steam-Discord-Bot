@@ -45,6 +45,36 @@ namespace SteamDiscordBot.Commands
         }
     }
 
+    public class FactsListCommand : ModuleBase
+    {
+        [Command("facts list"), Summary("Outputs number of facts known.")]
+        public async Task Say()
+        {
+            var list = Program.Instance.facts.GetList(Context.Guild.Id);
+            string input = "";
+            foreach (string fact in list)
+            {
+                input += fact + "\n";
+            }
+            string url = Helpers.UploadHastebin(input);
+            await Context.Channel.SendMessageAsync(string.Format("List of facts fetched: {0}", url));
+        }
+    }
+
+
+    public class FactCommand : ModuleBase
+    {
+        [Command("fact"), Summary("Outputs a random fact")]
+        public async Task Say()
+        {
+            Random rand = new Random();
+            var list = Program.Instance.facts.GetList(Context.Guild.Id);
+            int index = rand.Next(0, list.Count - 1);
+            await Context.Channel.SendMessageAsync(string.Format("Displaying fact #{0}: {1}", (index+1), list[index]));
+        }
+    }
+
+
     public class FactsAboutCommand : ModuleBase
     {
         [Command("facts about"), Summary("Outputs a fact about the input, if learned.")]
