@@ -205,7 +205,7 @@ namespace SteamDiscordBot
 			return name;
 		}
 
-        public static string[] BuildHelpLines()
+        public static string[] BuildHelpLines(ulong guild)
         {
             List<string> arrayList = new List<string>();
 
@@ -215,6 +215,7 @@ namespace SteamDiscordBot
                           where typeof(ModuleBase).IsAssignableFrom(type)
                           select type; // Grab all types that inherit ModuleBase
 
+            string trigger = Program.Instance.triggerMap[guild];
             foreach (Type t in results) // For each type in results
             {
                 /* Grab MethodInfo of the type where the method has the attribute SummaryAttribute */
@@ -230,7 +231,7 @@ namespace SteamDiscordBot
                 if (summary != null && command != null)
                 {
                     if (!Helpers.IsCommandDisabled(command.Text))
-                        arrayList.Add("!" + command.Text + " - " + summary.Text);
+                        arrayList.Add(trigger + command.Text + " - " + summary.Text);
                 }
             }
 

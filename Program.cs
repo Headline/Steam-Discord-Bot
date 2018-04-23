@@ -44,7 +44,6 @@ namespace SteamDiscordBot
         // BOT
         public static Program Instance;
         public static dynamic config;
-        public string[] helpLines;
         public Dictionary<ulong, List<MsgInfo>> messageHist;
         public Dictionary<ulong, string> triggerMap;
 
@@ -96,8 +95,6 @@ namespace SteamDiscordBot
 
             client.MessageReceived += HandleCommand;
             await commands.AddModulesAsync(Assembly.GetEntryAssembly());
-
-            helpLines = Helpers.BuildHelpLines();
 
             await client.LoginAsync(TokenType.Bot, config.DiscordBotToken);
             await client.StartAsync();

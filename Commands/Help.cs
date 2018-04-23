@@ -9,7 +9,8 @@ namespace SteamDiscordBot.Commands
         public async Task Say()
         {
             string message = "";
-            foreach(string line in Program.Instance.helpLines)
+            string[] helplines = Helpers.BuildHelpLines(Context.Guild.Id);
+            foreach(string line in helplines)
             {
                 message += line + "\n";
             }
