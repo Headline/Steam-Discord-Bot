@@ -110,6 +110,7 @@
     <Compile Include="Commands\AppInfo.cs" />
     <Compile Include="Commands\Chat.cs" />
     <Compile Include="Commands\Coin.cs" />
+    <Compile Include="Commands\Credits.cs" />
     <Compile Include="Commands\Crypto.cs" />
     <Compile Include="Commands\Dice.cs" />
     <Compile Include="Commands\Facts.cs" />
