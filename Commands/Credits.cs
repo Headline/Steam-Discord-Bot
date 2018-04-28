@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 using Octokit;
 
@@ -23,16 +24,20 @@ namespace SteamDiscordBot.Commands
             creators.Sort(delegate (RepositoryContributor a, RepositoryContributor b)
             {
                 if (a.Contributions == b.Contributions) return 0;
-                return (a.Contributions < b.Contributions) ? -1 : 1;
+                return (a.Contributions < b.Contributions) ? 1 : -1; // greatest to least
             });
 
             string output = "";
             foreach (var usr in creators)
             {
-                output += string.Format("{0} ({1} contribution(s))\n", usr.Login, usr.Contributions);
+                output += string.Format("**{0}** ({1} contribution(s))\n", usr.Login, usr.Contributions);
             }
 
-            await Context.Channel.SendMessageAsync("Credits ordered by contribution count: \n" + output);
+            var emb = new EmbedBuilder();
+            emb.WithDescription("Credits ordered by contribution count: \n" + output);
+            emb.Color = Color.Red;
+
+            await Context.Channel.SendMessageAsync("", false, emb);
         }
     }
 }
