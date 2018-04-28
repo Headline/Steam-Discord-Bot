@@ -44,9 +44,10 @@ namespace SteamDiscordBot.Jobs
                 {
                     if (!history.Exists(x => x.Equals(current)))
                     {
-                        string message = "New SourceMod plugin: " + current.title + "\n\nView: " + current.link;
                         var emb = new EmbedBuilder();
-                        emb.WithDescription(message);
+                        emb.Title = "New SourceMod plugin";
+                        emb.AddField(current.title, "URL: " + current.link);
+                        emb.Color = Color.DarkBlue;
 
                         await Task.Run(() => Helpers.SendMessageAllToTarget(target, "", emb));
                         history.Add(current);
