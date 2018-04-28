@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 
 namespace SteamDiscordBot.Commands
@@ -15,7 +16,12 @@ namespace SteamDiscordBot.Commands
                 message += line + "\n";
             }
 
-            await Context.Channel.SendMessageAsync(message);
+            var emb = new EmbedBuilder();
+            emb.Title = "Command List";
+            emb.WithDescription(message);
+            emb.Color = Color.Red;
+
+            await Context.Channel.SendMessageAsync("", false, emb);
         }
     }
 }

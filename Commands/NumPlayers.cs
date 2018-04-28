@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
-
+using Discord;
 using Discord.Commands;
 using Newtonsoft.Json.Linq;
 
@@ -24,7 +24,12 @@ namespace SteamDiscordBot.Commands
                 o = JObject.Parse(json);
                 string count = (string)o["response"]["player_count"];
 
-                await Context.Channel.SendMessageAsync(name + " player count: " + count);
+                var emb = new EmbedBuilder();
+                emb.Title = "Player Count";
+                emb.WithDescription(name + " player count: " + count);
+                emb.Color = Color.Red;
+
+                await Context.Channel.SendMessageAsync("", false, emb);
             }
             catch (NullReferenceException ex)
             {

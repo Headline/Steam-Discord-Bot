@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 
 namespace SteamDiscordBot.Commands
@@ -13,10 +14,12 @@ namespace SteamDiscordBot.Commands
         	
         	int num = rand.Next(1, 3);
 
-        	if (num == 1)
-	            await Context.Channel.SendMessageAsync("Heads");
-            else
-	            await Context.Channel.SendMessageAsync("Tails");
+            var emb = new EmbedBuilder();
+            emb.Title = "Coin Toss!";
+            emb.WithDescription(string.Format("**{0}**", (num == 1) ? "Heads" : "Tails"));
+            emb.Color = Color.Red;
+
+            await Context.Channel.SendMessageAsync("", false, emb);
         }
     }
 }

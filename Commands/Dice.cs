@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 
 namespace SteamDiscordBot.Commands
@@ -12,7 +13,13 @@ namespace SteamDiscordBot.Commands
 			Random rand = new Random();
 			uint num = 0;
 			num = (uint) rand.Next(1, (int) Convert.ToUInt32(argSize, 10));
-			await Context.Channel.SendMessageAsync("you rolled a "+num);
+
+            var emb = new EmbedBuilder();
+            emb.Title = "Dice Roll";
+            emb.WithDescription(string.Format("You rolled a **{0}**", num));
+            emb.Color = Color.Red;
+
+            await Context.Channel.SendMessageAsync("", false, emb);
 		}
 	}
 }

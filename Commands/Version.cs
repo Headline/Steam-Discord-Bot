@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 
 namespace SteamDiscordBot.Commands
@@ -11,7 +12,12 @@ namespace SteamDiscordBot.Commands
             var client = Program.Instance.ghClient;
             var releases = await client.Repository.Release.GetAll(Program.config.GitHubUpdateUsername, Program.config.GitHubUpdateRepository);
 
-            await Context.Channel.SendMessageAsync("Current version: " + Program.VERSION + " (latest is " + Helpers.GetLatestVersion(releases) + ")");
+            var emb = new EmbedBuilder();
+            emb.Title = "Version";
+            emb.WithDescription("Current version: " + Program.VERSION + " (latest is " + Helpers.GetLatestVersion(releases) + ")");
+            emb.Color = Color.Red;
+
+            await Context.Channel.SendMessageAsync("", false, emb);
         }
     }
 }

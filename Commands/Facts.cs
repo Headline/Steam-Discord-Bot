@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 
 namespace SteamDiscordBot.Commands
@@ -24,14 +25,25 @@ namespace SteamDiscordBot.Commands
             var lowerInput = input.ToLower();
             if (lowerInput.Contains(Context.User.Username.ToLower()) || lowerInput.Contains(""+Context.User.Id))
             {
-                await Context.Channel.SendMessageAsync("You cannot teach me facts about yourself! :^)");
+                var emb = new EmbedBuilder();
+                emb.Title = "Error!";
+                emb.WithDescription("You cannot teach me facts about yourself! :^)");
+                emb.Color = Color.Red;
+
+                await Context.Channel.SendMessageAsync("", false, emb);
                 return;
             }
 
             var list = Program.Instance.facts.GetList(Context.Guild.Id);
             list.Add(lowerInput);
             Program.Instance.facts.WriteToGuild(Context.Guild.Id, input.ToLower());
-            await Context.Channel.SendMessageAsync(string.Format("I've learned fact #{0}: {1}", list.Count, lowerInput));
+
+            var emb2 = new EmbedBuilder();
+            emb2.Title = "Fact Learned!";
+            emb2.WithDescription(string.Format("I've learned fact #{0}: {1}", list.Count, lowerInput));
+            emb2.Color = Color.Red;
+
+            await Context.Channel.SendMessageAsync("", false, emb2);
         }
     }
 
@@ -41,7 +53,13 @@ namespace SteamDiscordBot.Commands
         public async Task Say()
         {
             var list = Program.Instance.facts.GetList(Context.Guild.Id);
-            await Context.Channel.SendMessageAsync(string.Format("I know {0} facts.", list.Count));
+
+            var emb = new EmbedBuilder();
+            emb.Title = "Facts Count";
+            emb.WithDescription(string.Format("I know {0} facts.", list.Count));
+            emb.Color = Color.Red;
+
+            await Context.Channel.SendMessageAsync("", false, emb);
         }
     }
 
@@ -57,7 +75,13 @@ namespace SteamDiscordBot.Commands
                 input += fact + "\n";
             }
             string url = Helpers.UploadHastebin(input);
-            await Context.Channel.SendMessageAsync(string.Format("List of facts fetched: {0}", url));
+
+            var emb = new EmbedBuilder();
+            emb.Title = "Facts List Fetched!";
+            emb.WithDescription(string.Format("List of facts fetched: {0}", url));
+            emb.Color = Color.Red;
+
+            await Context.Channel.SendMessageAsync("", false, emb);
         }
     }
 
@@ -70,7 +94,13 @@ namespace SteamDiscordBot.Commands
             Random rand = new Random();
             var list = Program.Instance.facts.GetList(Context.Guild.Id);
             int index = rand.Next(0, list.Count - 1);
-            await Context.Channel.SendMessageAsync(string.Format("Displaying fact #{0}: {1}", (index+1), list[index]));
+
+            var emb = new EmbedBuilder();
+            emb.Title = "Fact Fetched!";
+            emb.WithDescription(string.Format("Displaying fact #{0}: {1}", (index + 1), list[index]));
+            emb.Color = Color.Red;
+
+            await Context.Channel.SendMessageAsync("", false, emb);
         }
     }
 

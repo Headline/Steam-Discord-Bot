@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
-
+using Discord;
 using Discord.Commands;
 
 namespace SteamDiscordBot.Commands
@@ -19,7 +19,12 @@ namespace SteamDiscordBot.Commands
 
                 string pony = new WebClient().DownloadString("https://areweponyyet.com/?chatty=1&pony=" + input);
 
-                await Context.Channel.SendMessageAsync( "URL Fetched: " + "https://areweponyyet.com/" + pony);
+                var emb = new EmbedBuilder();
+                emb.Title = "Pony Link Fetched!";
+                emb.WithDescription("URL Fetched: " + "https://areweponyyet.com/" + pony);
+                emb.Color = Color.Red;
+
+                await Context.Channel.SendMessageAsync("", false, emb);
             }
             catch (Exception ex)
             {

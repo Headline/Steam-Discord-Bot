@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 
 namespace SteamDiscordBot.Commands
@@ -17,7 +18,13 @@ namespace SteamDiscordBot.Commands
             }
 
             await Program.Instance.client.SetGameAsync(input);
-            await Context.Channel.SendMessageAsync("My topic is now: " + input);
+
+            var emb = new EmbedBuilder();
+            emb.Title = "Game Set!";
+            emb.WithDescription("My game is now set to: " + input);
+            emb.Color = Color.Red;
+
+            await Context.Channel.SendMessageAsync("", false, emb);
         }
     }
 }

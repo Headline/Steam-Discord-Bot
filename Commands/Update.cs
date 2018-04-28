@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 
 namespace SteamDiscordBot.Commands
@@ -21,7 +22,13 @@ namespace SteamDiscordBot.Commands
                 return;
             }
 
-            await Context.Channel.SendMessageAsync("Okay. Updating...");
+            var emb = new EmbedBuilder();
+            emb.Title = "Update";
+            emb.WithDescription("Okay. Updating...");
+            emb.Color = Color.Red;
+
+            await Context.Channel.SendMessageAsync("", false, emb);
+
             Helpers.Update();
         }
     }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
-
+using Discord;
 using Discord.Commands;
 using Newtonsoft.Json.Linq;
 
@@ -22,12 +22,15 @@ namespace SteamDiscordBot.Commands
                 string website = (string)obj["" + appid]["data"]["website"];
                 double price = (int)obj["" + appid]["data"]["price_overview"]["final"] / 100.0;
 
-                await Context.Channel.SendMessageAsync("Fetching Details: \n"
-                    + "Name: " + name + "\n"
-                    + "Minimum Age: " + age + "\n"
-                    + "Price: $" + price + " (USD)\n"
-                    + "More Info: " + website + " \n");
+                var emb = new EmbedBuilder();
+                emb.Title = "AppInfo Fetched";
+                emb.AddField("Name", name);
+                emb.AddField("Age Requirement", "" + name);
+                emb.AddField("Price", string.Format("${0} (USD)", price));
+                emb.AddField("Link", website);
+                emb.Color = Color.Red;
 
+                await Context.Channel.SendMessageAsync("", false, emb);
             }
             catch (Exception ex)
             {

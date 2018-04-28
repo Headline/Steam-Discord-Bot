@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 
 namespace SteamDiscordBot.Commands
@@ -20,7 +21,13 @@ namespace SteamDiscordBot.Commands
             input += args[args.Length - 1];
 
             input = url + input;
-            await Context.Channel.SendMessageAsync("URL Fetched: " + input);
+
+            var emb = new EmbedBuilder();
+            emb.Title = "LMGTFY";
+            emb.WithDescription("URL Fetched: " + input);
+            emb.Color = Color.Red;
+
+            await Context.Channel.SendMessageAsync("", false, emb);
         }
     }
 }

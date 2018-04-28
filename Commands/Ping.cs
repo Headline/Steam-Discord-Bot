@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 
 namespace SteamDiscordBot.Commands
@@ -8,7 +9,11 @@ namespace SteamDiscordBot.Commands
         [Command("ping"), Summary("Test command.")]
         public async Task Say()
         {
-            await Context.Channel.SendMessageAsync("Pong.");
+            var emb = new EmbedBuilder();
+            emb.Title = "Pong!";
+            emb.Color = Color.Red;
+
+            await Context.Channel.SendMessageAsync("", false, emb);
         }
     }
 }
