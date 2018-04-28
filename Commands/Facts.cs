@@ -116,14 +116,24 @@ namespace SteamDiscordBot.Commands
 
             if (sublist.Count() == 0)
             {
-                await Context.Channel.SendMessageAsync("I don't know anything about " + lower);
+                var emb2 = new EmbedBuilder();
+                emb2.Title = "Error!";
+                emb2.WithDescription("I don't know anything about " + lower);
+                emb2.Color = Color.Red;
+
+                await Context.Channel.SendMessageAsync("", false, emb2);
                 return;
             }
 
             int index = new Random().Next(0, sublist.Count());
             string random = sublist.ElementAt(index);
 
-            await Context.Channel.SendMessageAsync(string.Format("Displaying fact #{0}: {1}", list.IndexOf(random)+1, random));
+            var emb = new EmbedBuilder();
+            emb.Title = "Fact Found!";
+            emb.WithDescription(string.Format("Displaying fact #{0}: {1}", list.IndexOf(random) + 1, random));
+            emb.Color = Color.Red;
+
+            await Context.Channel.SendMessageAsync("", false, emb);
         }
     }
 

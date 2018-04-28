@@ -7,8 +7,16 @@ namespace SteamDiscordBot.Commands
     public class SetGameCommand : ModuleBase
     {
         [Command("setgame"), Summary("Sets the bot's game. [Owner only]")]
-        public async Task Say(string input)
+        public async Task Say(params string[] args)
         {
+            string input = "";
+            for (int i = 0; i < args.Length - 1; i++)
+            {
+
+                input += args[i].Trim() + " ";
+            }
+            input += args[args.Length - 1];
+
             if (Context.User.Id != (ulong)Program.config.DiscordAdminId)
             {
                 await Context.Channel.SendMessageAsync("Contact "

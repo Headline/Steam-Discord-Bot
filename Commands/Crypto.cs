@@ -20,7 +20,7 @@ namespace SteamDiscordBot.Commands
 
                 var emb = new EmbedBuilder();
                 emb.Title = "Bitcoin Price";
-                emb.WithDescription(string.Format("Current BTC Price (USD): **{0}**", price));
+                emb.WithDescription(string.Format("Current BTC Price (USD): $**{0}**", price));
                 emb.Color = Color.Red;
 
                 await Context.Channel.SendMessageAsync("", false, emb);
@@ -45,7 +45,12 @@ namespace SteamDiscordBot.Commands
                 JObject obj = JObject.Parse(json);
                 string price = (string)obj["USD"];
 
-                await Context.Channel.SendMessageAsync("Current Ethereum Price (USD): " + price);
+                var emb = new EmbedBuilder();
+                emb.Title = "Ethereum Price";
+                emb.WithDescription(string.Format("Current ETH Price (USD): $**{0}**", price));
+                emb.Color = Color.Red;
+
+                await Context.Channel.SendMessageAsync("", false, emb);
             }
             catch (Exception ex)
             {
