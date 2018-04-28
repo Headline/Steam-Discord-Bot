@@ -34,7 +34,8 @@ namespace SteamDiscordBot.Commands
             }
 
             var emb = new EmbedBuilder();
-            emb.WithDescription("Credits ordered by contribution count: \n" + output);
+            emb.Title = "Credits ordered by contribution count:";
+            emb.WithDescription(output);
             emb.Color = Color.Red;
 
             await Context.Channel.SendMessageAsync("", false, emb);
