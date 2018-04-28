@@ -25,7 +25,7 @@ namespace SteamDiscordBot.Commands
                 var emb = new EmbedBuilder();
                 emb.Title = "AppInfo Fetched";
                 emb.AddField("Name", name);
-                emb.AddField("Age Requirement", "" + name);
+                emb.AddField("Age Requirement", "" + age);
                 emb.AddField("Price", string.Format("${0} (USD)", price));
                 emb.AddField("Link", website);
                 emb.Color = Color.Red;
