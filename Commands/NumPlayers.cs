@@ -42,7 +42,7 @@ namespace SteamDiscordBot.Commands
                 // GET Player Count
                 json = new WebClient().DownloadString("https://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1/?&appid=" + appid);
                 o = JObject.Parse(json);
-                string count = (string)o["response"]["player_count"];
+                string count = (string)String.Format("{0:N}", o["response"]["player_count"]);
 
                 var emb = new EmbedBuilder();
                 emb.Title = "Player Count";
