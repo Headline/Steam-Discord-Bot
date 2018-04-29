@@ -10,8 +10,28 @@ namespace SteamDiscordBot.Commands
     public class AppInfoCommand : ModuleBase
     {
         [Command("appinfo"), Summary("Fetches up application info from steam.")]
-        public async Task Say([Remainder, Summary("The appid to search for")] int appid)
+        public async Task Say(params string[] args)
         {
+            string input = "";
+            for (int i = 0; i < args.Length - 1; i++)
+            {
+
+                input += args[i].Trim() + " ";
+            }
+            input += args[args.Length - 1];
+            int appid = Helpers.InputToAppId(input);
+
+            if (appid == -1)
+            {
+                var emb = new EmbedBuilder();
+                emb.Title = "Error!";
+                emb.WithDescription("No games found! :(");
+                emb.Color = Color.Red;
+
+                await Context.Channel.SendMessageAsync("", false, emb);
+                return;
+            }
+
             try
             {
                 string json = new WebClient().DownloadString("http://store.steampowered.com/api/appdetails?appids=" + "" + appid);

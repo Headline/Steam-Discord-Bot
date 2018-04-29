@@ -13,6 +13,8 @@ using Discord.WebSocket;
 using Newtonsoft.Json.Linq;
 using Octokit;
 
+using SteamStoreQuery;
+
 namespace SteamDiscordBot
 {
     public static class Helpers
@@ -271,6 +273,22 @@ namespace SteamDiscordBot
 
                 return hasteUrl;
             }
+        }
+
+        public static int InputToAppId(string input)
+        {
+            if (int.TryParse(input, out int result))
+            {
+                return result;
+            }
+
+            /* Steam Store Query for AppID */
+            List<Listing> results = Query.Search(input);
+
+            if (results.Count == 0)
+                return -1;
+
+            return results.First().AppId;
         }
     }
 }
