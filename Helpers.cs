@@ -82,6 +82,7 @@ namespace SteamDiscordBot
                         {
                             var emb = new EmbedBuilder();
                             emb.WithDescription(input);
+                            emb.Color = Color.Red;
                             await channel.SendMessageAsync("", false, emb);
                         }
                         catch (Exception e)
