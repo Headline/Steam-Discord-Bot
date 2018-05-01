@@ -156,11 +156,21 @@ namespace SteamDiscordBot.Commands
             int count = await Program.Instance.facts.RemoveFromGuild(Context.Guild.Id, lower);
             if (count == 0)
             {
-                await Context.Channel.SendMessageAsync("I don't know anything about " + lower);
+                var emb = new EmbedBuilder();
+                emb.Title = "Error!";
+                emb.WithDescription(string.Format("I don't know anything about {0}", lower));
+                emb.Color = Color.Red;
+
+                await Context.Channel.SendMessageAsync("", false, emb);
             }
             else
             {
-                await Context.Channel.SendMessageAsync("I've forgotten that " + lower);
+                var emb = new EmbedBuilder();
+                emb.Title = "Fact Forgotten!";
+                emb.WithDescription(string.Format("I have forgotten that {0}", lower));
+                emb.Color = Color.Red;
+
+                await Context.Channel.SendMessageAsync("", false, emb);
             }
         }
     }
