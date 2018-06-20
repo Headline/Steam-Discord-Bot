@@ -1,25 +1,26 @@
 ﻿using System;
 using System.IO;
-using System.Net;
 using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 
-using Newtonsoft.Json.Linq;
-using SteamDiscordBot.Markov;
 using System.Threading.Tasks;
 using SteamDiscordBot;
 using Discord;
 
+using MarkovSharp.TokenisationStrategies;
+
 class MarkovHandler
 {
-    private Dictionary<ulong, IMarkovBot> dict;
+    private Dictionary<ulong, StringMarkov> dict;
     private Dictionary<ulong, string> nextResponse;
+    private Dictionary<ulong, int> nextWalk;
 
     public MarkovHandler()
     {
-        dict = new Dictionary<ulong, IMarkovBot>();
+        dict = new Dictionary<ulong, StringMarkov>();
         nextResponse = new Dictionary<ulong, string>();
+        nextWalk = new Dictionary<ulong, int>();
     }
 
     public async Task AddGuild(ulong guild)
@@ -28,8 +29,11 @@ class MarkovHandler
             return;
 
         var path = Helpers.BuildPath(guild + ".txt");
-        var markov = new MarkovGraph();
+        var markov = new StringMarkov();
+
         dict.Add(guild, markov);
+        nextWalk.Add(guild, 0);
+        nextResponse.Add(guild, "");
 
         if (!File.Exists(path))
         {
@@ -37,11 +41,10 @@ class MarkovHandler
             return;
         }
 
-        await LoadGraph(markov, path);
-        BuildNext(guild);
+        await LoadGraph(markov, path, guild);
     }
 
-    private static async Task LoadGraph(MarkovGraph markov, string path)
+    private async Task LoadGraph(StringMarkov markov, string path, ulong guild)
     {
         try
         {
@@ -56,9 +59,10 @@ class MarkovHandler
                 string line;
                 while ((line = await reader.ReadLineAsync()) != null)
                 {
-                    markov.Train(line);
+                    markov.Learn(line);
                 }
             }
+            BuildNext(guild);
         }
         catch { }
     }
@@ -66,17 +70,16 @@ class MarkovHandler
     public void WriteToGuild(ulong guild, string line)
     {
         if (WriteLineToFile(guild + ".txt", line))
-            this.dict[guild].Train(line);
+            this.dict[guild].Learn(line);
     }
 
     public async Task<int> RemoveFromGuild(ulong guild, string term)
     {
         int retval = await MarkovHandler.RemoveTermFromFile(guild + ".txt", term);
-        var markov = new MarkovGraph();
+        var markov = new StringMarkov();
         dict.Add(guild, markov);
 
-        await LoadGraph(markov, Helpers.BuildPath(guild + ".txt"));
-        this.BuildNext(guild);
+        await LoadGraph(markov, Helpers.BuildPath(guild + ".txt"), guild);
         return retval;
     }
 
@@ -88,8 +91,15 @@ class MarkovHandler
     public void BuildNext(ulong guild)
     {
         var markovstr = this.dict[guild];
+        var next = this.nextWalk[guild];
 
-        nextResponse[guild] = markovstr.GetPhrase();
+        if (next >= markovstr.Walk().Count()) /* if we used everything, rebuild */
+        {
+            markovstr.Retrain(1);
+            this.nextWalk[guild] = 0;
+        }
+
+        nextResponse[guild] = markovstr.Walk().ElementAt(this.nextWalk[guild]++);
     }
 
 
@@ -172,6 +182,6 @@ class MarkovHandler
 
     public string GetPhraseFromFile(ulong file, string term = null)
     {
-        return this.dict[file].GetPhrase();
+        return this.nextResponse[file];
     }
 }

@@ -64,6 +64,10 @@
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="MarkovSharp, Version=2.1.6505.4116, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>deps\MarkovSharp.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Extensions.DependencyInjection, Version=1.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Extensions.DependencyInjection.1.1.1\lib\netstandard1.1\Microsoft.Extensions.DependencyInjection.dll</HintPath>
     </Reference>
@@ -129,23 +133,17 @@
     <Compile Include="Commands\Update.cs" />
     <Compile Include="Commands\Version.cs" />
     <Compile Include="FactHandler.cs" />
-    <Compile Include="Markov\Graph.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="JobManager\JobManager.cs" />
     <Compile Include="JobManager\Jobs\AlliedModdersThreadJob.cs" />
     <Compile Include="JobManager\Jobs\SelfUpdateListener.cs" />
     <Compile Include="JobManager\Jobs\SteamCheckJob.cs" />
     <Compile Include="JobManager\Jobs\UpdateJob.cs" />
-    <Compile Include="Markov\MarkovBot.cs" />
-    <Compile Include="Markov\MarkovGraph.cs" />
     <Compile Include="MarkovHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Markov\SimpleEdge.cs" />
-    <Compile Include="Markov\SimpleVertex.cs" />
     <Compile Include="Steam\SteamCallbacks.cs" />
     <Compile Include="Steam\SteamConnection.cs" />
-    <Compile Include="Markov\WeightedUndirectedGraph.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
