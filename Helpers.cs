@@ -255,9 +255,19 @@ namespace SteamDiscordBot
             return combo + file;
         }
 
+        private class LowTimeoutWebClient : WebClient
+        {
+            protected override WebRequest GetWebRequest(Uri uri)
+            {
+                WebRequest w = base.GetWebRequest(uri);
+                w.Timeout = (int)TimeSpan.FromSeconds(5).TotalMilliseconds;
+                return w;
+            }
+        }
+
         public static string UploadHastebin(string input)
         {
-            using (var client = new WebClient())
+            using (var client = new LowTimeoutWebClient())
             {
                 client.Headers[HttpRequestHeader.ContentType] = "text/plain";
 
