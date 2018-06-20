@@ -1,7 +1,7 @@
 # Steam-Discord-Bot
 [![Build status](https://ci.appveyor.com/api/projects/status/h0sltbhpyelqc066?svg=true)](https://ci.appveyor.com/project/Headline22/steam-discord-bot)
 
-This a Steam Discord bot which provides notifications on game updates along with some useful commands that interact with the Steam API. There are many other commands which are included that are unrelated to steam, but are general purpose or meant to exist just for fun. Here are some examples of the commands thus far. If you'd like to see more commands, open an issue and recommend some! If you dislike any commands or functionality, commands can always be disabled in settings.json!
+This a Steam Discord bot which provides notifications on game updates along with some useful commands that interact with the Steam API. There are many other commands which are included that are unrelated to steam, but are general purpose or meant to exist just for fun. Here are some examples of the commands so far. If you'd like to see more commands, open an issue and recommend some! If you dislike any commands or functionality, commands can always be disabled in settings.json!
 
 ```
 !appinfo - Fetches up application info from steam.
