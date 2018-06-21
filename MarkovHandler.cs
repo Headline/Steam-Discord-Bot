@@ -84,7 +84,7 @@ class MarkovHandler
     {
         int retval = await MarkovHandler.RemoveTermFromFile(guild + ".txt", term);
         var markov = new MarkovChain<string>(1);
-        dict.TryAdd(guild, markov);
+        dict.TryUpdate(guild, markov, this.dict[guild]);
 
         await LoadGraph(markov, Helpers.BuildPath(guild + ".txt"), guild);
         BuildNext(guild);
@@ -109,7 +109,6 @@ class MarkovHandler
             BuildNext(guild);
         }
     }
-
 
     public string GetHastebinLink(ulong guild)
     {
