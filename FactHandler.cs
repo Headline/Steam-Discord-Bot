@@ -1,20 +1,20 @@
 ﻿using Discord;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace SteamDiscordBot
 {
     class FactHandler
     {
-        private Dictionary<ulong, List<string>> facts;
+        private ConcurrentDictionary<ulong, List<string>> facts;
 
         public FactHandler()
         {
-            facts = new Dictionary<ulong, List<string>>();
+            facts = new ConcurrentDictionary<ulong, List<string>>();
         }
 
         public void WriteToGuild(ulong guild, string fact)
@@ -82,7 +82,7 @@ namespace SteamDiscordBot
 
             var path = Helpers.BuildPath(guild + "_facts.txt");
             var list = new List<string>();
-            facts.Add(guild, list);
+            facts.TryAdd(guild, list);
 
             if (!File.Exists(path))
             {

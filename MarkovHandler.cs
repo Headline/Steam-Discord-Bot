@@ -3,24 +3,25 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 using System.Threading.Tasks;
 using SteamDiscordBot;
 using Discord;
 
-using MarkovSharp.TokenisationStrategies;
+using Markov;
 
 class MarkovHandler
 {
-    private Dictionary<ulong, StringMarkov> dict;
-    private Dictionary<ulong, string> nextResponse;
-    private Dictionary<ulong, int> nextWalk;
+    private ConcurrentDictionary<ulong, MarkovChain<string>> dict;
+    private ConcurrentDictionary<ulong, string> nextResponse;
+    private Random rand;
 
     public MarkovHandler()
     {
-        dict = new Dictionary<ulong, StringMarkov>();
-        nextResponse = new Dictionary<ulong, string>();
-        nextWalk = new Dictionary<ulong, int>();
+        dict = new ConcurrentDictionary<ulong, MarkovChain<string>>();
+        nextResponse = new ConcurrentDictionary<ulong, string>();
+        rand = new Random();
     }
 
     public async Task AddGuild(ulong guild)
@@ -29,11 +30,10 @@ class MarkovHandler
             return;
 
         var path = Helpers.BuildPath(guild + ".txt");
-        var markov = new StringMarkov();
+        var markov = new MarkovChain<string>(1);
 
-        dict.Add(guild, markov);
-        nextWalk.Add(guild, 0);
-        nextResponse.Add(guild, "");
+        dict.TryAdd(guild, markov);
+        nextResponse.TryAdd(guild, "");
 
         if (!File.Exists(path))
         {
@@ -42,9 +42,10 @@ class MarkovHandler
         }
 
         await LoadGraph(markov, path, guild);
+        BuildNext(guild);
     }
 
-    private async Task LoadGraph(StringMarkov markov, string path, ulong guild)
+    private async Task LoadGraph(MarkovChain<string> markov, string path, ulong guild)
     {
         try
         {
@@ -53,16 +54,19 @@ class MarkovHandler
              * so we use BufferedStream to speed things up a bit. 
              */
             using (FileStream fileStream = File.Open(path, FileMode.Open))
-            using (BufferedStream bufferedStream = new BufferedStream(fileStream))
-            using (StreamReader reader = new StreamReader(bufferedStream))
             {
-                string line;
-                while ((line = await reader.ReadLineAsync()) != null)
+                using (BufferedStream bufferedStream = new BufferedStream(fileStream))
+                using (StreamReader reader = new StreamReader(bufferedStream))
                 {
-                    markov.Learn(line);
+
+                    string line;
+                    while ((line = await reader.ReadLineAsync()) != null)
+                    {
+                        string[] pieces = line.Split(' ');
+                        markov.Add(pieces, 1);
+                    }
                 }
             }
-            BuildNext(guild);
         }
         catch { }
     }
@@ -70,45 +74,43 @@ class MarkovHandler
     public void WriteToGuild(ulong guild, string line)
     {
         if (WriteLineToFile(guild + ".txt", line))
-            this.dict[guild].Learn(line);
+        {
+            string[] pieces = line.Split(' ');
+            this.dict[guild].Add(pieces, 1);
+        }
     }
 
     public async Task<int> RemoveFromGuild(ulong guild, string term)
     {
         int retval = await MarkovHandler.RemoveTermFromFile(guild + ".txt", term);
-        var markov = new StringMarkov();
-        dict.Add(guild, markov);
+        var markov = new MarkovChain<string>(1);
+        dict.TryAdd(guild, markov);
 
         await LoadGraph(markov, Helpers.BuildPath(guild + ".txt"), guild);
+        BuildNext(guild);
         return retval;
     }
 
     public string ReadFromGuild(ulong guild)
     {
-        return nextResponse[guild];
+        var str = nextResponse[guild];
+        BuildNext(guild);
+
+        return str;
     }
 
     public void BuildNext(ulong guild)
     {
         var markovstr = this.dict[guild];
-        var next = this.nextWalk[guild];
-
-        if (next >= markovstr.Walk().Count()) /* if we used everything, rebuild */
-        {
-            markovstr.Retrain(1);
-            this.nextWalk[guild] = 0;
-        }
-
-        nextResponse[guild] = markovstr.Walk().ElementAt(this.nextWalk[guild]++);
+        this.nextResponse[guild] = string.Join(" ", markovstr.Chain(rand));
     }
 
 
     public string GetHastebinLink(ulong guild)
     {
-        string[] inputArray = this.dict[guild].SourceLines.ToArray();
+        string[] inputArray = File.ReadAllLines(guild + ".txt");
 
         string input = "";
-
         foreach (string line in inputArray)
             input += line + "\n";
 
