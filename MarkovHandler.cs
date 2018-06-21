@@ -103,6 +103,11 @@ class MarkovHandler
     {
         var markovstr = this.dict[guild];
         this.nextResponse[guild] = string.Join(" ", markovstr.Chain(rand));
+
+        if (this.nextResponse[guild] == "" && this.dict[guild].GetStates().Count() > 0)
+        {
+            BuildNext(guild);
+        }
     }
 
 
