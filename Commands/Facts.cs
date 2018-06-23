@@ -153,7 +153,7 @@ namespace SteamDiscordBot.Commands
             input += args[args.Length - 1];
 
             var lowerInput = input.ToLower();
-            if (lowerInput.Contains(Context.User.Username.ToLower()) || lowerInput.Contains("" + Context.User.Id))
+            if (Context.User.Id != (ulong)Program.config.DiscordAdminId && (lowerInput.Contains(Context.User.Username.ToLower()) || lowerInput.Contains("" + Context.User.Id)))
             {
                 var emb = new EmbedBuilder();
                 emb.Title = "Error!";
