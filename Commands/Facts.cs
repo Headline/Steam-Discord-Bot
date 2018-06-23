@@ -152,6 +152,18 @@ namespace SteamDiscordBot.Commands
             }
             input += args[args.Length - 1];
 
+            var lowerInput = input.ToLower();
+            if (lowerInput.Contains(Context.User.Username.ToLower()) || lowerInput.Contains("" + Context.User.Id))
+            {
+                var emb = new EmbedBuilder();
+                emb.Title = "Error!";
+                emb.WithDescription("You cannot forget about yourself! :^)");
+                emb.Color = Color.Red;
+
+                await Context.Channel.SendMessageAsync("", false, emb);
+                return;
+            }
+
             var lower = input.ToLower();
             int count = await Program.Instance.facts.RemoveFromGuild(Context.Guild.Id, lower);
             if (count == 0)
