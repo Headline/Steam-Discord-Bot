@@ -28,7 +28,7 @@ namespace SteamDiscordBot.Commands
 
                 Bitmap original = new Bitmap(filename);
                 Bitmap bmp = new Bitmap(original, new Size(1200, 912));
-                RectangleF rect = new RectangleF(70, 90, bmp.Width, bmp.Height);
+                RectangleF rect = new RectangleF(70, 90, bmp.Width-70, bmp.Height-90);
 
                 Graphics g = Graphics.FromImage(bmp);
                 g.SmoothingMode = SmoothingMode.AntiAlias;
@@ -37,7 +37,7 @@ namespace SteamDiscordBot.Commands
                 g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 
                 GraphicsPath p = new GraphicsPath();
-                p.AddString(input, FontFamily.GenericSansSerif, (int)FontStyle.Bold, 92, new Point(70, 90), new StringFormat());
+                p.AddString(input, FontFamily.GenericSansSerif, (int)FontStyle.Bold, 92, rect, new StringFormat());
 
                 g.DrawPath(new Pen(Color.Black, 5.0f), p);
                 g.FillPath(Brushes.White, p);
