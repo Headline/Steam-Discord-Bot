@@ -46,6 +46,7 @@ namespace SteamDiscordBot
         public static dynamic config;
         public Dictionary<ulong, List<MsgInfo>> messageHist;
         public Dictionary<ulong, string> triggerMap;
+        public Random random;
 
         public static void Main(string[] args)
         {
@@ -89,6 +90,7 @@ namespace SteamDiscordBot
             triggerMap = new Dictionary<ulong, string>();
             markov = new MarkovHandler();
             facts = new FactHandler();
+            random = new Random();
 
             client.Log += Log;
             client.GuildAvailable += OnGuildAvailable;

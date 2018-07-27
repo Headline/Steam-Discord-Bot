@@ -91,6 +91,10 @@
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Drawing.Primitives.4.3.0\lib\net45\System.Drawing.Primitives.dll</HintPath>
+    </Reference>
     <Reference Include="System.Interactive.Async, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
       <HintPath>packages\System.Interactive.Async.3.1.1\lib\net45\System.Interactive.Async.dll</HintPath>
     </Reference>
@@ -116,6 +120,7 @@
     <Compile Include="Commands\Credits.cs" />
     <Compile Include="Commands\Crypto.cs" />
     <Compile Include="Commands\Dice.cs" />
+    <Compile Include="Commands\Duck.cs" />
     <Compile Include="Commands\Facts.cs" />
     <Compile Include="Commands\Help.cs" />
     <Compile Include="Commands\Lmgtfy.cs" />

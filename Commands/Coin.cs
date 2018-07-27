@@ -10,7 +10,7 @@ namespace SteamDiscordBot.Commands
         [Command("coin"), Summary("Flips a coin.")]
         public async Task Say()
         {
-        	Random rand = new Random();
+            Random rand = Program.Instance.random;
         	
         	int num = rand.Next(1, 3);
 
