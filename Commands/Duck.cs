@@ -24,7 +24,9 @@ namespace SteamDiscordBot.Commands
             try
             {
                 Random rand = Program.Instance.random;
-                string filename = string.Format("ducks/duck{0}.jpg", rand.Next(1, 10));
+
+                int count = Directory.GetFiles("ducks/", "*", SearchOption.TopDirectoryOnly).Length;
+                string filename = string.Format("ducks/duck{0}.jpg", rand.Next(1, count+1));
 
                 Bitmap original = new Bitmap(filename);
                 Bitmap bmp = new Bitmap(original, new Size(1200, 912));
