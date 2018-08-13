@@ -51,7 +51,7 @@ namespace SteamDiscordBot.Commands
 
                 await Context.Channel.SendMessageAsync("", false, emb);
             }
-            catch (NullReferenceException ex)
+            catch (NullReferenceException)
             {
                 await Context.Channel.SendMessageAsync("Invalid appid!");
             }

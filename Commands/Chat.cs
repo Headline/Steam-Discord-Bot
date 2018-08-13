@@ -10,7 +10,25 @@ namespace SteamDiscordBot.Commands
         {
             string response = Program.Instance.markov.ReadFromGuild(Context.Guild.Id);
             await Context.Channel.SendMessageAsync(response);
-            Program.Instance.markov.BuildNext(Context.Guild.Id);
+        }
+    }
+
+    public class ChatAboutCommand : ModuleBase
+    {
+        [Command("chat about"), Summary("Uses a Markov model with to generate response text using starting words.")]
+        public async Task Say(params string[] args)
+        {
+            for (int i = 0; i < args.Length; i++)
+                args[i] = args[i].ToLower();
+
+            string response = Program.Instance.markov.ReadFromGuild(Context.Guild.Id, args);
+            if (response.Length == 0)
+            {
+                await Context.Channel.SendMessageAsync("I can't :(");
+                return;
+            }
+
+            await Context.Channel.SendMessageAsync(string.Join(" ", args) + " " + response);
         }
     }
 

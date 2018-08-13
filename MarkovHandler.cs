@@ -62,7 +62,7 @@ class MarkovHandler
                     string line;
                     while ((line = await reader.ReadLineAsync()) != null)
                     {
-                        string[] pieces = line.Split(' ');
+                        string[] pieces = line.ToLower().Split(' ');
                         markov.Add(pieces, 1);
                     }
                 }
@@ -97,6 +97,12 @@ class MarkovHandler
         BuildNext(guild);
 
         return str;
+    }
+
+    public string ReadFromGuild(ulong guild, string[] phrase)
+    {
+        var markovstr = this.dict[guild];
+        return string.Join(" ", markovstr.Chain(phrase, rand));
     }
 
     public void BuildNext(ulong guild)

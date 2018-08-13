@@ -6,17 +6,23 @@ This a Steam Discord bot which provides notifications on game updates along with
 ```
 !appinfo - Fetches up application info from steam.
 !chat - Uses a Markov model with to generate response text.
+!chat about - Uses a Markov model with to generate response text using starting words.
 !chatremove - Removes the term from knowledgebase. [Owner only]
 !chatknowledge - Sends a pastebin link containing its knowledgebase.
 !coin - Flips a coin.
+!credits - Outputs the credits for the bot, ordered by contributions
 !btc - Fetches the latest Bitcoin market value.
 !eth - Fetches the latest Ethereum market value.
 !roll - rolls a dice of arbitrary size. (example: '!roll 33' rolls a 33-sided die)
+!duck - Appends input text to a picture of psychonic.
 !learn - Saves a new fact to the bot's memory.
 !facts - Outputs number of facts known.
+!facts list - Outputs number of facts known.
+!fact - Outputs a random fact
 !facts about - Outputs a fact about the input, if learned.
 !forget - Forgets a fact learned.
 !help - Prints and formats all commands.
+!lmgtfy - Responds with a lmgtfy link
 !numplayers - Fetches current player count from steam.
 !numservers - Fetches current server count from steam.
 !ping - Test command.
