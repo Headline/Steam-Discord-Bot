@@ -9,9 +9,19 @@ using System.IO;
 
 namespace SteamDiscordBot.Commands
 {
-    public class DuckCommand : ModuleBase
+    public class DuckrCommand : ModuleBase
     {
-        [Command("duck"), Summary("Appends input text to a picture of psychonic.")]
+        [Command("duckr"), Summary("Appends input text to a picture of psychonic. Removes original message")]
+        public async Task Say(params string[] args)
+        {
+            await Context.Message.DeleteAsync();
+            await new DuckCommand().Say(args);
+        }
+    }
+
+    public class DuckCommand : ModuleBase
+    { 
+            [Command("duck"), Summary("Appends input text to a picture of psychonic.")]
         public async Task Say(params string[] args)
         {
             string input = "";
