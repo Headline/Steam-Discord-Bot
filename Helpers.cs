@@ -15,6 +15,11 @@ using Octokit;
 
 using SteamStoreQuery;
 
+//duck
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Text;
+
 namespace SteamDiscordBot
 {
     public static class Helpers
@@ -82,7 +87,7 @@ namespace SteamDiscordBot
                         {
                             var emb = new EmbedBuilder();
                             emb.WithDescription(input);
-                            emb.Color = Color.Red;
+                            emb.Color = Discord.Color.Red;
                             await channel.SendMessageAsync("", false, emb);
                         }
                         catch (Exception e)
@@ -300,6 +305,37 @@ namespace SteamDiscordBot
                 return -1;
 
             return results.First().AppId;
+        }
+
+        public static void CreateDuck(string input)
+        {
+            Random rand = Program.Instance.random;
+
+            int count = Directory.GetFiles("ducks/", "*", SearchOption.TopDirectoryOnly).Length;
+            string filename = string.Format("ducks/duck{0}.jpg", rand.Next(1, count + 1));
+
+            Bitmap original = new Bitmap(filename);
+            Bitmap bmp = new Bitmap(original, new Size(1200, 912));
+            RectangleF rect = new RectangleF(70, 90, bmp.Width - 70, bmp.Height - 90);
+
+            Graphics g = Graphics.FromImage(bmp);
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            g.InterpolationMode = InterpolationMode.High;
+            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+            g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+
+            GraphicsPath p = new GraphicsPath();
+            p.AddString(input, FontFamily.GenericSansSerif, (int)FontStyle.Bold, 92, rect, new StringFormat());
+
+            g.DrawPath(new Pen(System.Drawing.Color.Black, 5.0f), p);
+            g.FillPath(Brushes.White, p);
+            g.Flush();
+
+            if (File.Exists("temp.jpeg"))
+                File.Delete("temp.jpeg");
+
+            bmp.Save("temp.jpeg", System.Drawing.Imaging.ImageFormat.Jpeg);
+            bmp.Dispose();
         }
     }
 }
