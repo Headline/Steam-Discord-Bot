@@ -111,22 +111,19 @@ namespace SteamDiscordBot
 
             // Handle Jobs
             manager = new JobManager(config.JobInterval); // time in seconds to run each job
-            new Thread(new ThreadStart(() =>
-            {
-                if (config.SelfUpdateListener && config.GitHubAuthToken.Length != 0)
-                    manager.AddJob(new SelfUpdateListener());
-                if (config.SteamCheckJob)
-                    manager.AddJob(new SteamCheckJob(connection));
-                if (config.AlliedModdersThreadJob)
-                    manager.AddJob(new AlliedModdersThreadJob("https://forums.alliedmods.net/external.php?newpost=true&forumids=108", "sourcemod"));
+            if (config.SelfUpdateListener && config.GitHubAuthToken.Length != 0)
+                //manager.AddJob(new SelfUpdateListener());
+            if (config.SteamCheckJob)
+                manager.AddJob(new SteamCheckJob(connection));
+            if (config.AlliedModdersThreadJob)
+                manager.AddJob(new AlliedModdersThreadJob("https://forums.alliedmods.net/external.php?newpost=true&forumids=108", "sourcemod"));
                 
-                foreach (uint appid in config.AppIDList)
-                {
-                    manager.AddJob(new UpdateJob(appid));
-                }
+            foreach (uint appid in config.AppIDList)
+            {
+                manager.AddJob(new UpdateJob(appid));
+            }
 
-                manager.StartJobs();
-            })).Start();
+            manager.StartJobs();
 
             await Task.Delay(-1);
         }
@@ -156,14 +153,8 @@ namespace SteamDiscordBot
              * huge amounts of text, we need to create a thread for each guild
              * when they join and do all of the text processing there. 
              */
-            new Thread(new ThreadStart(async () =>
-            {
-                await markov.AddGuild(arg.Id);
-            })).Start();
-            new Thread(new ThreadStart(async () =>
-            {
-                await facts.AddGuild(arg.Id);
-            })).Start();
+            await markov.AddGuild(arg.Id);
+            await facts.AddGuild(arg.Id);
         }
 
         public async Task HandleCommand(SocketMessage messageParam)
