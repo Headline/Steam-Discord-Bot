@@ -337,5 +337,10 @@ namespace SteamDiscordBot
             bmp.Save("temp.jpeg", System.Drawing.Imaging.ImageFormat.Jpeg);
             bmp.Dispose();
         }
+
+        public static bool HasMember(dynamic obj, string name)
+        {
+            return obj.GetType().GetMember(name) != null;
+        }
     }
 }

@@ -141,7 +141,7 @@ namespace SteamDiscordBot
                 messageHist.Add(arg.Id, new List<MsgInfo>());
 
             bool found = false;
-            if (config.GuildTriggers != null) //bcompat for older config files
+            if (Helpers.HasMember(config, "GuildTriggers"))
             {
                 foreach (string str in config.GuildTriggers) // we'll loop and find id matches to overwrite the triggerMap entry
                 {
