@@ -49,7 +49,7 @@ namespace SteamDiscordBot.Jobs
                         emb.AddField(current.title, "URL: " + current.link);
                         emb.Color = Color.DarkBlue;
 
-                        await Task.Run(() => Helpers.SendMessageAllToTarget(target, "", emb));
+                        await Task.Run(() => MessageTools.SendMessageAllToTarget(target, "", emb));
                         history.Add(current);
                     }
                 }

@@ -10,6 +10,7 @@ using SteamDiscordBot;
 using Discord;
 
 using Markov;
+using SteamDiscordBot.Commands;
 
 class MarkovHandler
 {
@@ -29,7 +30,7 @@ class MarkovHandler
         if (dict.ContainsKey(guild)) // we must've disconnected briefly, but still have our data
             return;
 
-        var path = Helpers.BuildPath(guild + ".txt");
+        var path = Program.BuildPath(guild + ".txt");
         var markov = new MarkovChain<string>(1);
 
         dict.TryAdd(guild, markov);
@@ -86,7 +87,7 @@ class MarkovHandler
         var markov = new MarkovChain<string>(1);
         dict.TryUpdate(guild, markov, this.dict[guild]);
 
-        await LoadGraph(markov, Helpers.BuildPath(guild + ".txt"), guild);
+        await LoadGraph(markov, Program.BuildPath(guild + ".txt"), guild);
         BuildNext(guild);
         return retval;
     }
@@ -124,7 +125,7 @@ class MarkovHandler
         foreach (string line in inputArray)
             input += line + "\n";
 
-        return Helpers.UploadHastebin(input);
+        return FactsListCommand.UploadHastebin(input);
     }
 
     private static bool WriteLineToFile(string file, string line)
@@ -144,7 +145,7 @@ class MarkovHandler
 
         try
         {
-            using (FileStream stream = new FileStream(Helpers.BuildPath(file), FileMode.Append))
+            using (FileStream stream = new FileStream(Program.BuildPath(file), FileMode.Append))
             {
                 Byte[] info = new UTF8Encoding(true).GetBytes((line + "\n"));
 
@@ -164,7 +165,7 @@ class MarkovHandler
         int count = 0;
         List<string> array = new List<string>();
 
-        using (FileStream fileStream = File.Open(Helpers.BuildPath(file), FileMode.Open))
+        using (FileStream fileStream = File.Open(Program.BuildPath(file), FileMode.Open))
         using (BufferedStream bufferedStream = new BufferedStream(fileStream))
         using (StreamReader reader = new StreamReader(bufferedStream))
         {
@@ -179,7 +180,7 @@ class MarkovHandler
         }
 
 
-        using (FileStream fileStream = File.Open(Helpers.BuildPath(file), FileMode.Create))
+        using (FileStream fileStream = File.Open(Program.BuildPath(file), FileMode.Create))
         using (BufferedStream bufferedStream = new BufferedStream(fileStream))
         using (StreamWriter reader = new StreamWriter(bufferedStream))
         {

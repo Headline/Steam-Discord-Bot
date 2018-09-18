@@ -19,7 +19,7 @@ namespace SteamDiscordBot.Commands
                 input += args[i].Trim() + " ";
             }
             input += args[args.Length - 1];
-            int appid = Helpers.InputToAppId(input);
+            int appid = AppInfoCommand.InputToAppId(input);
 
             if (appid == -1)
             {

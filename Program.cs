@@ -133,15 +133,11 @@ namespace SteamDiscordBot
 
         private async Task OnGuildAvailable(SocketGuild arg)
         {
-            /* This is annoying, but since we have the possibility of parsing
-             * huge amounts of text, we need to create a thread for each guild
-             * when they join and do all of the text processing there. 
-             */
             if (!messageHist.ContainsKey(arg.Id))
                 messageHist.Add(arg.Id, new List<MsgInfo>());
 
             bool found = false;
-            if (Helpers.HasMember(config, "GuildTriggers"))
+            if (HasMember(config, "GuildTriggers"))
             {
                 foreach (string str in config.GuildTriggers) // we'll loop and find id matches to overwrite the triggerMap entry
                 {
@@ -156,6 +152,10 @@ namespace SteamDiscordBot
             if (!found)
                 triggerMap.Add(arg.Id, "!"); // default command trigger
 
+            /* This is annoying, but since we have the possibility of parsing
+             * huge amounts of text, we need to create a thread for each guild
+             * when they join and do all of the text processing there. 
+             */
             new Thread(new ThreadStart(async () =>
             {
                 await markov.AddGuild(arg.Id);
@@ -188,7 +188,7 @@ namespace SteamDiscordBot
                 return;
             }
 
-            if (Helpers.IsCommandDisabled(message.Content.Split(' ')[0].Substring(1)))
+            if (IsCommandDisabled(message.Content.Split(' ')[0].Substring(1)))
             {
                 await context.Channel.SendMessageAsync("That command is disabled!");
                 return;
@@ -202,6 +202,38 @@ namespace SteamDiscordBot
         public Task Log(LogMessage msg)
         {
             return Task.Run(() => Console.WriteLine(msg.ToString()));
+        }
+
+        public static bool IsCommandDisabled(string cmd)
+        {
+            foreach (string var in Program.config.DisabledCommands)
+            {
+                if (var.Equals(cmd))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public static string BuildPath(string file)
+        {
+            string exe = Assembly.GetEntryAssembly().Location;
+            string[] pieces = exe.Split('/');
+            string combo = "";
+
+            for (int i = 0; i < pieces.Length - 1; i++)
+            {
+                combo += pieces + "/";
+            }
+
+            return combo + file;
+        }
+
+        public static bool HasMember(dynamic obj, string name)
+        {
+            return obj.GetType().GetMember(name) != null;
         }
     }
 }

@@ -1,6 +1,10 @@
-﻿using System.Threading.Tasks;
-using Discord;
+﻿using Discord;
 using Discord.Commands;
+
+using System.Threading.Tasks;
+using System.Collections.Generic;
+
+using Octokit;
 
 namespace SteamDiscordBot.Commands
 {
@@ -14,10 +18,16 @@ namespace SteamDiscordBot.Commands
 
             var emb = new EmbedBuilder();
             emb.Title = "Version";
-            emb.WithDescription("Current version: " + Program.VERSION + " (latest is " + Helpers.GetLatestVersion(releases) + ")");
+            emb.WithDescription("Current version: " + Program.VERSION + " (latest is " + GetLatestVersion(releases) + ")");
             emb.Color = Color.Red;
 
             await Context.Channel.SendMessageAsync("", false, emb);
+        }
+
+        public static string GetLatestVersion(IReadOnlyList<Release> releases)
+        {
+            var detectionString = "-v";
+            return releases[0].Name.Substring(releases[0].Name.IndexOf(detectionString) + detectionString.Length);
         }
     }
 }

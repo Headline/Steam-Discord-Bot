@@ -21,7 +21,7 @@ namespace SteamDiscordBot
         {
             try
             {
-                using (FileStream stream = new FileStream(Helpers.BuildPath(guild + "_facts.txt"), FileMode.Append))
+                using (FileStream stream = new FileStream(Program.BuildPath(guild + "_facts.txt"), FileMode.Append))
                 {
                     Byte[] info = new UTF8Encoding(true).GetBytes((fact + "\n"));
 
@@ -47,7 +47,7 @@ namespace SteamDiscordBot
             count = 0;
             List<string> array = new List<string>();
 
-            using (FileStream fileStream = File.Open(Helpers.BuildPath(guild + "_facts.txt"), FileMode.Open))
+            using (FileStream fileStream = File.Open(Program.BuildPath(guild + "_facts.txt"), FileMode.Open))
             using (BufferedStream bufferedStream = new BufferedStream(fileStream))
             using (StreamReader reader = new StreamReader(bufferedStream))
             {
@@ -62,7 +62,7 @@ namespace SteamDiscordBot
             }
 
 
-            using (FileStream fileStream = File.Open(Helpers.BuildPath(guild + "_facts.txt"), FileMode.Create))
+            using (FileStream fileStream = File.Open(Program.BuildPath(guild + "_facts.txt"), FileMode.Create))
             using (BufferedStream bufferedStream = new BufferedStream(fileStream))
             using (StreamWriter reader = new StreamWriter(bufferedStream))
             {
@@ -80,7 +80,7 @@ namespace SteamDiscordBot
             if (facts.ContainsKey(guild)) // we must've disconnected briefly, but still have our data
                 return;
 
-            var path = Helpers.BuildPath(guild + "_facts.txt");
+            var path = Program.BuildPath(guild + "_facts.txt");
             var list = new List<string>();
             facts.TryAdd(guild, list);
 

@@ -1,4 +1,4 @@
-﻿using Octokit;
+﻿using SteamDiscordBot.Commands;
 
 namespace SteamDiscordBot.Jobs
 {
@@ -10,10 +10,10 @@ namespace SteamDiscordBot.Jobs
             {
                 var releases = await Program.Instance.ghClient.Repository.Release.GetAll(Program.config.GitHubUpdateUsername, Program.config.GitHubUpdateRepository);
 
-                var latest = Helpers.GetLatestVersion(releases);
+                var latest = VersionCommand.GetLatestVersion(releases);
                 if (!Program.VERSION.Equals(latest))
                 {
-                    Helpers.Update();
+                    UpdateCommand.Update();
                 }
             }
             catch { } // quietly fail

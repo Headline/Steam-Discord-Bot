@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 using SteamKit2;
 using Discord;
-
+using Newtonsoft.Json.Linq;
 
 namespace SteamDiscordBot.Jobs
 {
@@ -51,12 +51,20 @@ namespace SteamDiscordBot.Jobs
 
                 if (this.version != requiredVersion && this.version != 0)
                 {
-                    await Task.Run(() => Program.Instance.Log(new LogMessage(LogSeverity.Info, "UpdateCheck", string.Format("{0} (version: {1}) is no longer up to date. New version: {2}", Helpers.GetAppName(appid), this.version, requiredVersion))));
-                    await Task.Run(() => Helpers.SendMessageAllToGenerals(string.Format("{0} (version: {1}) is no longer up to date. New version: {2} \nLearn more: {3}", Helpers.GetAppName(appid), this.version, requiredVersion, ("https://steamdb.info/patchnotes/?appid=" + appid))));
+                    await Task.Run(() => Program.Instance.Log(new LogMessage(LogSeverity.Info, "UpdateCheck", string.Format("{0} (version: {1}) is no longer up to date. New version: {2}", UpdateJob.GetAppName(appid), this.version, requiredVersion))));
+                    await Task.Run(() => MessageTools.SendMessageAllToGenerals(string.Format("{0} (version: {1}) is no longer up to date. New version: {2} \nLearn more: {3}", UpdateJob.GetAppName(appid), this.version, requiredVersion, ("https://steamdb.info/patchnotes/?appid=" + appid))));
                 }
 
                 this.version = requiredVersion;
             }
         }
-	}
+
+        public static string GetAppName(uint appid)
+        {
+            var json = new WebClient().DownloadString("http://store.steampowered.com/api/appdetails?appids=" + appid);
+            JObject o = JObject.Parse(json);
+            string name = (string)o["" + appid]["data"]["name"];
+            return name;
+        }
+    }
 }

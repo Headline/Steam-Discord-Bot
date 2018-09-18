@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Newtonsoft.Json.Linq;
 
 namespace SteamDiscordBot.Commands
 {
@@ -74,7 +76,7 @@ namespace SteamDiscordBot.Commands
             {
                 input += fact + "\n";
             }
-            string url = Helpers.UploadHastebin(input);
+            string url = UploadHastebin(input);
 
             var emb = new EmbedBuilder();
             emb.Title = "Facts List Fetched!";
@@ -82,6 +84,37 @@ namespace SteamDiscordBot.Commands
             emb.Color = Color.Red;
 
             await Context.Channel.SendMessageAsync("", false, emb);
+        }
+
+        public static string UploadHastebin(string input)
+        {
+            using (var client = new LowTimeoutWebClient())
+            {
+                client.Headers[HttpRequestHeader.ContentType] = "text/plain";
+
+                var response = client.UploadString("https://hastebin.com/documents", input);
+                JObject obj = JObject.Parse(response);
+
+                if (!obj.HasValues)
+                {
+                    return "";
+                }
+
+                string key = (string)obj["key"];
+                string hasteUrl = "https://hastebin.com/" + key + ".txt";
+
+                return hasteUrl;
+            }
+        }
+
+        private class LowTimeoutWebClient : WebClient
+        {
+            protected override WebRequest GetWebRequest(Uri uri)
+            {
+                WebRequest w = base.GetWebRequest(uri);
+                w.Timeout = (int)TimeSpan.FromSeconds(5).TotalMilliseconds;
+                return w;
+            }
         }
     }
 

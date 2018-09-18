@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Newtonsoft.Json.Linq;
+using SteamStoreQuery;
 
 namespace SteamDiscordBot.Commands
 {
@@ -19,7 +22,7 @@ namespace SteamDiscordBot.Commands
                 input += args[i].Trim() + " ";
             }
             input += args[args.Length - 1];
-            int appid = Helpers.InputToAppId(input);
+            int appid = InputToAppId(input);
 
             if (appid == -1)
             {
@@ -58,6 +61,22 @@ namespace SteamDiscordBot.Commands
 
                 await Context.Channel.SendMessageAsync("Internal Error: " + ex.Message);
             }
+        }
+
+        public static int InputToAppId(string input)
+        {
+            if (int.TryParse(input, out int result))
+            {
+                return result;
+            }
+
+            /* Steam Store Query for AppID */
+            List<Listing> results = Query.Search(input);
+
+            if (results.Count == 0)
+                return -1;
+
+            return results.First().AppId;
         }
     }
 }

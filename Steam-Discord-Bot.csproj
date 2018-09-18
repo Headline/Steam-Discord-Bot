@@ -134,7 +134,7 @@
     <Compile Include="Commands\Update.cs" />
     <Compile Include="Commands\Version.cs" />
     <Compile Include="FactHandler.cs" />
-    <Compile Include="Helpers.cs" />
+    <Compile Include="MessageTools.cs" />
     <Compile Include="JobManager\JobManager.cs" />
     <Compile Include="JobManager\Jobs\AlliedModdersThreadJob.cs" />
     <Compile Include="JobManager\Jobs\SelfUpdateListener.cs" />
