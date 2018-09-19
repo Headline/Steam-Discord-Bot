@@ -1,8 +1,6 @@
 ﻿
 //System
 using System;
-using System.Linq;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 //Discord 
@@ -13,61 +11,31 @@ using static Google.Apis.Customsearch.v1.CseResource;
 using static Google.Apis.Customsearch.v1.CseResource.ListRequest;
 using Google.Apis.Services;
 using Google.Apis.Customsearch.v1;
+using Discord;
 
 namespace SteamDiscordBot.Commands
 {
     public class Search : ModuleBase
     {
-        public static readonly int DEFAULT_SEARCH_NUMBER = 1;
-        public static readonly string[] FLAGS = new string[] { "-safesearch", "-num"};
-
-        public static CustomsearchService service = new CustomsearchService(new BaseClientService.Initializer { ApiKey = API_KEY });
-
-        //bitfield
-        public enum GOOGLEFLAGS : uint
-        {
-            SAFESEARCH = (1<<0),
-            NUM = (1<<1)
-        }
-
-        SafeEnum
-
+        static SafeEnum SafeSearch;
+        static int Search_Number;
+        static readonly string[] FLAGS = new string[] { "-safesearch_active", "-safesearch_off", "-num"};
+        
         [Command("search"), Summary("Peforms google search and returns result(s)")]
         public async Task Say(params string[] args)
         {
-            GOOGLEFLAGS flags = 0;
-            // safe search
-
-            flags |= GOOGLEFLAGS.SAFESEARCH;
-            if ((flags & GOOGLEFLAGS.SAFESEARCH) == GOOGLEFLAGS.SAFESEARCH)
-            {
-            }
-
-            FindFlags(args);
-
-            args = RemoveArguementFlags(args, '-');
-            if (args.Length == 0) { return; }
-            string input = FormatInput(args);
-
             try
             {
+                CustomsearchService service = new CustomsearchService(new BaseClientService.Initializer { ApiKey = Program.config.GoogleApiKey });
+                SafeSearch = Program.config.GoogleSafeSearchActive ? SafeEnum.Active : SafeEnum.Off; //Default value of safesearch grabbed from settings.json
+                Search_Number = 1; //Default value number of results to return
                 string output = "";
-                ListRequest listRequest = service.Cse.List(input);
-                listRequest.Cx = SEARCH_ENGINE_ID;
-                listRequest.Safe = DEFAULT_SAFETY_LEVEL;
 
-                if (Current_Search_Flags.Any()) { HandleSearchFlags(listRequest); }
-                var search = listRequest.Execute();
+                var search = HandleSearchRequest(service, args);
+                output = FormatResultOutput(output, search);
+                if (output == "\n") { throw new ArgumentException(); } //Thrown when query input returned no result(s)
 
-                for (int i = 0; i < Current_Search_Result_Number; i++)
-                {
-                    output += search.Items?[i].Link.ToString() + "\n";
-                }
-
-                ResetForNextQuery();
-                if (output == "\n")
-                    throw new ArgumentException();
-                await Context.Channel.SendMessageAsync(output);
+                await Context.Channel.SendMessageAsync(output); 
             }
 
             catch (ArgumentException)
@@ -81,118 +49,63 @@ namespace SteamDiscordBot.Commands
             }
         }
 
-        public static void FindFlags(string[] args)
+        static string FormatResultOutput(string output, Google.Apis.Customsearch.v1.Data.Search search)
         {
-            for (int i = 0; i < args.Length; i++)
+            for (int i = 0; i < Search_Number; i++)
             {
-                if (ValidFlagFound(args[i]))
-                {
-                    Current_Search_Flags.Add(args[i]); //Adds flag to List to handle later
-                }
+                output += search.Items?[i].Link.ToString() + "\n";
             }
+            return output;
         }
 
-        public static string FormatInput(string[] args)
+        static Google.Apis.Customsearch.v1.Data.Search HandleSearchRequest(CustomsearchService service, string[] args)
+        {
+            string query_input = PrepareInput(args);
+            ListRequest listRequest = service.Cse.List(query_input);
+            listRequest.Cx = Program.config.GoogleSearchEngineID;
+            listRequest.Safe = SafeSearch;
+            Google.Apis.Customsearch.v1.Data.Search search = listRequest.Execute();
+            return search;
+        }
+
+        static string PrepareInput(string[] args)
         {
             string input = "";
-            for (int i = 0; i < args.Length - 1; i++)
+            string temp = "";
+            for (int i = 0; i < args.Length; i++)
             {
+                temp = args[i].ToLower();
+                if(temp[0] == '-') 
+                {
+                    HandleSearchFlag(temp);
+                    continue;
+                }
                 input += args[i] + " ";
             }
-            input += args[args.Length - 1];
             return input;
         }
 
-        public static SafeEnum GetSearchSafetyLevel(string input)
+        static void HandleSearchFlag(string input)
         {
-            input = input.ToLower();
-            if (input == "high")
+            switch (input)
             {
-                return ListRequest.SafeEnum.High; // Search level safety: high
-            }
-            else if (input == "medium")
-            {
-                return ListRequest.SafeEnum.Medium; // Search level safety: medium
-            }
-            else if (input == "off")
-            {
-                return ListRequest.SafeEnum.Off; // Search level safety: off
-            }
-            else
-            {
-                return DEFAULT_SAFETY_LEVEL; //Invalid input given, use default value
-            }
-        }
-
-        public static void HandleSearchFlags(ListRequest listrequest)
-        {
-            string flag = "";
-            string value = "";
-
-            foreach (string item in Current_Search_Flags)
-            {
-                flag = item.Split('_')[0];
-                value = item.Split('_')[1];
-
-                switch (flag)
-                {
-                    case "-safesearch":
-                        listrequest.Safe = GetSearchSafetyLevel(value);
-                        break;
-
-                    case "-ss":
-                        listrequest.Safe = GetSearchSafetyLevel(value);
-                        break;
-
-                    case "-num":
-                        int number = -1;
-                        if (int.TryParse(value, out number))
+                case "-safesearch_active":
+                    SafeSearch = SafeEnum.Active;
+                    break;
+                case "-safesearch_off":
+                    SafeSearch = SafeEnum.Off;
+                    break;
+                default:
+                    if (input.Contains(FLAGS[2]))
+                    {
+                        if (int.TryParse(input.Split('_')[1], out int number) && (number <= Program.config.GoogleMaxSearchNumber) && (number >= 1))
                         {
-                            if(number <= SEARCH_MAX_COUNT && number >= 1)
-                            {
-                                Current_Search_Result_Number = number;
-                            }
+                            Search_Number = number;
+                            return;
                         }
-                        break;
-
-                    default:
-                        break;
-
-                }
+                    }
+                    break; 
             }
-        }
-
-        public static bool ValidFlagFound(string arg)
-        {
-            int index = arg.IndexOf('-');
-            if (index == -1) { return false; }
-            index = arg.IndexOf('_');
-            if ((index + 1) > arg.Length) { return false; }
-
-            return true;
-        }
-
-        public static string[] RemoveArguementFlags(string[] args, char flag)
-        {
-            string temp = "";
-            string output = "";
-
-            for (int i = 0; i < args.Length; i++)
-            {
-                temp = args[i];
-                if (temp[0] != flag)
-                {
-                    output += temp + " ";
-                }
-            }
-
-            return output.Split(' '); //search halo
-        }
-        public static void ResetForNextQuery()
-        {
-            Current_Search_Flags.Clear();
-            Current_Search_Result_Number = DEFAULT_SEARCH_NUMBER;
         }
     }
-
 }
