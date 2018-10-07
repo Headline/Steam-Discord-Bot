@@ -1,47 +1,46 @@
-﻿
-//System
-using System;
+﻿using System;
 using System.Threading.Tasks;
 
-//Discord 
 using Discord.Commands;
 
-//Google 
 using static Google.Apis.Customsearch.v1.CseResource;
 using static Google.Apis.Customsearch.v1.CseResource.ListRequest;
 using Google.Apis.Services;
 using Google.Apis.Customsearch.v1;
-using Discord;
 
 namespace SteamDiscordBot.Commands
 {
     public class Search : ModuleBase
     {
-        static SafeEnum SafeSearch;
-        static int Search_Number;
-        static readonly string[] FLAGS = new string[] { "-safesearch_active", "-safesearch_off", "-num"};
+        private SafeEnum SafeSearch;
+        private int SearchNumber;
+        private readonly string[] flags = new string[] { "-safesearch_active", "-safesearch_off", "-num"};
         
         [Command("search"), Summary("Peforms google search and returns result(s)")]
         public async Task Say(params string[] args)
         {
             try
             {
+                bool result = await CheckGoogleConfig();
+                if (!result) {
+                    return; // Google Config is not valid/supplied 
+                }
+
                 CustomsearchService service = new CustomsearchService(new BaseClientService.Initializer { ApiKey = Program.config.GoogleApiKey });
-                SafeSearch = Program.config.GoogleSafeSearchActive ? SafeEnum.Active : SafeEnum.Off; //Default value of safesearch grabbed from settings.json
-                Search_Number = 1; //Default value number of results to return
+                SafeSearch = GetSafeSearchVal(); //Tries to grab from json settings or uses hardcoded value
+                SearchNumber = 1; //Default value number of results to return
                 string output = "";
 
                 var search = HandleSearchRequest(service, args);
-                output = FormatResultOutput(output, search);
-                if (output == "\n") { throw new ArgumentException(); } //Thrown when query input returned no result(s)
+                output = FormatResultOutput(search, output);
+                if (output.Trim().Length == 0) {
+                    await Context.Channel.SendMessageAsync("No Search Results Found.");
+                    return;
+                }
 
-                await Context.Channel.SendMessageAsync(output); 
+                await Context.Channel.SendMessageAsync(output);
             }
 
-            catch (ArgumentException)
-            {
-                await Context.Channel.SendMessageAsync("No search results found");
-            }
             catch (Exception e)
             {
                 await Program.Instance.Log(new Discord.LogMessage(Discord.LogSeverity.Verbose, "SearchCMD", e.Message));
@@ -49,33 +48,24 @@ namespace SteamDiscordBot.Commands
             }
         }
 
-        static string FormatResultOutput(string output, Google.Apis.Customsearch.v1.Data.Search search)
-        {
-            for (int i = 0; i < Search_Number; i++)
-            {
-                output += search.Items?[i].Link.ToString() + "\n";
-            }
-            return output;
-        }
-
-        static Google.Apis.Customsearch.v1.Data.Search HandleSearchRequest(CustomsearchService service, string[] args)
+        private Google.Apis.Customsearch.v1.Data.Search HandleSearchRequest(CustomsearchService service, string[] args)
         {
             string query_input = PrepareInput(args);
             ListRequest listRequest = service.Cse.List(query_input);
             listRequest.Cx = Program.config.GoogleSearchEngineID;
-            listRequest.Safe = SafeSearch;
+            listRequest.Safe = this.SafeSearch;
             Google.Apis.Customsearch.v1.Data.Search search = listRequest.Execute();
             return search;
         }
 
-        static string PrepareInput(string[] args)
+        private string PrepareInput(string[] args)
         {
             string input = "";
             string temp = "";
             for (int i = 0; i < args.Length; i++)
             {
                 temp = args[i].ToLower();
-                if(temp[0] == '-') 
+                if (temp[0] == '-')
                 {
                     HandleSearchFlag(temp);
                     continue;
@@ -85,27 +75,67 @@ namespace SteamDiscordBot.Commands
             return input;
         }
 
-        static void HandleSearchFlag(string input)
+        private void HandleSearchFlag(string input)
         {
+            int max = GetMaxSearchNumber();
             switch (input)
             {
                 case "-safesearch_active":
-                    SafeSearch = SafeEnum.Active;
+                    this.SafeSearch = SafeEnum.Active;
                     break;
                 case "-safesearch_off":
-                    SafeSearch = SafeEnum.Off;
+                    this.SafeSearch = SafeEnum.Off;
                     break;
                 default:
-                    if (input.Contains(FLAGS[2]))
+                    if (input.Contains(this.flags[2]))
                     {
-                        if (int.TryParse(input.Split('_')[1], out int number) && (number <= Program.config.GoogleMaxSearchNumber) && (number >= 1))
+                        if (int.TryParse(input.Split('_')[1], out int number) && (number <= max) && (number >= 1))
                         {
-                            Search_Number = number;
+                            this.SearchNumber = number;
                             return;
                         }
                     }
-                    break; 
+                    break;
             }
+        }
+
+        private string FormatResultOutput(Google.Apis.Customsearch.v1.Data.Search search, string output)
+        {
+            for (int i = 0; i < this.SearchNumber; i++)
+            {
+                output += search.Items?[i].Link.ToString() + "\n";
+            }
+            return output;
+        }
+      
+        private async Task<bool> CheckGoogleConfig()
+        {
+            if (!Program.HasMember(Program.config, "GoogleApiKey") || !Program.HasMember(Program.config, "GoogleSearchEngineID"))
+            {
+                await Context.Channel.SendMessageAsync("This command must have a valid Google API key! Please contact the owner.");
+                return false;
+            }
+            return true;
+        }
+
+        private SafeEnum GetSafeSearchVal()
+        {
+            if (Program.HasMember(Program.config, "GoogleSafeSearchActive"))
+            {
+                return Program.config.GoogleSafeSearchActive ? SafeEnum.Active : SafeEnum.Off;
+            }
+
+            return SafeEnum.Off; //Default Value    
+        }
+
+        private int GetMaxSearchNumber()
+        {
+            if (Program.HasMember(Program.config, "GoogleMaxSearchNumber"))
+            {
+                return Program.config.GoogleMaxSearchNumber;
+            }
+
+            return 10; //Default Value   
         }
     }
 }
