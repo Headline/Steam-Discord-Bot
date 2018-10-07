@@ -124,6 +124,7 @@
     <Compile Include="Commands\Facts.cs" />
     <Compile Include="Commands\Help.cs" />
     <Compile Include="Commands\Lmgtfy.cs" />
+    <Compile Include="Commands\Meme.cs" />
     <Compile Include="Commands\NumPlayers.cs" />
     <Compile Include="Commands\NumServers.cs" />
     <Compile Include="Commands\Ping.cs" />

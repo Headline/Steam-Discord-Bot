@@ -13,7 +13,7 @@ namespace SteamDiscordBot.Commands
         {
             try
             {
-                System.Net.ServicePointManager.ServerCertificateValidationCallback += (se, cert, chain, sslerror) => {
+                ServicePointManager.ServerCertificateValidationCallback += (se, cert, chain, sslerror) => {
                     return true;
                 };
 

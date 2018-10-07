@@ -39,15 +39,19 @@ namespace SteamDiscordBot.Commands
             input += args[args.Length - 1];
 
             CreateDuck(input);
-            await Context.Channel.SendFileAsync("temp.jpeg");
+            await Context.Channel.SendFileAsync("temp.jpg");
         }
 
         public static void CreateDuck(string input)
         {
             Random rand = Program.Instance.random;
-
             int count = Directory.GetFiles("ducks/", "*", SearchOption.TopDirectoryOnly).Length;
             string filename = string.Format("ducks/duck{0}.jpg", rand.Next(1, count + 1));
+            PlaceText(input, filename);
+        }
+
+        public static void PlaceText(string input, string filename)
+        {
 
             Bitmap original = new Bitmap(filename);
             Bitmap bmp = new Bitmap(original, new Size(1200, 912));
@@ -66,11 +70,12 @@ namespace SteamDiscordBot.Commands
             g.FillPath(Brushes.White, p);
             g.Flush();
 
-            if (File.Exists("temp.jpeg"))
-                File.Delete("temp.jpeg");
+            if (File.Exists("temp.jpg"))
+                File.Delete("temp.jpg");
 
-            bmp.Save("temp.jpeg", System.Drawing.Imaging.ImageFormat.Jpeg);
+            bmp.Save("temp.jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
             bmp.Dispose();
+            original.Dispose();
         }
     }
 }
