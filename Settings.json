@@ -37,5 +37,10 @@
    
    "GitHubUpdateUsername": "Headline",
    "GitHubUpdateRepository": "Steam-Discord-Bot",
-   "GitHubUpdateReleaseFilename": "steam-discord-bot.zip"
+   "GitHubUpdateReleaseFilename": "steam-discord-bot.zip",
+
+   "GoogleApiKey" : "",
+   "GoogleSearchEngineID" : "",
+   "GoogleSafeSearchActive" : false,
+   "GoogleMaxSearchNumber" : 10
 }
