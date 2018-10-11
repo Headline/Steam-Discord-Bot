@@ -19,7 +19,6 @@ namespace SteamDiscordBot.Commands
         [Command("search"), Summary("Peforms google search and returns result(s)")]
         public async Task Say(params string[] args)
         {
-           
             if (!Program.HasMember(Program.config, "GoogleApiKey") || !Program.HasMember(Program.config, "GoogleSearchEngineID"))
             {
                 await Context.Channel.SendMessageAsync("This command must have a valid Google API key! Please contact the owner.");
@@ -92,7 +91,7 @@ namespace SteamDiscordBot.Commands
                         {
                             this.SearchNumber = number;
                             return;
-                        }  
+                        }
                     }
                     break;
             }
