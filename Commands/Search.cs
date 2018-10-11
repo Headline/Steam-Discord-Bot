@@ -19,33 +19,31 @@ namespace SteamDiscordBot.Commands
         [Command("search"), Summary("Peforms google search and returns result(s)")]
         public async Task Say(params string[] args)
         {
-            try
+            if (!Program.HasMember(Program.config, "GoogleApiKey") || !Program.HasMember(Program.config, "GoogleSearchEngineID"))
             {
-                bool result = await CheckGoogleConfig();
-                if (!result) {
-                    return; // Google Config is not valid/supplied 
-                }
-
-                CustomsearchService service = new CustomsearchService(new BaseClientService.Initializer { ApiKey = Program.config.GoogleApiKey });
-                SafeSearch = GetSafeSearchVal(); //Tries to grab from json settings or uses hardcoded value
-                SearchNumber = 1; //Default value number of results to return
-                string output = "";
-
-                var search = HandleSearchRequest(service, args);
-                output = FormatResultOutput(search, output);
-                if (output.Trim().Length == 0) {
-                    await Context.Channel.SendMessageAsync("No Search Results Found.");
-                    return;
-                }
-
-                await Context.Channel.SendMessageAsync(output);
+                await Context.Channel.SendMessageAsync("This command must have a valid Google API key! Please contact the owner.");
+                return;
+            }
+                
+            if(args.Length == 0)
+            {
+                await Context.Channel.SendMessageAsync("No input given!");
+                return;
             }
 
-            catch (Exception e)
-            {
-                await Program.Instance.Log(new Discord.LogMessage(Discord.LogSeverity.Verbose, "SearchCMD", e.Message));
-                await Context.Channel.SendMessageAsync(e.Message);
+            CustomsearchService service = new CustomsearchService(new BaseClientService.Initializer { ApiKey = Program.config.GoogleApiKey });
+            SafeSearch = GetSafeSearchVal(); //Tries to grab from json settings or uses hardcoded value
+            SearchNumber = 1; //Default value number of results to return
+            string output = "";
+
+            var search = HandleSearchRequest(service, args);
+            output = FormatResultOutput(search, output);
+            if (output.Trim().Length == 0) {
+                await Context.Channel.SendMessageAsync("No Search Results Found.");
+                return;
             }
+
+            await Context.Channel.SendMessageAsync(output);
         }
 
         private Google.Apis.Customsearch.v1.Data.Search HandleSearchRequest(CustomsearchService service, string[] args)
@@ -107,16 +105,6 @@ namespace SteamDiscordBot.Commands
             }
             return output;
         }
-      
-        private async Task<bool> CheckGoogleConfig()
-        {
-            if (!Program.HasMember(Program.config, "GoogleApiKey") || !Program.HasMember(Program.config, "GoogleSearchEngineID"))
-            {
-                await Context.Channel.SendMessageAsync("This command must have a valid Google API key! Please contact the owner.");
-                return false;
-            }
-            return true;
-        }
 
         private SafeEnum GetSafeSearchVal()
         {
@@ -125,7 +113,7 @@ namespace SteamDiscordBot.Commands
                 return Program.config.GoogleSafeSearchActive ? SafeEnum.Active : SafeEnum.Off;
             }
 
-            return SafeEnum.Off; //Default Value    
+            return SafeEnum.Active; //Default Value    
         }
 
         private int GetMaxSearchNumber()
