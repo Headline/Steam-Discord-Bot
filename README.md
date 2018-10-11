@@ -28,6 +28,7 @@ This a Steam Discord bot which provides notifications on game updates along with
 !ping - Test command.
 !pony - Grabs link based off pony name.
 !repeat - Repeats last message X amount of times.
+!search - Performs google search and returns result(s).
 !setgame - Sets the bot's game. [Owner only]
 !s - Subsitutes one word for another in last message.
 !update - Updates and reloads the bot. [Owner only]
