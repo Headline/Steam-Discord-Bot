@@ -14,6 +14,7 @@ This a Steam Discord bot which provides notifications on game updates along with
 !btc - Fetches the latest Bitcoin market value.
 !eth - Fetches the latest Ethereum market value.
 !roll - rolls a dice of arbitrary size. (example: '!roll 33' rolls a 33-sided die)
+!duckr - Appends input text to a picture of psychonic. Removes original message
 !duck - Appends input text to a picture of psychonic.
 !learn - Saves a new fact to the bot's memory.
 !facts - Outputs number of facts known.
@@ -23,11 +24,13 @@ This a Steam Discord bot which provides notifications on game updates along with
 !forget - Forgets a fact learned.
 !help - Prints and formats all commands.
 !lmgtfy - Responds with a lmgtfy link
+!meme - Replaces the last image posted with the text supplied
 !numplayers - Fetches current player count from steam.
 !numservers - Fetches current server count from steam.
 !ping - Test command.
 !pony - Grabs link based off pony name.
 !repeat - Repeats last message X amount of times.
+!search - Peforms google search and returns result(s)
 !setgame - Sets the bot's game. [Owner only]
 !s - Subsitutes one word for another in last message.
 !update - Updates and reloads the bot. [Owner only]
