@@ -1,30 +1,30 @@
-import os
 import os.path
 
-def get_clean_path(array):
-	somestr = ""
-	for x in range(0, len(array) - 1):
-		somestr += array[x] + "\\"
-	return somestr
+class Versioner:
+	def __init__(self, filetype, directory, unique_str, replace_str):
+		self.filetype = filetype
+		self.directory = directory
+		self.unique_str = unique_str
+		self.replace_str = replace_str
 
-def do_version_replace(current):
-	oldlist = 0;
-	with open(current) as f:
-		oldlist = f.readlines();
+	def replace_file(self, path):
+		oldlist = 0;
+		with open(path) as f:
+			oldlist = f.readlines();
+		for i, line in enumerate(oldlist):
+			if "$$version$" in line:
+				print("Replacing...")
+				oldlist[i] = line.replace(self.unique_str, self.replace_str)
+		with open(path, 'w') as f:
+			f.writelines(oldlist)
 
-	for i, line in enumerate(oldlist):
-		if "$$version$" in line:
-			print("Replacing...")
-			oldlist[i] = line.replace("$$version$", os.getenv('APPVEYOR_BUILD_VERSION', "XX.XX.XX"))
-		
-	with open(current, 'w') as f:
-		f.writelines(oldlist)
-		
-path = get_clean_path(os.path.realpath(__file__).split("\\"))
-
-for dirpath, dirnames, filenames in os.walk(path):
-	for filename in filenames:
-		current = dirpath + "\\" + filename
-		if filename.endswith(".cs"):
-			print("Versioning: " + current)
-			do_version_replace(current)
+	def start(self):
+		for dirpath, dirnames, filenames in os.walk(self.directory):
+			for filename in filenames:
+				current_path = os.path.join(dirpath, filename);
+				if filename.endswith(self.filetype):
+					print("Versioning: " + current_path)
+					self.replace_file(current_path)
+					
+versioner = Versioner(".cs", os.getcwd(), "$$version$", os.getenv('APPVEYOR_BUILD_VERSION', "XX.XX.XX"))
+versioner.start()
