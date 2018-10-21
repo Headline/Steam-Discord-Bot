@@ -12,7 +12,7 @@ class Versioner:
 		with open(path) as f:
 			oldlist = f.readlines();
 		for i, line in enumerate(oldlist):
-			if "$$version$" in line:
+			if self.unique_str in line:
 				print("Replacing...")
 				oldlist[i] = line.replace(self.unique_str, self.replace_str)
 		with open(path, 'w') as f:
