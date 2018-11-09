@@ -105,9 +105,11 @@ namespace SteamDiscordBot
             connection = new SteamConnection(config.SteamUsername, config.SteamPassword);
             connection.Connect();
 
-            ghClient = new GitHubClient(new ProductHeaderValue(Program.config.GitHubUpdateRepository));
-            if (config.GitHubAuthToken.Length != 0)
+            if (config.GitHubUpdateRepository.Length != 0 && config.GitHubAuthToken.Length != 0)
+            {
+                ghClient = new GitHubClient(new ProductHeaderValue(Program.config.GitHubUpdateRepository));
                 ghClient.Credentials = new Credentials(config.GitHubAuthToken);
+            }
 
             // Handle Jobs
             manager = new JobManager(config.JobInterval); // time in seconds to run each job
