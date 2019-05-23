@@ -188,7 +188,7 @@ namespace SteamDiscordBot
             }
 
             var result = await commands.ExecuteAsync(context, argPos, services);
-            if (!result.IsSuccess)
+            if (!result.IsSuccess && !result.ErrorReason.Equals("Unknown command."))
                 await context.Channel.SendMessageAsync(result.ErrorReason);
         }
 
